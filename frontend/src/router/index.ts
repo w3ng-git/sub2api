@@ -314,6 +314,18 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/admin/sensitive-settings',
+    name: 'AdminSensitiveSettings',
+    component: () => import('@/views/admin/SensitiveSettingsView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'Sensitive Settings',
+      titleKey: 'admin.sensitiveSettings.title',
+      descriptionKey: 'admin.sensitiveSettings.description'
+    }
+  },
+  {
     path: '/admin/usage',
     name: 'AdminUsage',
     component: () => import('@/views/admin/UsageView.vue'),

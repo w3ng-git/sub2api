@@ -1162,7 +1162,9 @@ const form = reactive<SettingsForm>({
   ops_monitoring_enabled: true,
   ops_realtime_monitoring_enabled: true,
   ops_query_mode_default: 'auto',
-  ops_metrics_interval_seconds: 60
+  ops_metrics_interval_seconds: 60,
+  // Sensitive settings
+  upstream_error_sanitization_enabled: true
 })
 
 // LinuxDo OAuth redirect URL suggestion

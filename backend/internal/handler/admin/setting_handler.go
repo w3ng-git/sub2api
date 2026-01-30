@@ -88,6 +88,7 @@ func (h *SettingHandler) GetSettings(c *gin.Context) {
 		OpsRealtimeMonitoringEnabled:         settings.OpsRealtimeMonitoringEnabled,
 		OpsQueryModeDefault:                  settings.OpsQueryModeDefault,
 		OpsMetricsIntervalSeconds:            settings.OpsMetricsIntervalSeconds,
+		UpstreamErrorSanitizationEnabled:     settings.UpstreamErrorSanitizationEnabled,
 	})
 }
 
@@ -152,6 +153,9 @@ type UpdateSettingsRequest struct {
 	OpsRealtimeMonitoringEnabled *bool   `json:"ops_realtime_monitoring_enabled"`
 	OpsQueryModeDefault          *string `json:"ops_query_mode_default"`
 	OpsMetricsIntervalSeconds    *int    `json:"ops_metrics_interval_seconds"`
+
+	// Sensitive settings
+	UpstreamErrorSanitizationEnabled *bool `json:"upstream_error_sanitization_enabled"`
 }
 
 // UpdateSettings 更新系统设置
@@ -349,6 +353,12 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 			}
 			return previousSettings.OpsMetricsIntervalSeconds
 		}(),
+		UpstreamErrorSanitizationEnabled: func() bool {
+			if req.UpstreamErrorSanitizationEnabled != nil {
+				return *req.UpstreamErrorSanitizationEnabled
+			}
+			return previousSettings.UpstreamErrorSanitizationEnabled
+		}(),
 	}
 
 	if err := h.settingService.UpdateSettings(c.Request.Context(), settings); err != nil {
@@ -409,6 +419,7 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 		OpsRealtimeMonitoringEnabled:         updatedSettings.OpsRealtimeMonitoringEnabled,
 		OpsQueryModeDefault:                  updatedSettings.OpsQueryModeDefault,
 		OpsMetricsIntervalSeconds:            updatedSettings.OpsMetricsIntervalSeconds,
+		UpstreamErrorSanitizationEnabled:     updatedSettings.UpstreamErrorSanitizationEnabled,
 	})
 }
 
@@ -550,6 +561,9 @@ func diffSettings(before *service.SystemSettings, after *service.SystemSettings,
 	}
 	if before.OpsMetricsIntervalSeconds != after.OpsMetricsIntervalSeconds {
 		changed = append(changed, "ops_metrics_interval_seconds")
+	}
+	if before.UpstreamErrorSanitizationEnabled != after.UpstreamErrorSanitizationEnabled {
+		changed = append(changed, "upstream_error_sanitization_enabled")
 	}
 	return changed
 }

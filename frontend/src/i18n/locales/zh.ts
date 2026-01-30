@@ -204,7 +204,8 @@ export default {
     github: 'GitHub',
     mySubscriptions: '我的订阅',
     buySubscription: '购买订阅',
-    docs: '文档'
+    docs: '文档',
+    sensitiveSettings: '系统敏感设置'
   },
 
   // Auth
@@ -3157,6 +3158,21 @@ export default {
       failedToSave: '保存设置失败',
       failedToTestSmtp: 'SMTP 连接测试失败',
       failedToSendTestEmail: '发送测试邮件失败'
+    },
+
+    // Sensitive Settings
+    sensitiveSettings: {
+      title: '系统敏感设置',
+      description: '配置系统安全和隐私相关设置',
+      upstreamErrorSanitization: {
+        title: '上游错误信息脱敏',
+        enabled: '启用错误信息脱敏',
+        description: '启用后，上游服务返回的错误详情将被替换为通用错误消息，防止泄露上游服务商信息',
+        warning:
+          '警告：关闭此选项可能会向用户暴露上游服务商的敏感信息（如品牌名称、内部错误详情等）'
+      },
+      saved: '设置已保存',
+      saveFailed: '保存失败'
     }
   },
 

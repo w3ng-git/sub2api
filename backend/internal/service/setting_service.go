@@ -251,6 +251,9 @@ func (s *SettingService) UpdateSettings(ctx context.Context, settings *SystemSet
 		updates[SettingKeyOpsMetricsIntervalSeconds] = strconv.Itoa(settings.OpsMetricsIntervalSeconds)
 	}
 
+	// Sensitive settings
+	updates[SettingKeyUpstreamErrorSanitizationEnabled] = strconv.FormatBool(settings.UpstreamErrorSanitizationEnabled)
+
 	err := s.settingRepo.SetMultiple(ctx, updates)
 	if err == nil && s.onUpdate != nil {
 		s.onUpdate() // Invalidate cache after settings update
@@ -510,6 +513,9 @@ func (s *SettingService) parseSettings(settings map[string]string) *SystemSettin
 			result.OpsMetricsIntervalSeconds = v
 		}
 	}
+
+	// Sensitive settings (default: enabled for security)
+	result.UpstreamErrorSanitizationEnabled = !isFalseSettingValue(settings[SettingKeyUpstreamErrorSanitizationEnabled])
 
 	return result
 }
@@ -838,4 +844,13 @@ func (s *SettingService) SetStreamTimeoutSettings(ctx context.Context, settings 
 	}
 
 	return s.settingRepo.Set(ctx, SettingKeyStreamTimeoutSettings, string(data))
+}
+
+// IsUpstreamErrorSanitizationEnabled 检查是否启用上游错误信息脱敏（默认开启）
+func (s *SettingService) IsUpstreamErrorSanitizationEnabled(ctx context.Context) bool {
+	value, err := s.settingRepo.GetValue(ctx, SettingKeyUpstreamErrorSanitizationEnabled)
+	if err != nil || value == "" {
+		return true // 默认开启（安全优先）
+	}
+	return value != "false"
 }

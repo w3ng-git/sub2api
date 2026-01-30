@@ -207,7 +207,8 @@ export default {
     github: 'GitHub',
     mySubscriptions: 'My Subscriptions',
     buySubscription: 'Purchase Subscription',
-    docs: 'Docs'
+    docs: 'Docs',
+    sensitiveSettings: 'Sensitive Settings'
   },
 
   // Auth
@@ -3007,6 +3008,22 @@ export default {
       failedToSave: 'Failed to save settings',
       failedToTestSmtp: 'SMTP connection test failed',
       failedToSendTestEmail: 'Failed to send test email'
+    },
+
+    // Sensitive Settings
+    sensitiveSettings: {
+      title: 'Sensitive Settings',
+      description: 'Configure system security and privacy settings',
+      upstreamErrorSanitization: {
+        title: 'Upstream Error Sanitization',
+        enabled: 'Enable error sanitization',
+        description:
+          'When enabled, detailed error messages from upstream providers will be replaced with generic messages to prevent information leakage',
+        warning:
+          'Warning: Disabling this option may expose sensitive information about upstream providers (brand names, internal error details, etc.) to users'
+      },
+      saved: 'Settings saved',
+      saveFailed: 'Failed to save settings'
     }
   },
 

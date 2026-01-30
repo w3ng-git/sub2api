@@ -161,6 +161,14 @@ const (
 
 	// SettingKeyStreamTimeoutSettings stores JSON config for stream timeout handling.
 	SettingKeyStreamTimeoutSettings = "stream_timeout_settings"
+
+	// =========================
+	// Sensitive Settings
+	// =========================
+
+	// SettingKeyUpstreamErrorSanitizationEnabled controls whether upstream error messages are sanitized.
+	// Default: true (enabled for security)
+	SettingKeyUpstreamErrorSanitizationEnabled = "upstream_error_sanitization_enabled"
 )
 
 // AdminAPIKeyPrefix is the prefix for admin API keys (distinct from user "sk-" keys).

@@ -354,6 +354,21 @@ const CogIcon = {
     )
 }
 
+const ShieldExclamationIcon = {
+  render: () =>
+    h(
+      'svg',
+      { fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', 'stroke-width': '1.5' },
+      [
+        h('path', {
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round',
+          d: 'M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285zm0 13.036h.008v.008H12v-.008z'
+        })
+      ]
+    )
+}
+
 const SunIcon = {
   render: () =>
     h(
@@ -481,10 +496,12 @@ const adminNavItems = computed(() => {
     const filtered = baseItems.filter(item => !item.hideInSimpleMode)
     filtered.push({ path: '/keys', label: t('nav.apiKeys'), icon: KeyIcon })
     filtered.push({ path: '/admin/settings', label: t('nav.settings'), icon: CogIcon })
+    filtered.push({ path: '/admin/sensitive-settings', label: t('nav.sensitiveSettings'), icon: ShieldExclamationIcon })
     return filtered
   }
 
   baseItems.push({ path: '/admin/settings', label: t('nav.settings'), icon: CogIcon })
+  baseItems.push({ path: '/admin/sensitive-settings', label: t('nav.sensitiveSettings'), icon: ShieldExclamationIcon })
   return baseItems
 })
 

@@ -56,6 +56,9 @@ type SystemSettings struct {
 	OpsRealtimeMonitoringEnabled bool   `json:"ops_realtime_monitoring_enabled"`
 	OpsQueryModeDefault          string `json:"ops_query_mode_default"`
 	OpsMetricsIntervalSeconds    int    `json:"ops_metrics_interval_seconds"`
+
+	// Sensitive settings
+	UpstreamErrorSanitizationEnabled bool `json:"upstream_error_sanitization_enabled"`
 }
 
 type PublicSettings struct {

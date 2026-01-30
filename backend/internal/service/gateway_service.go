@@ -213,7 +213,8 @@ type GatewayService struct {
 	deferredService     *DeferredService
 	concurrencyService  *ConcurrencyService
 	claudeTokenProvider *ClaudeTokenProvider
-	sessionLimitCache   SessionLimitCache // 会话数量限制缓存（仅 Anthropic OAuth/SetupToken）
+	sessionLimitCache   SessionLimitCache  // 会话数量限制缓存（仅 Anthropic OAuth/SetupToken）
+	settingService      *SettingService    // 系统设置服务（用于脱敏配置等）
 }
 
 // NewGatewayService creates a new GatewayService
@@ -235,6 +236,7 @@ func NewGatewayService(
 	deferredService *DeferredService,
 	claudeTokenProvider *ClaudeTokenProvider,
 	sessionLimitCache SessionLimitCache,
+	settingService *SettingService,
 ) *GatewayService {
 	return &GatewayService{
 		accountRepo:         accountRepo,
@@ -254,6 +256,7 @@ func NewGatewayService(
 		deferredService:     deferredService,
 		claudeTokenProvider: claudeTokenProvider,
 		sessionLimitCache:   sessionLimitCache,
+		settingService:      settingService,
 	}
 }
 
@@ -2992,7 +2995,20 @@ func (s *GatewayService) handleErrorResponse(ctx context.Context, resp *http.Res
 
 	switch resp.StatusCode {
 	case 400:
-		c.Data(http.StatusBadRequest, "application/json", body)
+		// 根据脱敏配置决定是否透传原始错误
+		if s.settingService != nil && s.settingService.IsUpstreamErrorSanitizationEnabled(ctx) {
+			// 脱敏：返回通用错误信息
+			c.JSON(http.StatusBadRequest, gin.H{
+				"type": "error",
+				"error": gin.H{
+					"type":    "invalid_request_error",
+					"message": "Invalid request",
+				},
+			})
+		} else {
+			// 不脱敏：透传原始响应
+			c.Data(http.StatusBadRequest, "application/json", body)
+		}
 		summary := upstreamMsg
 		if summary == "" {
 			summary = truncateForLog(body, 512)

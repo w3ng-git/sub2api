@@ -58,6 +58,9 @@ type SystemSettings struct {
 	OpsRealtimeMonitoringEnabled bool
 	OpsQueryModeDefault          string
 	OpsMetricsIntervalSeconds    int
+
+	// Sensitive settings
+	UpstreamErrorSanitizationEnabled bool // 上游错误信息脱敏
 }
 
 type PublicSettings struct {
