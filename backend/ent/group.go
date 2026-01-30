@@ -60,6 +60,8 @@ type Group struct {
 	ModelRouting map[string][]int64 `json:"model_routing,omitempty"`
 	// 是否启用模型路由配置
 	ModelRoutingEnabled bool `json:"model_routing_enabled,omitempty"`
+	// 缓存读取 token 转移为缓存创建的比例，0~1
+	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GroupQuery when eager-loading is set.
 	Edges        GroupEdges `json:"edges"`
@@ -170,7 +172,7 @@ func (*Group) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case group.FieldIsExclusive, group.FieldClaudeCodeOnly, group.FieldModelRoutingEnabled:
 			values[i] = new(sql.NullBool)
-		case group.FieldRateMultiplier, group.FieldDailyLimitUsd, group.FieldWeeklyLimitUsd, group.FieldMonthlyLimitUsd, group.FieldImagePrice1k, group.FieldImagePrice2k, group.FieldImagePrice4k:
+		case group.FieldRateMultiplier, group.FieldDailyLimitUsd, group.FieldWeeklyLimitUsd, group.FieldMonthlyLimitUsd, group.FieldImagePrice1k, group.FieldImagePrice2k, group.FieldImagePrice4k, group.FieldCacheReadTransferRatio:
 			values[i] = new(sql.NullFloat64)
 		case group.FieldID, group.FieldDefaultValidityDays, group.FieldFallbackGroupID:
 			values[i] = new(sql.NullInt64)
@@ -336,6 +338,12 @@ func (_m *Group) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ModelRoutingEnabled = value.Bool
 			}
+		case group.FieldCacheReadTransferRatio:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_read_transfer_ratio", values[i])
+			} else if value.Valid {
+				_m.CacheReadTransferRatio = value.Float64
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -492,6 +500,9 @@ func (_m *Group) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("model_routing_enabled=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ModelRoutingEnabled))
+	builder.WriteString(", ")
+	builder.WriteString("cache_read_transfer_ratio=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CacheReadTransferRatio))
 	builder.WriteByte(')')
 	return builder.String()
 }

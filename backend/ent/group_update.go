@@ -421,6 +421,27 @@ func (_u *GroupUpdate) SetNillableModelRoutingEnabled(v *bool) *GroupUpdate {
 	return _u
 }
 
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (_u *GroupUpdate) SetCacheReadTransferRatio(v float64) *GroupUpdate {
+	_u.mutation.ResetCacheReadTransferRatio()
+	_u.mutation.SetCacheReadTransferRatio(v)
+	return _u
+}
+
+// SetNillableCacheReadTransferRatio sets the "cache_read_transfer_ratio" field if the given value is not nil.
+func (_u *GroupUpdate) SetNillableCacheReadTransferRatio(v *float64) *GroupUpdate {
+	if v != nil {
+		_u.SetCacheReadTransferRatio(*v)
+	}
+	return _u
+}
+
+// AddCacheReadTransferRatio adds value to the "cache_read_transfer_ratio" field.
+func (_u *GroupUpdate) AddCacheReadTransferRatio(v float64) *GroupUpdate {
+	_u.mutation.AddCacheReadTransferRatio(v)
+	return _u
+}
+
 // AddAPIKeyIDs adds the "api_keys" edge to the APIKey entity by IDs.
 func (_u *GroupUpdate) AddAPIKeyIDs(ids ...int64) *GroupUpdate {
 	_u.mutation.AddAPIKeyIDs(ids...)
@@ -837,6 +858,12 @@ func (_u *GroupUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.ModelRoutingEnabled(); ok {
 		_spec.SetField(group.FieldModelRoutingEnabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.CacheReadTransferRatio(); ok {
+		_spec.SetField(group.FieldCacheReadTransferRatio, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedCacheReadTransferRatio(); ok {
+		_spec.AddField(group.FieldCacheReadTransferRatio, field.TypeFloat64, value)
 	}
 	if _u.mutation.APIKeysCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1539,6 +1566,27 @@ func (_u *GroupUpdateOne) SetNillableModelRoutingEnabled(v *bool) *GroupUpdateOn
 	return _u
 }
 
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (_u *GroupUpdateOne) SetCacheReadTransferRatio(v float64) *GroupUpdateOne {
+	_u.mutation.ResetCacheReadTransferRatio()
+	_u.mutation.SetCacheReadTransferRatio(v)
+	return _u
+}
+
+// SetNillableCacheReadTransferRatio sets the "cache_read_transfer_ratio" field if the given value is not nil.
+func (_u *GroupUpdateOne) SetNillableCacheReadTransferRatio(v *float64) *GroupUpdateOne {
+	if v != nil {
+		_u.SetCacheReadTransferRatio(*v)
+	}
+	return _u
+}
+
+// AddCacheReadTransferRatio adds value to the "cache_read_transfer_ratio" field.
+func (_u *GroupUpdateOne) AddCacheReadTransferRatio(v float64) *GroupUpdateOne {
+	_u.mutation.AddCacheReadTransferRatio(v)
+	return _u
+}
+
 // AddAPIKeyIDs adds the "api_keys" edge to the APIKey entity by IDs.
 func (_u *GroupUpdateOne) AddAPIKeyIDs(ids ...int64) *GroupUpdateOne {
 	_u.mutation.AddAPIKeyIDs(ids...)
@@ -1985,6 +2033,12 @@ func (_u *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error)
 	}
 	if value, ok := _u.mutation.ModelRoutingEnabled(); ok {
 		_spec.SetField(group.FieldModelRoutingEnabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.CacheReadTransferRatio(); ok {
+		_spec.SetField(group.FieldCacheReadTransferRatio, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedCacheReadTransferRatio(); ok {
+		_spec.AddField(group.FieldCacheReadTransferRatio, field.TypeFloat64, value)
 	}
 	if _u.mutation.APIKeysCleared() {
 		edge := &sqlgraph.EdgeSpec{

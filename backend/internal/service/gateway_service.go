@@ -2270,7 +2270,8 @@ func removeCacheControlFromThinkingBlocks(data map[string]any) {
 }
 
 // Forward 转发请求到Claude API
-func (s *GatewayService) Forward(ctx context.Context, c *gin.Context, account *Account, parsed *ParsedRequest) (*ForwardResult, error) {
+// cacheTransferRatio: 缓存读取 token 转移为缓存创建的比例（0~1），用于 SSE 响应改写
+func (s *GatewayService) Forward(ctx context.Context, c *gin.Context, account *Account, parsed *ParsedRequest, cacheTransferRatio float64) (*ForwardResult, error) {
 	startTime := time.Now()
 	if parsed == nil {
 		return nil, fmt.Errorf("parse request: empty request")
@@ -2663,7 +2664,7 @@ func (s *GatewayService) Forward(ctx context.Context, c *gin.Context, account *A
 	var firstTokenMs *int
 	var clientDisconnect bool
 	if reqStream {
-		streamResult, err := s.handleStreamingResponse(ctx, resp, c, account, startTime, originalModel, reqModel)
+		streamResult, err := s.handleStreamingResponse(ctx, resp, c, account, startTime, originalModel, reqModel, cacheTransferRatio)
 		if err != nil {
 			if err.Error() == "have error in stream" {
 				return nil, &UpstreamFailoverError{
@@ -2676,7 +2677,7 @@ func (s *GatewayService) Forward(ctx context.Context, c *gin.Context, account *A
 		firstTokenMs = streamResult.firstTokenMs
 		clientDisconnect = streamResult.clientDisconnect
 	} else {
-		usage, err = s.handleNonStreamingResponse(ctx, resp, c, account, originalModel, reqModel)
+		usage, err = s.handleNonStreamingResponse(ctx, resp, c, account, originalModel, reqModel, cacheTransferRatio)
 		if err != nil {
 			return nil, err
 		}
@@ -3142,7 +3143,7 @@ type streamingResult struct {
 	clientDisconnect bool // 客户端是否在流式传输过程中断开
 }
 
-func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http.Response, c *gin.Context, account *Account, startTime time.Time, originalModel, mappedModel string) (*streamingResult, error) {
+func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http.Response, c *gin.Context, account *Account, startTime time.Time, originalModel, mappedModel string, cacheTransferRatio float64) (*streamingResult, error) {
 	// 更新5h窗口状态
 	s.rateLimitService.UpdateSessionWindow(ctx, account, resp.Header)
 
@@ -3281,6 +3282,10 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 				if needModelReplace {
 					line = s.replaceModelInSSELine(line, mappedModel, originalModel)
 				}
+				// 缓存 token 转移改写（仅在 ratio > 0 时生效）
+				if cacheTransferRatio > 0 {
+					line = s.rewriteCacheTokensInSSELine(line, cacheTransferRatio)
+				}
 			}
 
 			// 写入客户端（统一处理 data 行和非 data 行）
@@ -3363,6 +3368,62 @@ func (s *GatewayService) replaceModelInSSELine(line, fromModel, toModel string) 
 	return "data: " + string(newData)
 }
 
+// rewriteCacheTokensInSSELine 改写 SSE 行中的缓存 token 数量
+// 仅处理 message_start 事件（cache token 在此事件中发送）
+func (s *GatewayService) rewriteCacheTokensInSSELine(line string, transferRatio float64) string {
+	if !sseDataRe.MatchString(line) {
+		return line
+	}
+	data := sseDataRe.ReplaceAllString(line, "")
+	if data == "" || data == "[DONE]" {
+		return line
+	}
+
+	var event map[string]any
+	if err := json.Unmarshal([]byte(data), &event); err != nil {
+		return line
+	}
+
+	// 只处理 message_start 事件
+	if event["type"] != "message_start" {
+		return line
+	}
+
+	msg, ok := event["message"].(map[string]any)
+	if !ok {
+		return line
+	}
+
+	usage, ok := msg["usage"].(map[string]any)
+	if !ok {
+		return line
+	}
+
+	// 获取原始值
+	cacheCreation := 0
+	cacheRead := 0
+	if v, ok := usage["cache_creation_input_tokens"].(float64); ok {
+		cacheCreation = int(v)
+	}
+	if v, ok := usage["cache_read_input_tokens"].(float64); ok {
+		cacheRead = int(v)
+	}
+
+	// 应用转移
+	newCreation, newRead := TransferCacheTokens(cacheCreation, cacheRead, transferRatio)
+
+	// 更新值
+	usage["cache_creation_input_tokens"] = newCreation
+	usage["cache_read_input_tokens"] = newRead
+
+	newData, err := json.Marshal(event)
+	if err != nil {
+		return line
+	}
+
+	return "data: " + string(newData)
+}
+
 func (s *GatewayService) parseSSEUsage(data string, usage *ClaudeUsage) {
 	// 解析message_start获取input tokens（标准Claude API格式）
 	var msgStart struct {
@@ -3406,7 +3467,7 @@ func (s *GatewayService) parseSSEUsage(data string, usage *ClaudeUsage) {
 	}
 }
 
-func (s *GatewayService) handleNonStreamingResponse(ctx context.Context, resp *http.Response, c *gin.Context, account *Account, originalModel, mappedModel string) (*ClaudeUsage, error) {
+func (s *GatewayService) handleNonStreamingResponse(ctx context.Context, resp *http.Response, c *gin.Context, account *Account, originalModel, mappedModel string, cacheTransferRatio float64) (*ClaudeUsage, error) {
 	// 更新5h窗口状态
 	s.rateLimitService.UpdateSessionWindow(ctx, account, resp.Header)
 
@@ -3426,6 +3487,15 @@ func (s *GatewayService) handleNonStreamingResponse(ctx context.Context, resp *h
 	// 如果有模型映射，替换响应中的model字段
 	if originalModel != mappedModel {
 		body = s.replaceModelInResponseBody(body, mappedModel, originalModel)
+	}
+
+	// 缓存 token 转移改写（仅在 ratio > 0 时生效）
+	if cacheTransferRatio > 0 {
+		body = s.rewriteCacheTokensInResponseBody(body, cacheTransferRatio)
+		// 同步更新返回的 usage（保持一致性）
+		newCreation, newRead := TransferCacheTokens(response.Usage.CacheCreationInputTokens, response.Usage.CacheReadInputTokens, cacheTransferRatio)
+		response.Usage.CacheCreationInputTokens = newCreation
+		response.Usage.CacheReadInputTokens = newRead
 	}
 
 	responseheaders.WriteFilteredHeaders(c.Writer.Header(), resp.Header, s.cfg.Security.ResponseHeaders)
@@ -3464,6 +3534,43 @@ func (s *GatewayService) replaceModelInResponseBody(body []byte, fromModel, toMo
 	return newBody
 }
 
+// rewriteCacheTokensInResponseBody 改写非流式响应体中的缓存 token 数量
+func (s *GatewayService) rewriteCacheTokensInResponseBody(body []byte, transferRatio float64) []byte {
+	var resp map[string]any
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return body
+	}
+
+	usage, ok := resp["usage"].(map[string]any)
+	if !ok {
+		return body
+	}
+
+	// 获取原始值
+	cacheCreation := 0
+	cacheRead := 0
+	if v, ok := usage["cache_creation_input_tokens"].(float64); ok {
+		cacheCreation = int(v)
+	}
+	if v, ok := usage["cache_read_input_tokens"].(float64); ok {
+		cacheRead = int(v)
+	}
+
+	// 应用转移
+	newCreation, newRead := TransferCacheTokens(cacheCreation, cacheRead, transferRatio)
+
+	// 更新值
+	usage["cache_creation_input_tokens"] = newCreation
+	usage["cache_read_input_tokens"] = newRead
+
+	newBody, err := json.Marshal(resp)
+	if err != nil {
+		return body
+	}
+
+	return newBody
+}
+
 // RecordUsageInput 记录使用量的输入参数
 type RecordUsageInput struct {
 	Result       *ForwardResult
@@ -3489,6 +3596,19 @@ func (s *GatewayService) RecordUsage(ctx context.Context, input *RecordUsageInpu
 		multiplier = apiKey.Group.RateMultiplier
 	}
 
+	// 获取缓存转移比例
+	cacheTransferRatio := 0.0
+	if apiKey.GroupID != nil && apiKey.Group != nil {
+		cacheTransferRatio = apiKey.Group.CacheReadTransferRatio
+	}
+
+	// 应用缓存 token 转移（用于计费和日志记录）
+	newCacheCreation, newCacheRead := TransferCacheTokens(
+		result.Usage.CacheCreationInputTokens,
+		result.Usage.CacheReadInputTokens,
+		cacheTransferRatio,
+	)
+
 	var cost *CostBreakdown
 
 	// 根据请求类型选择计费方式
@@ -3508,8 +3628,8 @@ func (s *GatewayService) RecordUsage(ctx context.Context, input *RecordUsageInpu
 		tokens := UsageTokens{
 			InputTokens:         result.Usage.InputTokens,
 			OutputTokens:        result.Usage.OutputTokens,
-			CacheCreationTokens: result.Usage.CacheCreationInputTokens,
-			CacheReadTokens:     result.Usage.CacheReadInputTokens,
+			CacheCreationTokens: newCacheCreation,
+			CacheReadTokens:     newCacheRead,
 		}
 		var err error
 		cost, err = s.billingService.CalculateCost(result.Model, tokens, multiplier)
@@ -3541,8 +3661,8 @@ func (s *GatewayService) RecordUsage(ctx context.Context, input *RecordUsageInpu
 		Model:                 result.Model,
 		InputTokens:           result.Usage.InputTokens,
 		OutputTokens:          result.Usage.OutputTokens,
-		CacheCreationTokens:   result.Usage.CacheCreationInputTokens,
-		CacheReadTokens:       result.Usage.CacheReadInputTokens,
+		CacheCreationTokens:   newCacheCreation,
+		CacheReadTokens:       newCacheRead,
 		InputCost:             cost.InputCost,
 		OutputCost:            cost.OutputCost,
 		CacheCreationCost:     cost.CacheCreationCost,

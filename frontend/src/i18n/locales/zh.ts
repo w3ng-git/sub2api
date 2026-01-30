@@ -1077,6 +1077,11 @@ export default {
         fallbackHint: '非 Claude Code 请求将使用此分组，留空则直接拒绝',
         noFallback: '不降级（直接拒绝）'
       },
+      cacheTransfer: {
+        title: '缓存 Token 转移比例',
+        tooltip: '将一定比例的 cache_read_input_tokens 转移为 cache_creation_input_tokens。例如设置为 0.1，则 10% 的缓存读取 token 将按缓存创建价格计费。',
+        hint: '范围 0~1，0 表示不转移，1 表示全部转移'
+      },
       modelRouting: {
         title: '模型路由配置',
         tooltip: '配置特定模型请求优先路由到指定账号。支持通配符匹配，如 claude-opus-* 匹配所有 opus 模型。',

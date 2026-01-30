@@ -460,6 +460,42 @@
           </div>
         </div>
 
+        <!-- 缓存 token 转移比例（仅 anthropic 平台） -->
+        <div v-if="createForm.platform === 'anthropic'" class="border-t pt-4">
+          <div class="mb-1.5 flex items-center gap-1">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ t('admin.groups.cacheTransfer.title') }}
+            </label>
+            <!-- Help Tooltip -->
+            <div class="group relative inline-flex">
+              <Icon
+                name="questionCircle"
+                size="sm"
+                :stroke-width="2"
+                class="cursor-help text-gray-400 transition-colors hover:text-primary-500 dark:text-gray-500 dark:hover:text-primary-400"
+              />
+              <div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-80 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                <div class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800">
+                  <p class="text-xs leading-relaxed text-gray-300">
+                    {{ t('admin.groups.cacheTransfer.tooltip') }}
+                  </p>
+                  <div class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input
+            v-model.number="createForm.cache_read_transfer_ratio"
+            type="number"
+            step="0.01"
+            min="0"
+            max="1"
+            class="input"
+            placeholder="0"
+          />
+          <p class="input-hint">{{ t('admin.groups.cacheTransfer.hint') }}</p>
+        </div>
+
         <!-- 模型路由配置（仅 anthropic 平台） -->
         <div v-if="createForm.platform === 'anthropic'" class="border-t pt-4">
           <div class="mb-1.5 flex items-center gap-1">
@@ -904,6 +940,42 @@
           </div>
         </div>
 
+        <!-- 缓存 token 转移比例（仅 anthropic 平台） -->
+        <div v-if="editForm.platform === 'anthropic'" class="border-t pt-4">
+          <div class="mb-1.5 flex items-center gap-1">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ t('admin.groups.cacheTransfer.title') }}
+            </label>
+            <!-- Help Tooltip -->
+            <div class="group relative inline-flex">
+              <Icon
+                name="questionCircle"
+                size="sm"
+                :stroke-width="2"
+                class="cursor-help text-gray-400 transition-colors hover:text-primary-500 dark:text-gray-500 dark:hover:text-primary-400"
+              />
+              <div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-80 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                <div class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800">
+                  <p class="text-xs leading-relaxed text-gray-300">
+                    {{ t('admin.groups.cacheTransfer.tooltip') }}
+                  </p>
+                  <div class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input
+            v-model.number="editForm.cache_read_transfer_ratio"
+            type="number"
+            step="0.01"
+            min="0"
+            max="1"
+            class="input"
+            placeholder="0"
+          />
+          <p class="input-hint">{{ t('admin.groups.cacheTransfer.hint') }}</p>
+        </div>
+
         <!-- 模型路由配置（仅 anthropic 平台） -->
         <div v-if="editForm.platform === 'anthropic'" class="border-t pt-4">
           <div class="mb-1.5 flex items-center gap-1">
@@ -1243,6 +1315,8 @@ const createForm = reactive({
   // Claude Code 客户端限制（仅 anthropic 平台使用）
   claude_code_only: false,
   fallback_group_id: null as number | null,
+  // 缓存 token 转移比例（仅 anthropic 平台使用）
+  cache_read_transfer_ratio: 0,
   // 模型路由开关
   model_routing_enabled: false
 })
@@ -1414,6 +1488,8 @@ const editForm = reactive({
   // Claude Code 客户端限制（仅 anthropic 平台使用）
   claude_code_only: false,
   fallback_group_id: null as number | null,
+  // 缓存 token 转移比例（仅 anthropic 平台使用）
+  cache_read_transfer_ratio: 0,
   // 模型路由开关
   model_routing_enabled: false
 })
@@ -1497,6 +1573,7 @@ const closeCreateModal = () => {
   createForm.image_price_4k = null
   createForm.claude_code_only = false
   createForm.fallback_group_id = null
+  createForm.cache_read_transfer_ratio = 0
   createModelRoutingRules.value = []
 }
 
@@ -1546,6 +1623,7 @@ const handleEdit = async (group: AdminGroup) => {
   editForm.image_price_4k = group.image_price_4k
   editForm.claude_code_only = group.claude_code_only || false
   editForm.fallback_group_id = group.fallback_group_id
+  editForm.cache_read_transfer_ratio = group.cache_read_transfer_ratio || 0
   editForm.model_routing_enabled = group.model_routing_enabled || false
   // 加载模型路由规则（异步加载账号名称）
   editModelRoutingRules.value = await convertApiFormatToRoutingRules(group.model_routing)

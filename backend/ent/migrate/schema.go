@@ -228,6 +228,7 @@ var (
 		{Name: "fallback_group_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "model_routing", Type: field.TypeJSON, Nullable: true, SchemaType: map[string]string{"postgres": "jsonb"}},
 		{Name: "model_routing_enabled", Type: field.TypeBool, Default: false},
+		{Name: "cache_read_transfer_ratio", Type: field.TypeFloat64, Default: 0, SchemaType: map[string]string{"postgres": "decimal(5,4)"}},
 	}
 	// GroupsTable holds the schema information for the "groups" table.
 	GroupsTable = &schema.Table{

@@ -50,7 +50,8 @@ func (r *groupRepository) Create(ctx context.Context, groupIn *service.Group) er
 		SetDefaultValidityDays(groupIn.DefaultValidityDays).
 		SetClaudeCodeOnly(groupIn.ClaudeCodeOnly).
 		SetNillableFallbackGroupID(groupIn.FallbackGroupID).
-		SetModelRoutingEnabled(groupIn.ModelRoutingEnabled)
+		SetModelRoutingEnabled(groupIn.ModelRoutingEnabled).
+		SetCacheReadTransferRatio(groupIn.CacheReadTransferRatio)
 
 	// 设置模型路由配置
 	if groupIn.ModelRouting != nil {
@@ -108,7 +109,8 @@ func (r *groupRepository) Update(ctx context.Context, groupIn *service.Group) er
 		SetNillableImagePrice4k(groupIn.ImagePrice4K).
 		SetDefaultValidityDays(groupIn.DefaultValidityDays).
 		SetClaudeCodeOnly(groupIn.ClaudeCodeOnly).
-		SetModelRoutingEnabled(groupIn.ModelRoutingEnabled)
+		SetModelRoutingEnabled(groupIn.ModelRoutingEnabled).
+		SetCacheReadTransferRatio(groupIn.CacheReadTransferRatio)
 
 	// 处理 FallbackGroupID：nil 时清除，否则设置
 	if groupIn.FallbackGroupID != nil {

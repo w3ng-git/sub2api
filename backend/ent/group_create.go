@@ -306,6 +306,20 @@ func (_c *GroupCreate) SetNillableModelRoutingEnabled(v *bool) *GroupCreate {
 	return _c
 }
 
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (_c *GroupCreate) SetCacheReadTransferRatio(v float64) *GroupCreate {
+	_c.mutation.SetCacheReadTransferRatio(v)
+	return _c
+}
+
+// SetNillableCacheReadTransferRatio sets the "cache_read_transfer_ratio" field if the given value is not nil.
+func (_c *GroupCreate) SetNillableCacheReadTransferRatio(v *float64) *GroupCreate {
+	if v != nil {
+		_c.SetCacheReadTransferRatio(*v)
+	}
+	return _c
+}
+
 // AddAPIKeyIDs adds the "api_keys" edge to the APIKey entity by IDs.
 func (_c *GroupCreate) AddAPIKeyIDs(ids ...int64) *GroupCreate {
 	_c.mutation.AddAPIKeyIDs(ids...)
@@ -479,6 +493,10 @@ func (_c *GroupCreate) defaults() error {
 		v := group.DefaultModelRoutingEnabled
 		_c.mutation.SetModelRoutingEnabled(v)
 	}
+	if _, ok := _c.mutation.CacheReadTransferRatio(); !ok {
+		v := group.DefaultCacheReadTransferRatio
+		_c.mutation.SetCacheReadTransferRatio(v)
+	}
 	return nil
 }
 
@@ -536,6 +554,9 @@ func (_c *GroupCreate) check() error {
 	}
 	if _, ok := _c.mutation.ModelRoutingEnabled(); !ok {
 		return &ValidationError{Name: "model_routing_enabled", err: errors.New(`ent: missing required field "Group.model_routing_enabled"`)}
+	}
+	if _, ok := _c.mutation.CacheReadTransferRatio(); !ok {
+		return &ValidationError{Name: "cache_read_transfer_ratio", err: errors.New(`ent: missing required field "Group.cache_read_transfer_ratio"`)}
 	}
 	return nil
 }
@@ -647,6 +668,10 @@ func (_c *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ModelRoutingEnabled(); ok {
 		_spec.SetField(group.FieldModelRoutingEnabled, field.TypeBool, value)
 		_node.ModelRoutingEnabled = value
+	}
+	if value, ok := _c.mutation.CacheReadTransferRatio(); ok {
+		_spec.SetField(group.FieldCacheReadTransferRatio, field.TypeFloat64, value)
+		_node.CacheReadTransferRatio = value
 	}
 	if nodes := _c.mutation.APIKeysIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1158,6 +1183,24 @@ func (u *GroupUpsert) UpdateModelRoutingEnabled() *GroupUpsert {
 	return u
 }
 
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (u *GroupUpsert) SetCacheReadTransferRatio(v float64) *GroupUpsert {
+	u.Set(group.FieldCacheReadTransferRatio, v)
+	return u
+}
+
+// UpdateCacheReadTransferRatio sets the "cache_read_transfer_ratio" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateCacheReadTransferRatio() *GroupUpsert {
+	u.SetExcluded(group.FieldCacheReadTransferRatio)
+	return u
+}
+
+// AddCacheReadTransferRatio adds v to the "cache_read_transfer_ratio" field.
+func (u *GroupUpsert) AddCacheReadTransferRatio(v float64) *GroupUpsert {
+	u.Add(group.FieldCacheReadTransferRatio, v)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -1613,6 +1656,27 @@ func (u *GroupUpsertOne) SetModelRoutingEnabled(v bool) *GroupUpsertOne {
 func (u *GroupUpsertOne) UpdateModelRoutingEnabled() *GroupUpsertOne {
 	return u.Update(func(s *GroupUpsert) {
 		s.UpdateModelRoutingEnabled()
+	})
+}
+
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (u *GroupUpsertOne) SetCacheReadTransferRatio(v float64) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetCacheReadTransferRatio(v)
+	})
+}
+
+// AddCacheReadTransferRatio adds v to the "cache_read_transfer_ratio" field.
+func (u *GroupUpsertOne) AddCacheReadTransferRatio(v float64) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.AddCacheReadTransferRatio(v)
+	})
+}
+
+// UpdateCacheReadTransferRatio sets the "cache_read_transfer_ratio" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateCacheReadTransferRatio() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateCacheReadTransferRatio()
 	})
 }
 
@@ -2237,6 +2301,27 @@ func (u *GroupUpsertBulk) SetModelRoutingEnabled(v bool) *GroupUpsertBulk {
 func (u *GroupUpsertBulk) UpdateModelRoutingEnabled() *GroupUpsertBulk {
 	return u.Update(func(s *GroupUpsert) {
 		s.UpdateModelRoutingEnabled()
+	})
+}
+
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (u *GroupUpsertBulk) SetCacheReadTransferRatio(v float64) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetCacheReadTransferRatio(v)
+	})
+}
+
+// AddCacheReadTransferRatio adds v to the "cache_read_transfer_ratio" field.
+func (u *GroupUpsertBulk) AddCacheReadTransferRatio(v float64) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.AddCacheReadTransferRatio(v)
+	})
+}
+
+// UpdateCacheReadTransferRatio sets the "cache_read_transfer_ratio" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateCacheReadTransferRatio() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateCacheReadTransferRatio()
 	})
 }
 

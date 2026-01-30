@@ -155,6 +155,11 @@ func ModelRoutingEnabled(v bool) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldModelRoutingEnabled, v))
 }
 
+// CacheReadTransferRatio applies equality check predicate on the "cache_read_transfer_ratio" field. It's identical to CacheReadTransferRatioEQ.
+func CacheReadTransferRatio(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldCacheReadTransferRatio, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldCreatedAt, v))
@@ -1088,6 +1093,46 @@ func ModelRoutingEnabledEQ(v bool) predicate.Group {
 // ModelRoutingEnabledNEQ applies the NEQ predicate on the "model_routing_enabled" field.
 func ModelRoutingEnabledNEQ(v bool) predicate.Group {
 	return predicate.Group(sql.FieldNEQ(FieldModelRoutingEnabled, v))
+}
+
+// CacheReadTransferRatioEQ applies the EQ predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldCacheReadTransferRatio, v))
+}
+
+// CacheReadTransferRatioNEQ applies the NEQ predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioNEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldCacheReadTransferRatio, v))
+}
+
+// CacheReadTransferRatioIn applies the In predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldCacheReadTransferRatio, vs...))
+}
+
+// CacheReadTransferRatioNotIn applies the NotIn predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioNotIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldCacheReadTransferRatio, vs...))
+}
+
+// CacheReadTransferRatioGT applies the GT predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioGT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldCacheReadTransferRatio, v))
+}
+
+// CacheReadTransferRatioGTE applies the GTE predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioGTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldCacheReadTransferRatio, v))
+}
+
+// CacheReadTransferRatioLT applies the LT predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioLT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldCacheReadTransferRatio, v))
+}
+
+// CacheReadTransferRatioLTE applies the LTE predicate on the "cache_read_transfer_ratio" field.
+func CacheReadTransferRatioLTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldCacheReadTransferRatio, v))
 }
 
 // HasAPIKeys applies the HasEdge predicate on the "api_keys" edge.

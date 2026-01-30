@@ -1002,6 +1002,11 @@ export default {
         fallbackHint: 'Non-Claude Code requests will use this group. Leave empty to reject directly.',
         noFallback: 'No Fallback (Reject)'
       },
+      cacheTransfer: {
+        title: 'Cache Token Transfer Ratio',
+        tooltip: 'Transfer a percentage of cache_read_input_tokens to cache_creation_input_tokens. For example, 0.1 means 10% of cache read tokens will be billed at cache creation price.',
+        hint: 'Range 0~1, 0 means no transfer, 1 means transfer all'
+      },
       modelRouting: {
         title: 'Model Routing',
         tooltip: 'Configure specific model requests to be routed to designated accounts. Supports wildcard matching, e.g., claude-opus-* matches all opus models.',

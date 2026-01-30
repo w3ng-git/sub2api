@@ -57,6 +57,8 @@ const (
 	FieldModelRouting = "model_routing"
 	// FieldModelRoutingEnabled holds the string denoting the model_routing_enabled field in the database.
 	FieldModelRoutingEnabled = "model_routing_enabled"
+	// FieldCacheReadTransferRatio holds the string denoting the cache_read_transfer_ratio field in the database.
+	FieldCacheReadTransferRatio = "cache_read_transfer_ratio"
 	// EdgeAPIKeys holds the string denoting the api_keys edge name in mutations.
 	EdgeAPIKeys = "api_keys"
 	// EdgeRedeemCodes holds the string denoting the redeem_codes edge name in mutations.
@@ -153,6 +155,7 @@ var Columns = []string{
 	FieldFallbackGroupID,
 	FieldModelRouting,
 	FieldModelRoutingEnabled,
+	FieldCacheReadTransferRatio,
 }
 
 var (
@@ -212,6 +215,8 @@ var (
 	DefaultClaudeCodeOnly bool
 	// DefaultModelRoutingEnabled holds the default value on creation for the "model_routing_enabled" field.
 	DefaultModelRoutingEnabled bool
+	// DefaultCacheReadTransferRatio holds the default value on creation for the "cache_read_transfer_ratio" field.
+	DefaultCacheReadTransferRatio float64
 )
 
 // OrderOption defines the ordering options for the Group queries.
@@ -320,6 +325,11 @@ func ByFallbackGroupID(opts ...sql.OrderTermOption) OrderOption {
 // ByModelRoutingEnabled orders the results by the model_routing_enabled field.
 func ByModelRoutingEnabled(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModelRoutingEnabled, opts...).ToFunc()
+}
+
+// ByCacheReadTransferRatio orders the results by the cache_read_transfer_ratio field.
+func ByCacheReadTransferRatio(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCacheReadTransferRatio, opts...).ToFunc()
 }
 
 // ByAPIKeysCount orders the results by api_keys count.

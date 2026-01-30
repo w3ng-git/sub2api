@@ -106,6 +106,12 @@ func (Group) Fields() []ent.Field {
 		field.Bool("model_routing_enabled").
 			Default(false).
 			Comment("是否启用模型路由配置"),
+
+		// 缓存 token 转移比例 (added by migration 042)
+		field.Float("cache_read_transfer_ratio").
+			SchemaType(map[string]string{dialect.Postgres: "decimal(5,4)"}).
+			Default(0).
+			Comment("缓存读取 token 转移为缓存创建的比例，0~1"),
 	}
 }
 

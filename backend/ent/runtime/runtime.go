@@ -285,6 +285,10 @@ func init() {
 	groupDescModelRoutingEnabled := groupFields[17].Descriptor()
 	// group.DefaultModelRoutingEnabled holds the default value on creation for the model_routing_enabled field.
 	group.DefaultModelRoutingEnabled = groupDescModelRoutingEnabled.Default.(bool)
+	// groupDescCacheReadTransferRatio is the schema descriptor for cache_read_transfer_ratio field.
+	groupDescCacheReadTransferRatio := groupFields[18].Descriptor()
+	// group.DefaultCacheReadTransferRatio holds the default value on creation for the cache_read_transfer_ratio field.
+	group.DefaultCacheReadTransferRatio = groupDescCacheReadTransferRatio.Default.(float64)
 	promocodeFields := schema.PromoCode{}.Fields()
 	_ = promocodeFields
 	// promocodeDescCode is the schema descriptor for code field.

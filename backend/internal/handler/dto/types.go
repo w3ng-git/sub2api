@@ -65,6 +65,9 @@ type Group struct {
 	ClaudeCodeOnly  bool   `json:"claude_code_only"`
 	FallbackGroupID *int64 `json:"fallback_group_id"`
 
+	// 缓存 token 转移比例
+	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio"`
+
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

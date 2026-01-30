@@ -42,6 +42,9 @@ type APIKeyAuthGroupSnapshot struct {
 	// Only anthropic groups use these fields; others may leave them empty.
 	ModelRouting        map[string][]int64 `json:"model_routing,omitempty"`
 	ModelRoutingEnabled bool               `json:"model_routing_enabled"`
+
+	// CacheReadTransferRatio is the ratio of cache_read tokens to transfer to cache_creation (0~1)
+	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio"`
 }
 
 // APIKeyAuthCacheEntry 缓存条目，支持负缓存

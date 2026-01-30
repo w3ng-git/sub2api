@@ -278,6 +278,8 @@ export interface Group {
   // Claude Code 客户端限制
   claude_code_only: boolean
   fallback_group_id: number | null
+  // 缓存 token 转移比例（0~1）
+  cache_read_transfer_ratio: number
   created_at: string
   updated_at: string
 }

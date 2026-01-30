@@ -56,6 +56,22 @@ type CostBreakdown struct {
 	ActualCost        float64 // 应用倍率后的实际费用
 }
 
+// TransferCacheTokens 将一定比例的 cache_read 转移给 cache_creation
+// ratio: 0~1，表示从 cache_read 中转移的比例
+// 返回转移后的 (newCacheCreation, newCacheRead)
+// 保证: newCacheCreation + newCacheRead == cacheCreation + cacheRead
+// 保证: newCacheCreation >= 0, newCacheRead >= 0
+func TransferCacheTokens(cacheCreation, cacheRead int, ratio float64) (int, int) {
+	if ratio <= 0 || cacheRead <= 0 {
+		return cacheCreation, cacheRead
+	}
+	if ratio > 1 {
+		ratio = 1
+	}
+	transfer := int(float64(cacheRead) * ratio)
+	return cacheCreation + transfer, cacheRead - transfer
+}
+
 // BillingService 计费服务
 type BillingService struct {
 	cfg            *config.Config

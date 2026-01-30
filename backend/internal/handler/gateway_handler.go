@@ -417,7 +417,12 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		if account.Platform == service.PlatformAntigravity {
 			result, err = h.antigravityGatewayService.Forward(c.Request.Context(), c, account, body)
 		} else {
-			result, err = h.gatewayService.Forward(c.Request.Context(), c, account, parsedReq)
+			// 获取缓存 token 转移比例
+			cacheTransferRatio := 0.0
+			if apiKey.GroupID != nil && apiKey.Group != nil {
+				cacheTransferRatio = apiKey.Group.CacheReadTransferRatio
+			}
+			result, err = h.gatewayService.Forward(c.Request.Context(), c, account, parsedReq, cacheTransferRatio)
 		}
 		if accountReleaseFunc != nil {
 			accountReleaseFunc()
