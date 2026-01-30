@@ -3492,10 +3492,6 @@ func (s *GatewayService) handleNonStreamingResponse(ctx context.Context, resp *h
 	// 缓存 token 转移改写（仅在 ratio > 0 时生效）
 	if cacheTransferRatio > 0 {
 		body = s.rewriteCacheTokensInResponseBody(body, cacheTransferRatio)
-		// 同步更新返回的 usage（保持一致性）
-		newCreation, newRead := TransferCacheTokens(response.Usage.CacheCreationInputTokens, response.Usage.CacheReadInputTokens, cacheTransferRatio)
-		response.Usage.CacheCreationInputTokens = newCreation
-		response.Usage.CacheReadInputTokens = newRead
 	}
 
 	responseheaders.WriteFilteredHeaders(c.Writer.Header(), resp.Header, s.cfg.Security.ResponseHeaders)
