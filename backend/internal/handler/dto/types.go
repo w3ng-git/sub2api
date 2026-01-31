@@ -1,6 +1,32 @@
 package dto
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
+
+// OptionalFloat64 用于区分 JSON 中"字段不存在"和"字段为 null"的情况。
+// - Set=false: 字段不存在，不应更新
+// - Set=true, Value=nil: 字段为 null，应清除配置
+// - Set=true, Value=非nil: 字段有值，应更新为该值
+type OptionalFloat64 struct {
+	Value *float64
+	Set   bool // true 表示 JSON 中存在该字段（即使值为 null）
+}
+
+func (o *OptionalFloat64) UnmarshalJSON(data []byte) error {
+	o.Set = true // 只要调用了 UnmarshalJSON，就说明字段存在
+	if string(data) == "null" {
+		o.Value = nil
+		return nil
+	}
+	var v float64
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	o.Value = &v
+	return nil
+}
 
 type User struct {
 	ID            int64     `json:"id"`

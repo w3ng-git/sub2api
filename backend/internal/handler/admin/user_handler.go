@@ -48,9 +48,9 @@ type UpdateUserRequest struct {
 	Concurrency   *int     `json:"concurrency"`
 	Status        string   `json:"status" binding:"omitempty,oneof=active disabled"`
 	AllowedGroups *[]int64 `json:"allowed_groups"`
-	// 用户级缓存 token 转移配置（使用二级指针支持设置为 null 来清除配置）
-	CacheReadTransferRatio       **float64 `json:"cache_read_transfer_ratio" binding:"omitempty"`
-	CacheReadTransferProbability **float64 `json:"cache_read_transfer_probability" binding:"omitempty"`
+	// 用户级缓存 token 转移配置（使用 OptionalFloat64 区分"不更新"和"设置为 null"）
+	CacheReadTransferRatio       dto.OptionalFloat64 `json:"cache_read_transfer_ratio"`
+	CacheReadTransferProbability dto.OptionalFloat64 `json:"cache_read_transfer_probability"`
 }
 
 // UpdateBalanceRequest represents balance update request
@@ -181,6 +181,17 @@ func (h *UserHandler) Update(c *gin.Context) {
 		return
 	}
 
+	// 转换 OptionalFloat64 到 **float64
+	// Set=false → nil（不更新），Set=true → &Value（更新为 Value，即使是 nil）
+	var ratioPtr **float64
+	if req.CacheReadTransferRatio.Set {
+		ratioPtr = &req.CacheReadTransferRatio.Value
+	}
+	var probPtr **float64
+	if req.CacheReadTransferProbability.Set {
+		probPtr = &req.CacheReadTransferProbability.Value
+	}
+
 	// 使用指针类型直接传递，nil 表示未提供该字段
 	user, err := h.adminService.UpdateUser(c.Request.Context(), userID, &service.UpdateUserInput{
 		Email:                        req.Email,
@@ -191,8 +202,8 @@ func (h *UserHandler) Update(c *gin.Context) {
 		Concurrency:                  req.Concurrency,
 		Status:                       req.Status,
 		AllowedGroups:                req.AllowedGroups,
-		CacheReadTransferRatio:       req.CacheReadTransferRatio,
-		CacheReadTransferProbability: req.CacheReadTransferProbability,
+		CacheReadTransferRatio:       ratioPtr,
+		CacheReadTransferProbability: probPtr,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)
