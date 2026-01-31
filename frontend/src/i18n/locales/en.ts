@@ -833,6 +833,14 @@ export default {
       failedToDeposit: 'Failed to deposit',
       failedToWithdraw: 'Failed to withdraw',
       useDepositWithdrawButtons: 'Please use deposit/withdraw buttons to adjust balance',
+      cacheTransfer: {
+        section: 'Cache Transfer Config',
+        ratioTitle: 'Transfer Ratio',
+        ratioHint: '0~1, leave empty to use group config',
+        probabilityTitle: 'Trigger Probability',
+        probabilityHint: '0~1, leave empty to use group config',
+        placeholder: 'Empty = use group config'
+      },
       roles: {
         admin: 'Admin',
         user: 'User'
@@ -1005,7 +1013,9 @@ export default {
       cacheTransfer: {
         title: 'Cache Token Transfer Ratio',
         tooltip: 'Transfer a percentage of cache_read_input_tokens to cache_creation_input_tokens. For example, 0.1 means 10% of cache read tokens will be billed at cache creation price.',
-        hint: 'Range 0~1, 0 means no transfer, 1 means transfer all'
+        hint: 'Range 0~1, 0 means no transfer, 1 means transfer all',
+        probabilityTitle: 'Transfer Trigger Probability',
+        probabilityHint: '0~1, 1 means always trigger, 0.3 means 30% chance'
       },
       modelRouting: {
         title: 'Model Routing',

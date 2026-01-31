@@ -884,6 +884,14 @@ export default {
       failedToDeposit: '充值失败',
       failedToWithdraw: '退款失败',
       useDepositWithdrawButtons: '请使用充值/退款按钮调整余额',
+      cacheTransfer: {
+        section: '缓存转移配置',
+        ratioTitle: '转移比例',
+        ratioHint: '0~1，留空使用分组配置',
+        probabilityTitle: '触发概率',
+        probabilityHint: '0~1，留空使用分组配置',
+        placeholder: '留空 = 使用分组配置'
+      },
       // Settings Dropdowns
       filterSettings: '筛选设置',
       columnSettings: '列设置',
@@ -1080,7 +1088,9 @@ export default {
       cacheTransfer: {
         title: '缓存 Token 转移比例',
         tooltip: '将一定比例的 cache_read_input_tokens 转移为 cache_creation_input_tokens。例如设置为 0.1，则 10% 的缓存读取 token 将按缓存创建价格计费。',
-        hint: '范围 0~1，0 表示不转移，1 表示全部转移'
+        hint: '范围 0~1，0 表示不转移，1 表示全部转移',
+        probabilityTitle: '转移触发概率',
+        probabilityHint: '0~1，1 表示每次都触发，0.3 表示 30% 概率触发'
       },
       modelRouting: {
         title: '模型路由配置',

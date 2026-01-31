@@ -35,6 +35,28 @@
           <input v-model.number="form.concurrency" type="number" class="input" />
         </div>
       </div>
+      <!-- 缓存转移配置（管理员可见，用户不可见） -->
+      <div class="border-t pt-4">
+        <p class="mb-3 text-xs font-medium uppercase tracking-wider text-gray-400">
+          {{ t('admin.users.cacheTransfer.section') }}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="input-label">{{ t('admin.users.cacheTransfer.ratioTitle') }}</label>
+            <input v-model="form.cache_read_transfer_ratio" type="number"
+              step="0.01" min="0" max="1" class="input"
+              :placeholder="t('admin.users.cacheTransfer.placeholder')" />
+            <p class="input-hint">{{ t('admin.users.cacheTransfer.ratioHint') }}</p>
+          </div>
+          <div>
+            <label class="input-label">{{ t('admin.users.cacheTransfer.probabilityTitle') }}</label>
+            <input v-model="form.cache_read_transfer_probability" type="number"
+              step="0.01" min="0" max="1" class="input"
+              :placeholder="t('admin.users.cacheTransfer.placeholder')" />
+            <p class="input-hint">{{ t('admin.users.cacheTransfer.probabilityHint') }}</p>
+          </div>
+        </div>
+      </div>
     </form>
     <template #footer>
       <div class="flex justify-end gap-3">
@@ -57,18 +79,22 @@ import Icon from '@/components/icons/Icon.vue'
 const props = defineProps<{ show: boolean }>()
 const emit = defineEmits(['close', 'success']); const { t } = useI18n()
 
-const form = reactive({ email: '', password: '', username: '', notes: '', balance: 0, concurrency: 1 })
+const form = reactive({ email: '', password: '', username: '', notes: '', balance: 0, concurrency: 1, cache_read_transfer_ratio: '' as number | string, cache_read_transfer_probability: '' as number | string })
 
 const { loading, submit } = useForm({
   form,
   submitFn: async (data) => {
-    await adminAPI.users.create(data)
+    const payload: any = { ...data }
+    // 缓存转移配置：空字符串转 null（不设置，使用分组默认）
+    payload.cache_read_transfer_ratio = data.cache_read_transfer_ratio !== '' ? Number(data.cache_read_transfer_ratio) : null
+    payload.cache_read_transfer_probability = data.cache_read_transfer_probability !== '' ? Number(data.cache_read_transfer_probability) : null
+    await adminAPI.users.create(payload)
     emit('success'); emit('close')
   },
   successMsg: t('admin.users.userCreated')
 })
 
-watch(() => props.show, (v) => { if(v) Object.assign(form, { email: '', password: '', username: '', notes: '', balance: 0, concurrency: 1 }) })
+watch(() => props.show, (v) => { if(v) Object.assign(form, { email: '', password: '', username: '', notes: '', balance: 0, concurrency: 1, cache_read_transfer_ratio: '', cache_read_transfer_probability: '' }) })
 
 const generateRandomPassword = () => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%^&*'

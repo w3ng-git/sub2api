@@ -41,6 +41,9 @@ export interface User {
 export interface AdminUser extends User {
   // 管理员备注（普通用户接口不返回）
   notes: string
+  // 用户级缓存转移配置（null = 使用分组配置）
+  cache_read_transfer_ratio: number | null
+  cache_read_transfer_probability: number | null
 }
 
 export interface LoginRequest {
@@ -280,6 +283,8 @@ export interface Group {
   fallback_group_id: number | null
   // 缓存 token 转移比例（0~1）
   cache_read_transfer_ratio: number
+  // 缓存转移触发概率（0~1）
+  cache_read_transfer_probability: number
   created_at: string
   updated_at: string
 }
@@ -861,6 +866,8 @@ export interface UpdateUserRequest {
   concurrency?: number
   status?: 'active' | 'disabled'
   allowed_groups?: number[] | null
+  cache_read_transfer_ratio?: number | null
+  cache_read_transfer_probability?: number | null
 }
 
 export interface ChangePasswordRequest {

@@ -37,6 +37,28 @@
         <label class="input-label">{{ t('admin.users.columns.concurrency') }}</label>
         <input v-model.number="form.concurrency" type="number" class="input" />
       </div>
+      <!-- 缓存转移配置（管理员可见，用户不可见） -->
+      <div class="border-t pt-4">
+        <p class="mb-3 text-xs font-medium uppercase tracking-wider text-gray-400">
+          {{ t('admin.users.cacheTransfer.section') }}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="input-label">{{ t('admin.users.cacheTransfer.ratioTitle') }}</label>
+            <input v-model="form.cache_read_transfer_ratio" type="number"
+              step="0.01" min="0" max="1" class="input"
+              :placeholder="t('admin.users.cacheTransfer.placeholder')" />
+            <p class="input-hint">{{ t('admin.users.cacheTransfer.ratioHint') }}</p>
+          </div>
+          <div>
+            <label class="input-label">{{ t('admin.users.cacheTransfer.probabilityTitle') }}</label>
+            <input v-model="form.cache_read_transfer_probability" type="number"
+              step="0.01" min="0" max="1" class="input"
+              :placeholder="t('admin.users.cacheTransfer.placeholder')" />
+            <p class="input-hint">{{ t('admin.users.cacheTransfer.probabilityHint') }}</p>
+          </div>
+        </div>
+      </div>
       <UserAttributeForm v-model="form.customAttributes" :user-id="user?.id" />
     </form>
     <template #footer>
@@ -66,11 +88,11 @@ const emit = defineEmits(['close', 'success'])
 const { t } = useI18n(); const appStore = useAppStore(); const { copyToClipboard } = useClipboard()
 
 const submitting = ref(false); const passwordCopied = ref(false)
-const form = reactive({ email: '', password: '', username: '', notes: '', concurrency: 1, customAttributes: {} as UserAttributeValuesMap })
+const form = reactive({ email: '', password: '', username: '', notes: '', concurrency: 1, cache_read_transfer_ratio: '' as number | string, cache_read_transfer_probability: '' as number | string, customAttributes: {} as UserAttributeValuesMap })
 
 watch(() => props.user, (u) => {
   if (u) {
-    Object.assign(form, { email: u.email, password: '', username: u.username || '', notes: u.notes || '', concurrency: u.concurrency, customAttributes: {} })
+    Object.assign(form, { email: u.email, password: '', username: u.username || '', notes: u.notes || '', concurrency: u.concurrency, cache_read_transfer_ratio: u.cache_read_transfer_ratio ?? '', cache_read_transfer_probability: u.cache_read_transfer_probability ?? '', customAttributes: {} })
     passwordCopied.value = false
   }
 }, { immediate: true })
@@ -99,6 +121,9 @@ const handleUpdateUser = async () => {
   try {
     const data: any = { email: form.email, username: form.username, notes: form.notes, concurrency: form.concurrency }
     if (form.password.trim()) data.password = form.password.trim()
+    // 缓存转移配置：空字符串转 null（清除用户配置，回退到分组）
+    data.cache_read_transfer_ratio = form.cache_read_transfer_ratio !== '' ? Number(form.cache_read_transfer_ratio) : null
+    data.cache_read_transfer_probability = form.cache_read_transfer_probability !== '' ? Number(form.cache_read_transfer_probability) : null
     await adminAPI.users.update(props.user.id, data)
     if (Object.keys(form.customAttributes).length > 0) await adminAPI.userAttributes.updateUserAttributeValues(props.user.id, form.customAttributes)
     appStore.showSuccess(t('admin.users.userUpdated'))

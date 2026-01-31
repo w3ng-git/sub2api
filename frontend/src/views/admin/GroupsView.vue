@@ -494,6 +494,21 @@
             placeholder="0"
           />
           <p class="input-hint">{{ t('admin.groups.cacheTransfer.hint') }}</p>
+          <div class="mt-3">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ t('admin.groups.cacheTransfer.probabilityTitle') }}
+            </label>
+            <input
+              v-model.number="createForm.cache_read_transfer_probability"
+              type="number"
+              step="0.01"
+              min="0"
+              max="1"
+              class="input"
+              placeholder="1"
+            />
+            <p class="input-hint">{{ t('admin.groups.cacheTransfer.probabilityHint') }}</p>
+          </div>
         </div>
 
         <!-- 模型路由配置（仅 anthropic 平台） -->
@@ -974,6 +989,21 @@
             placeholder="0"
           />
           <p class="input-hint">{{ t('admin.groups.cacheTransfer.hint') }}</p>
+          <div class="mt-3">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ t('admin.groups.cacheTransfer.probabilityTitle') }}
+            </label>
+            <input
+              v-model.number="editForm.cache_read_transfer_probability"
+              type="number"
+              step="0.01"
+              min="0"
+              max="1"
+              class="input"
+              placeholder="1"
+            />
+            <p class="input-hint">{{ t('admin.groups.cacheTransfer.probabilityHint') }}</p>
+          </div>
         </div>
 
         <!-- 模型路由配置（仅 anthropic 平台） -->
@@ -1317,6 +1347,8 @@ const createForm = reactive({
   fallback_group_id: null as number | null,
   // 缓存 token 转移比例（仅 anthropic 平台使用）
   cache_read_transfer_ratio: 0,
+  // 缓存转移触发概率（仅 anthropic 平台使用）
+  cache_read_transfer_probability: 1,
   // 模型路由开关
   model_routing_enabled: false
 })
@@ -1490,6 +1522,8 @@ const editForm = reactive({
   fallback_group_id: null as number | null,
   // 缓存 token 转移比例（仅 anthropic 平台使用）
   cache_read_transfer_ratio: 0,
+  // 缓存转移触发概率（仅 anthropic 平台使用）
+  cache_read_transfer_probability: 1,
   // 模型路由开关
   model_routing_enabled: false
 })
@@ -1574,6 +1608,7 @@ const closeCreateModal = () => {
   createForm.claude_code_only = false
   createForm.fallback_group_id = null
   createForm.cache_read_transfer_ratio = 0
+  createForm.cache_read_transfer_probability = 1
   createModelRoutingRules.value = []
 }
 
@@ -1624,6 +1659,7 @@ const handleEdit = async (group: AdminGroup) => {
   editForm.claude_code_only = group.claude_code_only || false
   editForm.fallback_group_id = group.fallback_group_id
   editForm.cache_read_transfer_ratio = group.cache_read_transfer_ratio || 0
+  editForm.cache_read_transfer_probability = group.cache_read_transfer_probability ?? 1
   editForm.model_routing_enabled = group.model_routing_enabled || false
   // 加载模型路由规则（异步加载账号名称）
   editModelRoutingRules.value = await convertApiFormatToRoutingRules(group.model_routing)
