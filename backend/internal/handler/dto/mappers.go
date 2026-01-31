@@ -58,8 +58,10 @@ func UserFromServiceAdmin(u *service.User) *AdminUser {
 		return nil
 	}
 	return &AdminUser{
-		User:  *base,
-		Notes: u.Notes,
+		User:                         *base,
+		Notes:                        u.Notes,
+		CacheReadTransferRatio:       u.CacheReadTransferRatio,
+		CacheReadTransferProbability: u.CacheReadTransferProbability,
 	}
 }
 
@@ -122,25 +124,26 @@ func GroupFromServiceAdmin(g *service.Group) *AdminGroup {
 
 func groupFromServiceBase(g *service.Group) Group {
 	return Group{
-		ID:                     g.ID,
-		Name:                   g.Name,
-		Description:            g.Description,
-		Platform:               g.Platform,
-		RateMultiplier:         g.RateMultiplier,
-		IsExclusive:            g.IsExclusive,
-		Status:                 g.Status,
-		SubscriptionType:       g.SubscriptionType,
-		DailyLimitUSD:          g.DailyLimitUSD,
-		WeeklyLimitUSD:         g.WeeklyLimitUSD,
-		MonthlyLimitUSD:        g.MonthlyLimitUSD,
-		ImagePrice1K:           g.ImagePrice1K,
-		ImagePrice2K:           g.ImagePrice2K,
-		ImagePrice4K:           g.ImagePrice4K,
-		ClaudeCodeOnly:         g.ClaudeCodeOnly,
-		FallbackGroupID:        g.FallbackGroupID,
-		CacheReadTransferRatio: g.CacheReadTransferRatio,
-		CreatedAt:              g.CreatedAt,
-		UpdatedAt:              g.UpdatedAt,
+		ID:                           g.ID,
+		Name:                         g.Name,
+		Description:                  g.Description,
+		Platform:                     g.Platform,
+		RateMultiplier:               g.RateMultiplier,
+		IsExclusive:                  g.IsExclusive,
+		Status:                       g.Status,
+		SubscriptionType:             g.SubscriptionType,
+		DailyLimitUSD:                g.DailyLimitUSD,
+		WeeklyLimitUSD:               g.WeeklyLimitUSD,
+		MonthlyLimitUSD:              g.MonthlyLimitUSD,
+		ImagePrice1K:                 g.ImagePrice1K,
+		ImagePrice2K:                 g.ImagePrice2K,
+		ImagePrice4K:                 g.ImagePrice4K,
+		ClaudeCodeOnly:               g.ClaudeCodeOnly,
+		FallbackGroupID:              g.FallbackGroupID,
+		CacheReadTransferRatio:       g.CacheReadTransferRatio,
+		CacheReadTransferProbability: g.CacheReadTransferProbability,
+		CreatedAt:                    g.CreatedAt,
+		UpdatedAt:                    g.UpdatedAt,
 	}
 }
 

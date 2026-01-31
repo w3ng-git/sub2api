@@ -313,13 +313,14 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				if err := h.gatewayService.RecordUsage(ctx, &service.RecordUsageInput{
-					Result:       result,
-					APIKey:       apiKey,
-					User:         apiKey.User,
-					Account:      usedAccount,
-					Subscription: subscription,
-					UserAgent:    ua,
-					IPAddress:    clientIP,
+					Result:             result,
+					APIKey:             apiKey,
+					User:               apiKey.User,
+					Account:            usedAccount,
+					Subscription:       subscription,
+					UserAgent:          ua,
+					IPAddress:          clientIP,
+					CacheTransferRatio: 0, // Gemini 格式不支持缓存转移
 				}); err != nil {
 					log.Printf("Record usage failed: %v", err)
 				}
@@ -412,16 +413,38 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		// 账号槽位/等待计数需要在超时或断开时安全回收
 		accountReleaseFunc = wrapReleaseOnDone(c.Request.Context(), accountReleaseFunc)
 
+		// 获取缓存转移参数（User 优先 > Group）- 用于响应重写和计费日志一致性
+		cacheTransferRatio := 0.0
+		cacheTransferProbability := 1.0
+
+		// 先尝试从分组获取配置
+		if apiKey.GroupID != nil && apiKey.Group != nil {
+			cacheTransferRatio = apiKey.Group.CacheReadTransferRatio
+			cacheTransferProbability = apiKey.Group.CacheReadTransferProbability
+		}
+
+		// 用户级配置覆盖分组配置
+		if apiKey.User != nil {
+			if apiKey.User.CacheReadTransferRatio != nil {
+				cacheTransferRatio = *apiKey.User.CacheReadTransferRatio
+			}
+			if apiKey.User.CacheReadTransferProbability != nil {
+				cacheTransferProbability = *apiKey.User.CacheReadTransferProbability
+			}
+		}
+
+		// 概率检查 - 只有随机通过才触发转移
+		if cacheTransferRatio > 0 && !service.ShouldTransferCacheTokens(cacheTransferProbability) {
+			cacheTransferRatio = 0
+		}
+
 		// 转发请求 - 根据账号平台分流
 		var result *service.ForwardResult
 		if account.Platform == service.PlatformAntigravity {
+			// Antigravity 平台不支持缓存转移，cacheTransferRatio 保持为 0
+			cacheTransferRatio = 0
 			result, err = h.antigravityGatewayService.Forward(c.Request.Context(), c, account, body)
 		} else {
-			// 获取缓存 token 转移比例
-			cacheTransferRatio := 0.0
-			if apiKey.GroupID != nil && apiKey.Group != nil {
-				cacheTransferRatio = apiKey.Group.CacheReadTransferRatio
-			}
 			result, err = h.gatewayService.Forward(c.Request.Context(), c, account, parsedReq, cacheTransferRatio)
 		}
 		if accountReleaseFunc != nil {
@@ -450,21 +473,22 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		clientIP := ip.GetClientIP(c)
 
 		// 异步记录使用量（subscription已在函数开头获取）
-		go func(result *service.ForwardResult, usedAccount *service.Account, ua, clientIP string) {
+		go func(result *service.ForwardResult, usedAccount *service.Account, ua, clientIP string, ratio float64) {
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
 			if err := h.gatewayService.RecordUsage(ctx, &service.RecordUsageInput{
-				Result:       result,
-				APIKey:       apiKey,
-				User:         apiKey.User,
-				Account:      usedAccount,
-				Subscription: subscription,
-				UserAgent:    ua,
-				IPAddress:    clientIP,
+				Result:             result,
+				APIKey:             apiKey,
+				User:               apiKey.User,
+				Account:            usedAccount,
+				Subscription:       subscription,
+				UserAgent:          ua,
+				IPAddress:          clientIP,
+				CacheTransferRatio: ratio,
 			}); err != nil {
 				log.Printf("Record usage failed: %v", err)
 			}
-		}(result, account, userAgent, clientIP)
+		}(result, account, userAgent, clientIP, cacheTransferRatio)
 		return
 	}
 }

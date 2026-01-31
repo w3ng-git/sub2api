@@ -112,6 +112,12 @@ func (Group) Fields() []ent.Field {
 			SchemaType(map[string]string{dialect.Postgres: "decimal(5,4)"}).
 			Default(0).
 			Comment("缓存读取 token 转移为缓存创建的比例，0~1"),
+
+		// 缓存 token 转移概率 (added by migration 046)
+		field.Float("cache_read_transfer_probability").
+			SchemaType(map[string]string{dialect.Postgres: "decimal(5,4)"}).
+			Default(1.0).
+			Comment("转移触发概率(0~1)，默认1.0始终触发"),
 	}
 }
 

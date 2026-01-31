@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"math/rand"
 
 	"log"
 	"strings"
@@ -70,6 +71,19 @@ func TransferCacheTokens(cacheCreation, cacheRead int, ratio float64) (int, int)
 	}
 	transfer := int(float64(cacheRead) * ratio)
 	return cacheCreation + transfer, cacheRead - transfer
+}
+
+// ShouldTransferCacheTokens 根据概率判断是否应该触发缓存 token 转移
+// probability: 0~1，表示触发转移的概率
+// 返回 true 表示应该触发转移，false 表示不触发
+func ShouldTransferCacheTokens(probability float64) bool {
+	if probability <= 0 {
+		return false
+	}
+	if probability >= 1 {
+		return true
+	}
+	return rand.Float64() < probability
 }
 
 // BillingService 计费服务

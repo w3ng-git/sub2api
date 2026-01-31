@@ -320,6 +320,20 @@ func (_c *GroupCreate) SetNillableCacheReadTransferRatio(v *float64) *GroupCreat
 	return _c
 }
 
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (_c *GroupCreate) SetCacheReadTransferProbability(v float64) *GroupCreate {
+	_c.mutation.SetCacheReadTransferProbability(v)
+	return _c
+}
+
+// SetNillableCacheReadTransferProbability sets the "cache_read_transfer_probability" field if the given value is not nil.
+func (_c *GroupCreate) SetNillableCacheReadTransferProbability(v *float64) *GroupCreate {
+	if v != nil {
+		_c.SetCacheReadTransferProbability(*v)
+	}
+	return _c
+}
+
 // AddAPIKeyIDs adds the "api_keys" edge to the APIKey entity by IDs.
 func (_c *GroupCreate) AddAPIKeyIDs(ids ...int64) *GroupCreate {
 	_c.mutation.AddAPIKeyIDs(ids...)
@@ -497,6 +511,10 @@ func (_c *GroupCreate) defaults() error {
 		v := group.DefaultCacheReadTransferRatio
 		_c.mutation.SetCacheReadTransferRatio(v)
 	}
+	if _, ok := _c.mutation.CacheReadTransferProbability(); !ok {
+		v := group.DefaultCacheReadTransferProbability
+		_c.mutation.SetCacheReadTransferProbability(v)
+	}
 	return nil
 }
 
@@ -557,6 +575,9 @@ func (_c *GroupCreate) check() error {
 	}
 	if _, ok := _c.mutation.CacheReadTransferRatio(); !ok {
 		return &ValidationError{Name: "cache_read_transfer_ratio", err: errors.New(`ent: missing required field "Group.cache_read_transfer_ratio"`)}
+	}
+	if _, ok := _c.mutation.CacheReadTransferProbability(); !ok {
+		return &ValidationError{Name: "cache_read_transfer_probability", err: errors.New(`ent: missing required field "Group.cache_read_transfer_probability"`)}
 	}
 	return nil
 }
@@ -672,6 +693,10 @@ func (_c *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.CacheReadTransferRatio(); ok {
 		_spec.SetField(group.FieldCacheReadTransferRatio, field.TypeFloat64, value)
 		_node.CacheReadTransferRatio = value
+	}
+	if value, ok := _c.mutation.CacheReadTransferProbability(); ok {
+		_spec.SetField(group.FieldCacheReadTransferProbability, field.TypeFloat64, value)
+		_node.CacheReadTransferProbability = value
 	}
 	if nodes := _c.mutation.APIKeysIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1201,6 +1226,24 @@ func (u *GroupUpsert) AddCacheReadTransferRatio(v float64) *GroupUpsert {
 	return u
 }
 
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (u *GroupUpsert) SetCacheReadTransferProbability(v float64) *GroupUpsert {
+	u.Set(group.FieldCacheReadTransferProbability, v)
+	return u
+}
+
+// UpdateCacheReadTransferProbability sets the "cache_read_transfer_probability" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateCacheReadTransferProbability() *GroupUpsert {
+	u.SetExcluded(group.FieldCacheReadTransferProbability)
+	return u
+}
+
+// AddCacheReadTransferProbability adds v to the "cache_read_transfer_probability" field.
+func (u *GroupUpsert) AddCacheReadTransferProbability(v float64) *GroupUpsert {
+	u.Add(group.FieldCacheReadTransferProbability, v)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -1677,6 +1720,27 @@ func (u *GroupUpsertOne) AddCacheReadTransferRatio(v float64) *GroupUpsertOne {
 func (u *GroupUpsertOne) UpdateCacheReadTransferRatio() *GroupUpsertOne {
 	return u.Update(func(s *GroupUpsert) {
 		s.UpdateCacheReadTransferRatio()
+	})
+}
+
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (u *GroupUpsertOne) SetCacheReadTransferProbability(v float64) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetCacheReadTransferProbability(v)
+	})
+}
+
+// AddCacheReadTransferProbability adds v to the "cache_read_transfer_probability" field.
+func (u *GroupUpsertOne) AddCacheReadTransferProbability(v float64) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.AddCacheReadTransferProbability(v)
+	})
+}
+
+// UpdateCacheReadTransferProbability sets the "cache_read_transfer_probability" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateCacheReadTransferProbability() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateCacheReadTransferProbability()
 	})
 }
 
@@ -2322,6 +2386,27 @@ func (u *GroupUpsertBulk) AddCacheReadTransferRatio(v float64) *GroupUpsertBulk 
 func (u *GroupUpsertBulk) UpdateCacheReadTransferRatio() *GroupUpsertBulk {
 	return u.Update(func(s *GroupUpsert) {
 		s.UpdateCacheReadTransferRatio()
+	})
+}
+
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (u *GroupUpsertBulk) SetCacheReadTransferProbability(v float64) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetCacheReadTransferProbability(v)
+	})
+}
+
+// AddCacheReadTransferProbability adds v to the "cache_read_transfer_probability" field.
+func (u *GroupUpsertBulk) AddCacheReadTransferProbability(v float64) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.AddCacheReadTransferProbability(v)
+	})
+}
+
+// UpdateCacheReadTransferProbability sets the "cache_read_transfer_probability" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateCacheReadTransferProbability() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateCacheReadTransferProbability()
 	})
 }
 

@@ -45,6 +45,10 @@ type User struct {
 	TotpEnabled bool `json:"totp_enabled,omitempty"`
 	// TotpEnabledAt holds the value of the "totp_enabled_at" field.
 	TotpEnabledAt *time.Time `json:"totp_enabled_at,omitempty"`
+	// 用户级缓存转移比例(0~1)，覆盖分组配置
+	CacheReadTransferRatio *float64 `json:"cache_read_transfer_ratio,omitempty"`
+	// 用户级转移触发概率(0~1)，覆盖分组配置
+	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -164,7 +168,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldTotpEnabled:
 			values[i] = new(sql.NullBool)
-		case user.FieldBalance:
+		case user.FieldBalance, user.FieldCacheReadTransferRatio, user.FieldCacheReadTransferProbability:
 			values[i] = new(sql.NullFloat64)
 		case user.FieldID, user.FieldConcurrency:
 			values[i] = new(sql.NullInt64)
@@ -279,6 +283,20 @@ func (_m *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.TotpEnabledAt = new(time.Time)
 				*_m.TotpEnabledAt = value.Time
+			}
+		case user.FieldCacheReadTransferRatio:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_read_transfer_ratio", values[i])
+			} else if value.Valid {
+				_m.CacheReadTransferRatio = new(float64)
+				*_m.CacheReadTransferRatio = value.Float64
+			}
+		case user.FieldCacheReadTransferProbability:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_read_transfer_probability", values[i])
+			} else if value.Valid {
+				_m.CacheReadTransferProbability = new(float64)
+				*_m.CacheReadTransferProbability = value.Float64
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -407,6 +425,16 @@ func (_m *User) String() string {
 	if v := _m.TotpEnabledAt; v != nil {
 		builder.WriteString("totp_enabled_at=")
 		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
+	if v := _m.CacheReadTransferRatio; v != nil {
+		builder.WriteString("cache_read_transfer_ratio=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.CacheReadTransferProbability; v != nil {
+		builder.WriteString("cache_read_transfer_probability=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteByte(')')
 	return builder.String()

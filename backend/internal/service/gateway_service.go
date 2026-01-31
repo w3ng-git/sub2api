@@ -3569,13 +3569,14 @@ func (s *GatewayService) rewriteCacheTokensInResponseBody(body []byte, transferR
 
 // RecordUsageInput 记录使用量的输入参数
 type RecordUsageInput struct {
-	Result       *ForwardResult
-	APIKey       *APIKey
-	User         *User
-	Account      *Account
-	Subscription *UserSubscription // 可选：订阅信息
-	UserAgent    string            // 请求的 User-Agent
-	IPAddress    string            // 请求的客户端 IP 地址
+	Result             *ForwardResult
+	APIKey             *APIKey
+	User               *User
+	Account            *Account
+	Subscription       *UserSubscription // 可选：订阅信息
+	UserAgent          string            // 请求的 User-Agent
+	IPAddress          string            // 请求的客户端 IP 地址
+	CacheTransferRatio float64           // 缓存转移比例（已经过概率判断，确保与响应重写一致）
 }
 
 // RecordUsage 记录使用量并扣费（或更新订阅用量）
@@ -3592,11 +3593,8 @@ func (s *GatewayService) RecordUsage(ctx context.Context, input *RecordUsageInpu
 		multiplier = apiKey.Group.RateMultiplier
 	}
 
-	// 获取缓存转移比例
-	cacheTransferRatio := 0.0
-	if apiKey.GroupID != nil && apiKey.Group != nil {
-		cacheTransferRatio = apiKey.Group.CacheReadTransferRatio
-	}
+	// 使用传入的缓存转移比例（与响应重写保持一致）
+	cacheTransferRatio := input.CacheTransferRatio
 
 	// 应用缓存 token 转移（用于计费和日志记录）
 	newCacheCreation, newCacheRead := TransferCacheTokens(

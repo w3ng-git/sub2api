@@ -36,8 +36,9 @@ type Group struct {
 	ModelRouting        map[string][]int64
 	ModelRoutingEnabled bool
 
-	// 缓存 token 转移比例（0~1）
-	CacheReadTransferRatio float64
+	// 缓存 token 转移配置
+	CacheReadTransferRatio       float64 // 缓存 token 转移比例（0~1）
+	CacheReadTransferProbability float64 // 转移触发概率（0~1），默认 1.0
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

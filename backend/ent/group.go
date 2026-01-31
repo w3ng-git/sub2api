@@ -62,6 +62,8 @@ type Group struct {
 	ModelRoutingEnabled bool `json:"model_routing_enabled,omitempty"`
 	// 缓存读取 token 转移为缓存创建的比例，0~1
 	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio,omitempty"`
+	// 转移触发概率(0~1)，默认1.0始终触发
+	CacheReadTransferProbability float64 `json:"cache_read_transfer_probability,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GroupQuery when eager-loading is set.
 	Edges        GroupEdges `json:"edges"`
@@ -172,7 +174,7 @@ func (*Group) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case group.FieldIsExclusive, group.FieldClaudeCodeOnly, group.FieldModelRoutingEnabled:
 			values[i] = new(sql.NullBool)
-		case group.FieldRateMultiplier, group.FieldDailyLimitUsd, group.FieldWeeklyLimitUsd, group.FieldMonthlyLimitUsd, group.FieldImagePrice1k, group.FieldImagePrice2k, group.FieldImagePrice4k, group.FieldCacheReadTransferRatio:
+		case group.FieldRateMultiplier, group.FieldDailyLimitUsd, group.FieldWeeklyLimitUsd, group.FieldMonthlyLimitUsd, group.FieldImagePrice1k, group.FieldImagePrice2k, group.FieldImagePrice4k, group.FieldCacheReadTransferRatio, group.FieldCacheReadTransferProbability:
 			values[i] = new(sql.NullFloat64)
 		case group.FieldID, group.FieldDefaultValidityDays, group.FieldFallbackGroupID:
 			values[i] = new(sql.NullInt64)
@@ -344,6 +346,12 @@ func (_m *Group) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.CacheReadTransferRatio = value.Float64
 			}
+		case group.FieldCacheReadTransferProbability:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_read_transfer_probability", values[i])
+			} else if value.Valid {
+				_m.CacheReadTransferProbability = value.Float64
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -503,6 +511,9 @@ func (_m *Group) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("cache_read_transfer_ratio=")
 	builder.WriteString(fmt.Sprintf("%v", _m.CacheReadTransferRatio))
+	builder.WriteString(", ")
+	builder.WriteString("cache_read_transfer_probability=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CacheReadTransferProbability))
 	builder.WriteByte(')')
 	return builder.String()
 }

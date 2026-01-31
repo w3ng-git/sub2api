@@ -19,6 +19,10 @@ type APIKeyAuthUserSnapshot struct {
 	Role        string  `json:"role"`
 	Balance     float64 `json:"balance"`
 	Concurrency int     `json:"concurrency"`
+
+	// 用户级缓存 token 转移配置（nil 表示使用分组配置）
+	CacheReadTransferRatio       *float64 `json:"cache_read_transfer_ratio,omitempty"`
+	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability,omitempty"`
 }
 
 // APIKeyAuthGroupSnapshot 分组快照
@@ -45,6 +49,8 @@ type APIKeyAuthGroupSnapshot struct {
 
 	// CacheReadTransferRatio is the ratio of cache_read tokens to transfer to cache_creation (0~1)
 	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio"`
+	// CacheReadTransferProbability is the probability of triggering cache token transfer (0~1)
+	CacheReadTransferProbability float64 `json:"cache_read_transfer_probability"`
 }
 
 // APIKeyAuthCacheEntry 缓存条目，支持负缓存

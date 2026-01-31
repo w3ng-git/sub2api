@@ -289,6 +289,10 @@ func init() {
 	groupDescCacheReadTransferRatio := groupFields[18].Descriptor()
 	// group.DefaultCacheReadTransferRatio holds the default value on creation for the cache_read_transfer_ratio field.
 	group.DefaultCacheReadTransferRatio = groupDescCacheReadTransferRatio.Default.(float64)
+	// groupDescCacheReadTransferProbability is the schema descriptor for cache_read_transfer_probability field.
+	groupDescCacheReadTransferProbability := groupFields[19].Descriptor()
+	// group.DefaultCacheReadTransferProbability holds the default value on creation for the cache_read_transfer_probability field.
+	group.DefaultCacheReadTransferProbability = groupDescCacheReadTransferProbability.Default.(float64)
 	promocodeFields := schema.PromoCode{}.Fields()
 	_ = promocodeFields
 	// promocodeDescCode is the schema descriptor for code field.

@@ -160,6 +160,11 @@ func CacheReadTransferRatio(v float64) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldCacheReadTransferRatio, v))
 }
 
+// CacheReadTransferProbability applies equality check predicate on the "cache_read_transfer_probability" field. It's identical to CacheReadTransferProbabilityEQ.
+func CacheReadTransferProbability(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldCacheReadTransferProbability, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldCreatedAt, v))
@@ -1133,6 +1138,46 @@ func CacheReadTransferRatioLT(v float64) predicate.Group {
 // CacheReadTransferRatioLTE applies the LTE predicate on the "cache_read_transfer_ratio" field.
 func CacheReadTransferRatioLTE(v float64) predicate.Group {
 	return predicate.Group(sql.FieldLTE(FieldCacheReadTransferRatio, v))
+}
+
+// CacheReadTransferProbabilityEQ applies the EQ predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldCacheReadTransferProbability, v))
+}
+
+// CacheReadTransferProbabilityNEQ applies the NEQ predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityNEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldCacheReadTransferProbability, v))
+}
+
+// CacheReadTransferProbabilityIn applies the In predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldCacheReadTransferProbability, vs...))
+}
+
+// CacheReadTransferProbabilityNotIn applies the NotIn predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityNotIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldCacheReadTransferProbability, vs...))
+}
+
+// CacheReadTransferProbabilityGT applies the GT predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityGT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldCacheReadTransferProbability, v))
+}
+
+// CacheReadTransferProbabilityGTE applies the GTE predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityGTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldCacheReadTransferProbability, v))
+}
+
+// CacheReadTransferProbabilityLT applies the LT predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityLT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldCacheReadTransferProbability, v))
+}
+
+// CacheReadTransferProbabilityLTE applies the LTE predicate on the "cache_read_transfer_probability" field.
+func CacheReadTransferProbabilityLTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldCacheReadTransferProbability, v))
 }
 
 // HasAPIKeys applies the HasEdge predicate on the "api_keys" edge.

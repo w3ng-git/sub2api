@@ -32,6 +32,9 @@ type CreateUserRequest struct {
 	Balance       float64 `json:"balance"`
 	Concurrency   int     `json:"concurrency"`
 	AllowedGroups []int64 `json:"allowed_groups"`
+	// 用户级缓存 token 转移配置
+	CacheReadTransferRatio       *float64 `json:"cache_read_transfer_ratio" binding:"omitempty,min=0,max=1"`
+	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability" binding:"omitempty,min=0,max=1"`
 }
 
 // UpdateUserRequest represents admin update user request
@@ -45,6 +48,9 @@ type UpdateUserRequest struct {
 	Concurrency   *int     `json:"concurrency"`
 	Status        string   `json:"status" binding:"omitempty,oneof=active disabled"`
 	AllowedGroups *[]int64 `json:"allowed_groups"`
+	// 用户级缓存 token 转移配置（使用二级指针支持设置为 null 来清除配置）
+	CacheReadTransferRatio       **float64 `json:"cache_read_transfer_ratio" binding:"omitempty"`
+	CacheReadTransferProbability **float64 `json:"cache_read_transfer_probability" binding:"omitempty"`
 }
 
 // UpdateBalanceRequest represents balance update request
@@ -142,13 +148,15 @@ func (h *UserHandler) Create(c *gin.Context) {
 	}
 
 	user, err := h.adminService.CreateUser(c.Request.Context(), &service.CreateUserInput{
-		Email:         req.Email,
-		Password:      req.Password,
-		Username:      req.Username,
-		Notes:         req.Notes,
-		Balance:       req.Balance,
-		Concurrency:   req.Concurrency,
-		AllowedGroups: req.AllowedGroups,
+		Email:                        req.Email,
+		Password:                     req.Password,
+		Username:                     req.Username,
+		Notes:                        req.Notes,
+		Balance:                      req.Balance,
+		Concurrency:                  req.Concurrency,
+		AllowedGroups:                req.AllowedGroups,
+		CacheReadTransferRatio:       req.CacheReadTransferRatio,
+		CacheReadTransferProbability: req.CacheReadTransferProbability,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)
@@ -175,14 +183,16 @@ func (h *UserHandler) Update(c *gin.Context) {
 
 	// 使用指针类型直接传递，nil 表示未提供该字段
 	user, err := h.adminService.UpdateUser(c.Request.Context(), userID, &service.UpdateUserInput{
-		Email:         req.Email,
-		Password:      req.Password,
-		Username:      req.Username,
-		Notes:         req.Notes,
-		Balance:       req.Balance,
-		Concurrency:   req.Concurrency,
-		Status:        req.Status,
-		AllowedGroups: req.AllowedGroups,
+		Email:                        req.Email,
+		Password:                     req.Password,
+		Username:                     req.Username,
+		Notes:                        req.Notes,
+		Balance:                      req.Balance,
+		Concurrency:                  req.Concurrency,
+		Status:                       req.Status,
+		AllowedGroups:                req.AllowedGroups,
+		CacheReadTransferRatio:       req.CacheReadTransferRatio,
+		CacheReadTransferProbability: req.CacheReadTransferProbability,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)

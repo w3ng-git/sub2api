@@ -24,6 +24,10 @@ type AdminUser struct {
 	User
 
 	Notes string `json:"notes"`
+
+	// 用户级缓存 token 转移配置（nil 表示使用分组配置）
+	CacheReadTransferRatio       *float64 `json:"cache_read_transfer_ratio,omitempty"`
+	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability,omitempty"`
 }
 
 type APIKey struct {
@@ -65,8 +69,9 @@ type Group struct {
 	ClaudeCodeOnly  bool   `json:"claude_code_only"`
 	FallbackGroupID *int64 `json:"fallback_group_id"`
 
-	// 缓存 token 转移比例
-	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio"`
+	// 缓存 token 转移配置
+	CacheReadTransferRatio       float64 `json:"cache_read_transfer_ratio"`
+	CacheReadTransferProbability float64 `json:"cache_read_transfer_probability"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

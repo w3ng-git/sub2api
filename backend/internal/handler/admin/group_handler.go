@@ -43,8 +43,9 @@ type CreateGroupRequest struct {
 	// 模型路由配置（仅 anthropic 平台使用）
 	ModelRouting        map[string][]int64 `json:"model_routing"`
 	ModelRoutingEnabled bool               `json:"model_routing_enabled"`
-	// 缓存 token 转移比例
-	CacheReadTransferRatio float64 `json:"cache_read_transfer_ratio" binding:"min=0,max=1"`
+	// 缓存 token 转移配置
+	CacheReadTransferRatio       float64 `json:"cache_read_transfer_ratio" binding:"min=0,max=1"`
+	CacheReadTransferProbability float64 `json:"cache_read_transfer_probability" binding:"min=0,max=1"`
 }
 
 // UpdateGroupRequest represents update group request
@@ -68,8 +69,9 @@ type UpdateGroupRequest struct {
 	// 模型路由配置（仅 anthropic 平台使用）
 	ModelRouting        map[string][]int64 `json:"model_routing"`
 	ModelRoutingEnabled *bool              `json:"model_routing_enabled"`
-	// 缓存 token 转移比例
-	CacheReadTransferRatio *float64 `json:"cache_read_transfer_ratio" binding:"omitempty,min=0,max=1"`
+	// 缓存 token 转移配置
+	CacheReadTransferRatio       *float64 `json:"cache_read_transfer_ratio" binding:"omitempty,min=0,max=1"`
+	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability" binding:"omitempty,min=0,max=1"`
 }
 
 // List handles listing all groups with pagination
@@ -159,23 +161,24 @@ func (h *GroupHandler) Create(c *gin.Context) {
 	}
 
 	group, err := h.adminService.CreateGroup(c.Request.Context(), &service.CreateGroupInput{
-		Name:                   req.Name,
-		Description:            req.Description,
-		Platform:               req.Platform,
-		RateMultiplier:         req.RateMultiplier,
-		IsExclusive:            req.IsExclusive,
-		SubscriptionType:       req.SubscriptionType,
-		DailyLimitUSD:          req.DailyLimitUSD,
-		WeeklyLimitUSD:         req.WeeklyLimitUSD,
-		MonthlyLimitUSD:        req.MonthlyLimitUSD,
-		ImagePrice1K:           req.ImagePrice1K,
-		ImagePrice2K:           req.ImagePrice2K,
-		ImagePrice4K:           req.ImagePrice4K,
-		ClaudeCodeOnly:         req.ClaudeCodeOnly,
-		FallbackGroupID:        req.FallbackGroupID,
-		ModelRouting:           req.ModelRouting,
-		ModelRoutingEnabled:    req.ModelRoutingEnabled,
-		CacheReadTransferRatio: req.CacheReadTransferRatio,
+		Name:                         req.Name,
+		Description:                  req.Description,
+		Platform:                     req.Platform,
+		RateMultiplier:               req.RateMultiplier,
+		IsExclusive:                  req.IsExclusive,
+		SubscriptionType:             req.SubscriptionType,
+		DailyLimitUSD:                req.DailyLimitUSD,
+		WeeklyLimitUSD:               req.WeeklyLimitUSD,
+		MonthlyLimitUSD:              req.MonthlyLimitUSD,
+		ImagePrice1K:                 req.ImagePrice1K,
+		ImagePrice2K:                 req.ImagePrice2K,
+		ImagePrice4K:                 req.ImagePrice4K,
+		ClaudeCodeOnly:               req.ClaudeCodeOnly,
+		FallbackGroupID:              req.FallbackGroupID,
+		ModelRouting:                 req.ModelRouting,
+		ModelRoutingEnabled:          req.ModelRoutingEnabled,
+		CacheReadTransferRatio:       req.CacheReadTransferRatio,
+		CacheReadTransferProbability: req.CacheReadTransferProbability,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)
@@ -201,24 +204,25 @@ func (h *GroupHandler) Update(c *gin.Context) {
 	}
 
 	group, err := h.adminService.UpdateGroup(c.Request.Context(), groupID, &service.UpdateGroupInput{
-		Name:                   req.Name,
-		Description:            req.Description,
-		Platform:               req.Platform,
-		RateMultiplier:         req.RateMultiplier,
-		IsExclusive:            req.IsExclusive,
-		Status:                 req.Status,
-		SubscriptionType:       req.SubscriptionType,
-		DailyLimitUSD:          req.DailyLimitUSD,
-		WeeklyLimitUSD:         req.WeeklyLimitUSD,
-		MonthlyLimitUSD:        req.MonthlyLimitUSD,
-		ImagePrice1K:           req.ImagePrice1K,
-		ImagePrice2K:           req.ImagePrice2K,
-		ImagePrice4K:           req.ImagePrice4K,
-		ClaudeCodeOnly:         req.ClaudeCodeOnly,
-		FallbackGroupID:        req.FallbackGroupID,
-		ModelRouting:           req.ModelRouting,
-		ModelRoutingEnabled:    req.ModelRoutingEnabled,
-		CacheReadTransferRatio: req.CacheReadTransferRatio,
+		Name:                         req.Name,
+		Description:                  req.Description,
+		Platform:                     req.Platform,
+		RateMultiplier:               req.RateMultiplier,
+		IsExclusive:                  req.IsExclusive,
+		Status:                       req.Status,
+		SubscriptionType:             req.SubscriptionType,
+		DailyLimitUSD:                req.DailyLimitUSD,
+		WeeklyLimitUSD:               req.WeeklyLimitUSD,
+		MonthlyLimitUSD:              req.MonthlyLimitUSD,
+		ImagePrice1K:                 req.ImagePrice1K,
+		ImagePrice2K:                 req.ImagePrice2K,
+		ImagePrice4K:                 req.ImagePrice4K,
+		ClaudeCodeOnly:               req.ClaudeCodeOnly,
+		FallbackGroupID:              req.FallbackGroupID,
+		ModelRouting:                 req.ModelRouting,
+		ModelRoutingEnabled:          req.ModelRoutingEnabled,
+		CacheReadTransferRatio:       req.CacheReadTransferRatio,
+		CacheReadTransferProbability: req.CacheReadTransferProbability,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)

@@ -371,13 +371,14 @@ func (h *GatewayHandler) GeminiV1BetaModels(c *gin.Context) {
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
 			if err := h.gatewayService.RecordUsage(ctx, &service.RecordUsageInput{
-				Result:       result,
-				APIKey:       apiKey,
-				User:         apiKey.User,
-				Account:      usedAccount,
-				Subscription: subscription,
-				UserAgent:    ua,
-				IPAddress:    ip,
+				Result:             result,
+				APIKey:             apiKey,
+				User:               apiKey.User,
+				Account:            usedAccount,
+				Subscription:       subscription,
+				UserAgent:          ua,
+				IPAddress:          ip,
+				CacheTransferRatio: 0, // Gemini 平台不支持缓存转移
 			}); err != nil {
 				log.Printf("Record usage failed: %v", err)
 			}

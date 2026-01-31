@@ -59,6 +59,8 @@ const (
 	FieldModelRoutingEnabled = "model_routing_enabled"
 	// FieldCacheReadTransferRatio holds the string denoting the cache_read_transfer_ratio field in the database.
 	FieldCacheReadTransferRatio = "cache_read_transfer_ratio"
+	// FieldCacheReadTransferProbability holds the string denoting the cache_read_transfer_probability field in the database.
+	FieldCacheReadTransferProbability = "cache_read_transfer_probability"
 	// EdgeAPIKeys holds the string denoting the api_keys edge name in mutations.
 	EdgeAPIKeys = "api_keys"
 	// EdgeRedeemCodes holds the string denoting the redeem_codes edge name in mutations.
@@ -156,6 +158,7 @@ var Columns = []string{
 	FieldModelRouting,
 	FieldModelRoutingEnabled,
 	FieldCacheReadTransferRatio,
+	FieldCacheReadTransferProbability,
 }
 
 var (
@@ -217,6 +220,8 @@ var (
 	DefaultModelRoutingEnabled bool
 	// DefaultCacheReadTransferRatio holds the default value on creation for the "cache_read_transfer_ratio" field.
 	DefaultCacheReadTransferRatio float64
+	// DefaultCacheReadTransferProbability holds the default value on creation for the "cache_read_transfer_probability" field.
+	DefaultCacheReadTransferProbability float64
 )
 
 // OrderOption defines the ordering options for the Group queries.
@@ -330,6 +335,11 @@ func ByModelRoutingEnabled(opts ...sql.OrderTermOption) OrderOption {
 // ByCacheReadTransferRatio orders the results by the cache_read_transfer_ratio field.
 func ByCacheReadTransferRatio(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCacheReadTransferRatio, opts...).ToFunc()
+}
+
+// ByCacheReadTransferProbability orders the results by the cache_read_transfer_probability field.
+func ByCacheReadTransferProbability(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCacheReadTransferProbability, opts...).ToFunc()
 }
 
 // ByAPIKeysCount orders the results by api_keys count.

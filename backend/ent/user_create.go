@@ -209,6 +209,34 @@ func (_c *UserCreate) SetNillableTotpEnabledAt(v *time.Time) *UserCreate {
 	return _c
 }
 
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (_c *UserCreate) SetCacheReadTransferRatio(v float64) *UserCreate {
+	_c.mutation.SetCacheReadTransferRatio(v)
+	return _c
+}
+
+// SetNillableCacheReadTransferRatio sets the "cache_read_transfer_ratio" field if the given value is not nil.
+func (_c *UserCreate) SetNillableCacheReadTransferRatio(v *float64) *UserCreate {
+	if v != nil {
+		_c.SetCacheReadTransferRatio(*v)
+	}
+	return _c
+}
+
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (_c *UserCreate) SetCacheReadTransferProbability(v float64) *UserCreate {
+	_c.mutation.SetCacheReadTransferProbability(v)
+	return _c
+}
+
+// SetNillableCacheReadTransferProbability sets the "cache_read_transfer_probability" field if the given value is not nil.
+func (_c *UserCreate) SetNillableCacheReadTransferProbability(v *float64) *UserCreate {
+	if v != nil {
+		_c.SetCacheReadTransferProbability(*v)
+	}
+	return _c
+}
+
 // AddAPIKeyIDs adds the "api_keys" edge to the APIKey entity by IDs.
 func (_c *UserCreate) AddAPIKeyIDs(ids ...int64) *UserCreate {
 	_c.mutation.AddAPIKeyIDs(ids...)
@@ -553,6 +581,14 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.TotpEnabledAt(); ok {
 		_spec.SetField(user.FieldTotpEnabledAt, field.TypeTime, value)
 		_node.TotpEnabledAt = &value
+	}
+	if value, ok := _c.mutation.CacheReadTransferRatio(); ok {
+		_spec.SetField(user.FieldCacheReadTransferRatio, field.TypeFloat64, value)
+		_node.CacheReadTransferRatio = &value
+	}
+	if value, ok := _c.mutation.CacheReadTransferProbability(); ok {
+		_spec.SetField(user.FieldCacheReadTransferProbability, field.TypeFloat64, value)
+		_node.CacheReadTransferProbability = &value
 	}
 	if nodes := _c.mutation.APIKeysIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -924,6 +960,54 @@ func (u *UserUpsert) ClearTotpEnabledAt() *UserUpsert {
 	return u
 }
 
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (u *UserUpsert) SetCacheReadTransferRatio(v float64) *UserUpsert {
+	u.Set(user.FieldCacheReadTransferRatio, v)
+	return u
+}
+
+// UpdateCacheReadTransferRatio sets the "cache_read_transfer_ratio" field to the value that was provided on create.
+func (u *UserUpsert) UpdateCacheReadTransferRatio() *UserUpsert {
+	u.SetExcluded(user.FieldCacheReadTransferRatio)
+	return u
+}
+
+// AddCacheReadTransferRatio adds v to the "cache_read_transfer_ratio" field.
+func (u *UserUpsert) AddCacheReadTransferRatio(v float64) *UserUpsert {
+	u.Add(user.FieldCacheReadTransferRatio, v)
+	return u
+}
+
+// ClearCacheReadTransferRatio clears the value of the "cache_read_transfer_ratio" field.
+func (u *UserUpsert) ClearCacheReadTransferRatio() *UserUpsert {
+	u.SetNull(user.FieldCacheReadTransferRatio)
+	return u
+}
+
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (u *UserUpsert) SetCacheReadTransferProbability(v float64) *UserUpsert {
+	u.Set(user.FieldCacheReadTransferProbability, v)
+	return u
+}
+
+// UpdateCacheReadTransferProbability sets the "cache_read_transfer_probability" field to the value that was provided on create.
+func (u *UserUpsert) UpdateCacheReadTransferProbability() *UserUpsert {
+	u.SetExcluded(user.FieldCacheReadTransferProbability)
+	return u
+}
+
+// AddCacheReadTransferProbability adds v to the "cache_read_transfer_probability" field.
+func (u *UserUpsert) AddCacheReadTransferProbability(v float64) *UserUpsert {
+	u.Add(user.FieldCacheReadTransferProbability, v)
+	return u
+}
+
+// ClearCacheReadTransferProbability clears the value of the "cache_read_transfer_probability" field.
+func (u *UserUpsert) ClearCacheReadTransferProbability() *UserUpsert {
+	u.SetNull(user.FieldCacheReadTransferProbability)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -1183,6 +1267,62 @@ func (u *UserUpsertOne) UpdateTotpEnabledAt() *UserUpsertOne {
 func (u *UserUpsertOne) ClearTotpEnabledAt() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearTotpEnabledAt()
+	})
+}
+
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (u *UserUpsertOne) SetCacheReadTransferRatio(v float64) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetCacheReadTransferRatio(v)
+	})
+}
+
+// AddCacheReadTransferRatio adds v to the "cache_read_transfer_ratio" field.
+func (u *UserUpsertOne) AddCacheReadTransferRatio(v float64) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.AddCacheReadTransferRatio(v)
+	})
+}
+
+// UpdateCacheReadTransferRatio sets the "cache_read_transfer_ratio" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateCacheReadTransferRatio() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateCacheReadTransferRatio()
+	})
+}
+
+// ClearCacheReadTransferRatio clears the value of the "cache_read_transfer_ratio" field.
+func (u *UserUpsertOne) ClearCacheReadTransferRatio() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearCacheReadTransferRatio()
+	})
+}
+
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (u *UserUpsertOne) SetCacheReadTransferProbability(v float64) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetCacheReadTransferProbability(v)
+	})
+}
+
+// AddCacheReadTransferProbability adds v to the "cache_read_transfer_probability" field.
+func (u *UserUpsertOne) AddCacheReadTransferProbability(v float64) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.AddCacheReadTransferProbability(v)
+	})
+}
+
+// UpdateCacheReadTransferProbability sets the "cache_read_transfer_probability" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateCacheReadTransferProbability() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateCacheReadTransferProbability()
+	})
+}
+
+// ClearCacheReadTransferProbability clears the value of the "cache_read_transfer_probability" field.
+func (u *UserUpsertOne) ClearCacheReadTransferProbability() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearCacheReadTransferProbability()
 	})
 }
 
@@ -1611,6 +1751,62 @@ func (u *UserUpsertBulk) UpdateTotpEnabledAt() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearTotpEnabledAt() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearTotpEnabledAt()
+	})
+}
+
+// SetCacheReadTransferRatio sets the "cache_read_transfer_ratio" field.
+func (u *UserUpsertBulk) SetCacheReadTransferRatio(v float64) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetCacheReadTransferRatio(v)
+	})
+}
+
+// AddCacheReadTransferRatio adds v to the "cache_read_transfer_ratio" field.
+func (u *UserUpsertBulk) AddCacheReadTransferRatio(v float64) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.AddCacheReadTransferRatio(v)
+	})
+}
+
+// UpdateCacheReadTransferRatio sets the "cache_read_transfer_ratio" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateCacheReadTransferRatio() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateCacheReadTransferRatio()
+	})
+}
+
+// ClearCacheReadTransferRatio clears the value of the "cache_read_transfer_ratio" field.
+func (u *UserUpsertBulk) ClearCacheReadTransferRatio() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearCacheReadTransferRatio()
+	})
+}
+
+// SetCacheReadTransferProbability sets the "cache_read_transfer_probability" field.
+func (u *UserUpsertBulk) SetCacheReadTransferProbability(v float64) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetCacheReadTransferProbability(v)
+	})
+}
+
+// AddCacheReadTransferProbability adds v to the "cache_read_transfer_probability" field.
+func (u *UserUpsertBulk) AddCacheReadTransferProbability(v float64) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.AddCacheReadTransferProbability(v)
+	})
+}
+
+// UpdateCacheReadTransferProbability sets the "cache_read_transfer_probability" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateCacheReadTransferProbability() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateCacheReadTransferProbability()
+	})
+}
+
+// ClearCacheReadTransferProbability clears the value of the "cache_read_transfer_probability" field.
+func (u *UserUpsertBulk) ClearCacheReadTransferProbability() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearCacheReadTransferProbability()
 	})
 }
 

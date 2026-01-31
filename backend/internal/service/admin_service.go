@@ -78,6 +78,10 @@ type CreateUserInput struct {
 	Balance       float64
 	Concurrency   int
 	AllowedGroups []int64
+
+	// 用户级缓存 token 转移配置（nil 表示使用分组配置）
+	CacheReadTransferRatio       *float64
+	CacheReadTransferProbability *float64
 }
 
 type UpdateUserInput struct {
@@ -89,6 +93,11 @@ type UpdateUserInput struct {
 	Concurrency   *int     // 使用指针区分"未提供"和"设置为0"
 	Status        string
 	AllowedGroups *[]int64 // 使用指针区分"未提供"和"设置为空数组"
+
+	// 用户级缓存 token 转移配置（nil 表示不更新，非 nil 则更新）
+	// 使用二级指针：外层 nil 表示不更新，外层非 nil 但内层 nil 表示清除配置
+	CacheReadTransferRatio       **float64
+	CacheReadTransferProbability **float64
 }
 
 type CreateGroupInput struct {
@@ -108,9 +117,10 @@ type CreateGroupInput struct {
 	ClaudeCodeOnly  bool   // 仅允许 Claude Code 客户端
 	FallbackGroupID *int64 // 降级分组 ID
 	// 模型路由配置（仅 anthropic 平台使用）
-	ModelRouting        map[string][]int64
-	ModelRoutingEnabled bool    // 是否启用模型路由
+	ModelRouting           map[string][]int64
+	ModelRoutingEnabled    bool    // 是否启用模型路由
 	CacheReadTransferRatio float64 // 缓存 token 转移比例
+	CacheReadTransferProbability float64 // 转移触发概率，默认 1.0
 }
 
 type UpdateGroupInput struct {
@@ -131,9 +141,10 @@ type UpdateGroupInput struct {
 	ClaudeCodeOnly  *bool  // 仅允许 Claude Code 客户端
 	FallbackGroupID *int64 // 降级分组 ID
 	// 模型路由配置（仅 anthropic 平台使用）
-	ModelRouting        map[string][]int64
-	ModelRoutingEnabled *bool    // 是否启用模型路由
-	CacheReadTransferRatio *float64 // 缓存 token 转移比例
+	ModelRouting               map[string][]int64
+	ModelRoutingEnabled        *bool    // 是否启用模型路由
+	CacheReadTransferRatio     *float64 // 缓存 token 转移比例
+	CacheReadTransferProbability *float64 // 转移触发概率
 }
 
 type CreateAccountInput struct {
@@ -326,14 +337,16 @@ func (s *adminServiceImpl) GetUser(ctx context.Context, id int64) (*User, error)
 
 func (s *adminServiceImpl) CreateUser(ctx context.Context, input *CreateUserInput) (*User, error) {
 	user := &User{
-		Email:         input.Email,
-		Username:      input.Username,
-		Notes:         input.Notes,
-		Role:          RoleUser, // Always create as regular user, never admin
-		Balance:       input.Balance,
-		Concurrency:   input.Concurrency,
-		Status:        StatusActive,
-		AllowedGroups: input.AllowedGroups,
+		Email:                        input.Email,
+		Username:                     input.Username,
+		Notes:                        input.Notes,
+		Role:                         RoleUser, // Always create as regular user, never admin
+		Balance:                      input.Balance,
+		Concurrency:                  input.Concurrency,
+		Status:                       StatusActive,
+		AllowedGroups:                input.AllowedGroups,
+		CacheReadTransferRatio:       input.CacheReadTransferRatio,
+		CacheReadTransferProbability: input.CacheReadTransferProbability,
 	}
 	if err := user.SetPassword(input.Password); err != nil {
 		return nil, err
@@ -387,11 +400,20 @@ func (s *adminServiceImpl) UpdateUser(ctx context.Context, id int64, input *Upda
 		user.AllowedGroups = *input.AllowedGroups
 	}
 
+	// 处理用户级缓存转移配置（二级指针：外层 nil 表示不更新，外层非 nil 则更新为内层值）
+	if input.CacheReadTransferRatio != nil {
+		user.CacheReadTransferRatio = *input.CacheReadTransferRatio
+	}
+	if input.CacheReadTransferProbability != nil {
+		user.CacheReadTransferProbability = *input.CacheReadTransferProbability
+	}
+
 	if err := s.userRepo.Update(ctx, user); err != nil {
 		return nil, err
 	}
 	if s.authCacheInvalidator != nil {
-		if user.Concurrency != oldConcurrency || user.Status != oldStatus || user.Role != oldRole {
+		cacheTransferChanged := input.CacheReadTransferRatio != nil || input.CacheReadTransferProbability != nil
+		if user.Concurrency != oldConcurrency || user.Status != oldStatus || user.Role != oldRole || cacheTransferChanged {
 			s.authCacheInvalidator.InvalidateAuthCacheByUserID(ctx, user.ID)
 		}
 	}
@@ -574,24 +596,31 @@ func (s *adminServiceImpl) CreateGroup(ctx context.Context, input *CreateGroupIn
 		}
 	}
 
+	// 默认转移概率为 1.0（始终触发）
+	cacheTransferProbability := input.CacheReadTransferProbability
+	if cacheTransferProbability <= 0 {
+		cacheTransferProbability = 1.0
+	}
+
 	group := &Group{
-		Name:                   input.Name,
-		Description:            input.Description,
-		Platform:               platform,
-		RateMultiplier:         input.RateMultiplier,
-		IsExclusive:            input.IsExclusive,
-		Status:                 StatusActive,
-		SubscriptionType:       subscriptionType,
-		DailyLimitUSD:          dailyLimit,
-		WeeklyLimitUSD:         weeklyLimit,
-		MonthlyLimitUSD:        monthlyLimit,
-		ImagePrice1K:           imagePrice1K,
-		ImagePrice2K:           imagePrice2K,
-		ImagePrice4K:           imagePrice4K,
-		ClaudeCodeOnly:         input.ClaudeCodeOnly,
-		FallbackGroupID:        input.FallbackGroupID,
-		ModelRouting:           input.ModelRouting,
-		CacheReadTransferRatio: input.CacheReadTransferRatio,
+		Name:                         input.Name,
+		Description:                  input.Description,
+		Platform:                     platform,
+		RateMultiplier:               input.RateMultiplier,
+		IsExclusive:                  input.IsExclusive,
+		Status:                       StatusActive,
+		SubscriptionType:             subscriptionType,
+		DailyLimitUSD:                dailyLimit,
+		WeeklyLimitUSD:               weeklyLimit,
+		MonthlyLimitUSD:              monthlyLimit,
+		ImagePrice1K:                 imagePrice1K,
+		ImagePrice2K:                 imagePrice2K,
+		ImagePrice4K:                 imagePrice4K,
+		ClaudeCodeOnly:               input.ClaudeCodeOnly,
+		FallbackGroupID:              input.FallbackGroupID,
+		ModelRouting:                 input.ModelRouting,
+		CacheReadTransferRatio:       input.CacheReadTransferRatio,
+		CacheReadTransferProbability: cacheTransferProbability,
 	}
 	if err := s.groupRepo.Create(ctx, group); err != nil {
 		return nil, err
@@ -731,6 +760,10 @@ func (s *adminServiceImpl) UpdateGroup(ctx context.Context, id int64, input *Upd
 	// 缓存 token 转移比例
 	if input.CacheReadTransferRatio != nil {
 		group.CacheReadTransferRatio = *input.CacheReadTransferRatio
+	}
+	// 缓存 token 转移概率
+	if input.CacheReadTransferProbability != nil {
+		group.CacheReadTransferProbability = *input.CacheReadTransferProbability
 	}
 
 	if err := s.groupRepo.Update(ctx, group); err != nil {
