@@ -81,7 +81,30 @@ func APIKeyFromService(k *service.APIKey) *APIKey {
 		CreatedAt:   k.CreatedAt,
 		UpdatedAt:   k.UpdatedAt,
 		User:        UserFromServiceShallow(k.User),
-		Group:       GroupFromServiceShallow(k.Group),
+		Group:       GroupFromServiceForUser(k.Group), // 用户端不暴露缓存转移配置
+	}
+}
+
+// GroupFromServiceForUser 返回用户端专用的 Group DTO（不包含缓存转移配置）。
+// 用户端接口必须使用此函数，避免暴露内部计费配置。
+func GroupFromServiceForUser(g *service.Group) *GroupForUser {
+	if g == nil {
+		return nil
+	}
+	return &GroupForUser{
+		ID:               g.ID,
+		Name:             g.Name,
+		Description:      g.Description,
+		Platform:         g.Platform,
+		RateMultiplier:   g.RateMultiplier,
+		IsExclusive:      g.IsExclusive,
+		Status:           g.Status,
+		SubscriptionType: g.SubscriptionType,
+		DailyLimitUSD:    g.DailyLimitUSD,
+		WeeklyLimitUSD:   g.WeeklyLimitUSD,
+		MonthlyLimitUSD:  g.MonthlyLimitUSD,
+		CreatedAt:        g.CreatedAt,
+		UpdatedAt:        g.UpdatedAt,
 	}
 }
 

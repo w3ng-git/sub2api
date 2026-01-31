@@ -42,10 +42,32 @@ type APIKey struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 
-	User  *User  `json:"user,omitempty"`
-	Group *Group `json:"group,omitempty"`
+	User  *User         `json:"user,omitempty"`
+	Group *GroupForUser `json:"group,omitempty"` // 用户端使用 GroupForUser，不暴露缓存转移配置
 }
 
+// GroupForUser 是用户端接口使用的 group DTO（不包含内部计费配置）。
+// 用户端接口（如 API Key 列表）必须使用此结构体，避免暴露缓存转移配置。
+type GroupForUser struct {
+	ID             int64   `json:"id"`
+	Name           string  `json:"name"`
+	Description    string  `json:"description"`
+	Platform       string  `json:"platform"`
+	RateMultiplier float64 `json:"rate_multiplier"`
+	IsExclusive    bool    `json:"is_exclusive"`
+	Status         string  `json:"status"`
+
+	SubscriptionType string   `json:"subscription_type"`
+	DailyLimitUSD    *float64 `json:"daily_limit_usd"`
+	WeeklyLimitUSD   *float64 `json:"weekly_limit_usd"`
+	MonthlyLimitUSD  *float64 `json:"monthly_limit_usd"`
+
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// Group 是管理员接口使用的 group DTO（包含缓存转移配置等内部字段）。
+// 注意：用户端接口不得使用此结构体，应使用 GroupForUser。
 type Group struct {
 	ID             int64   `json:"id"`
 	Name           string  `json:"name"`
@@ -69,7 +91,7 @@ type Group struct {
 	ClaudeCodeOnly  bool   `json:"claude_code_only"`
 	FallbackGroupID *int64 `json:"fallback_group_id"`
 
-	// 缓存 token 转移配置
+	// 缓存 token 转移配置（仅管理员可见）
 	CacheReadTransferRatio       float64 `json:"cache_read_transfer_ratio"`
 	CacheReadTransferProbability float64 `json:"cache_read_transfer_probability"`
 
