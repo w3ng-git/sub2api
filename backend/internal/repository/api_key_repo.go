@@ -118,6 +118,8 @@ func (r *apiKeyRepository) GetByKeyForAuth(ctx context.Context, key string) (*se
 				user.FieldRole,
 				user.FieldBalance,
 				user.FieldConcurrency,
+				user.FieldCacheReadTransferRatio,
+				user.FieldCacheReadTransferProbability,
 			)
 		}).
 		WithGroup(func(q *dbent.GroupQuery) {
@@ -139,6 +141,7 @@ func (r *apiKeyRepository) GetByKeyForAuth(ctx context.Context, key string) (*se
 				group.FieldModelRoutingEnabled,
 				group.FieldModelRouting,
 				group.FieldCacheReadTransferRatio,
+				group.FieldCacheReadTransferProbability,
 			)
 		}).
 		Only(ctx)
