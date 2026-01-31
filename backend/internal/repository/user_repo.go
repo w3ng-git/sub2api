@@ -135,7 +135,7 @@ func (r *userRepository) Update(ctx context.Context, userIn *service.User) error
 		txClient = r.client
 	}
 
-	updated, err := txClient.User.UpdateOneID(userIn.ID).
+	updater := txClient.User.UpdateOneID(userIn.ID).
 		SetEmail(userIn.Email).
 		SetUsername(userIn.Username).
 		SetNotes(userIn.Notes).
@@ -143,10 +143,21 @@ func (r *userRepository) Update(ctx context.Context, userIn *service.User) error
 		SetRole(userIn.Role).
 		SetBalance(userIn.Balance).
 		SetConcurrency(userIn.Concurrency).
-		SetStatus(userIn.Status).
-		SetNillableCacheReadTransferRatio(userIn.CacheReadTransferRatio).
-		SetNillableCacheReadTransferProbability(userIn.CacheReadTransferProbability).
-		Save(ctx)
+		SetStatus(userIn.Status)
+
+	// 缓存转移配置：nil 时清除，非 nil 时设置
+	if userIn.CacheReadTransferRatio != nil {
+		updater = updater.SetCacheReadTransferRatio(*userIn.CacheReadTransferRatio)
+	} else {
+		updater = updater.ClearCacheReadTransferRatio()
+	}
+	if userIn.CacheReadTransferProbability != nil {
+		updater = updater.SetCacheReadTransferProbability(*userIn.CacheReadTransferProbability)
+	} else {
+		updater = updater.ClearCacheReadTransferProbability()
+	}
+
+	updated, err := updater.Save(ctx)
 	if err != nil {
 		return translatePersistenceError(err, service.ErrUserNotFound, service.ErrEmailExists)
 	}
