@@ -4096,6 +4096,24 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 			}
 		}
 
+		// 缓存 token 转移改写（仅在 cacheTransferRatio > 0 时生效）
+		if cacheTransferRatio > 0 {
+			// 处理 message_start 事件（cache token 在 message.usage 中）
+			if eventType == "message_start" {
+				if msg, ok := event["message"].(map[string]any); ok {
+					if usage, ok := msg["usage"].(map[string]any); ok {
+						rewriteUsageMap(usage, cacheTransferRatio)
+					}
+				}
+			}
+			// 处理 message_delta 事件（cache token 在 usage 中）
+			if eventType == "message_delta" {
+				if usage, ok := event["usage"].(map[string]any); ok {
+					rewriteUsageMap(usage, cacheTransferRatio)
+				}
+			}
+		}
+
 		if mimicClaudeCode && eventType == "content_block_delta" {
 			if delta, ok := event["delta"].(map[string]any); ok {
 				if deltaType, _ := delta["type"].(string); deltaType == "input_json_delta" {
