@@ -3369,7 +3369,7 @@ func (s *GatewayService) replaceModelInSSELine(line, fromModel, toModel string) 
 }
 
 // rewriteCacheTokensInSSELine 改写 SSE 行中的缓存 token 数量
-// 仅处理 message_start 事件（cache token 在此事件中发送）
+// 处理 message_start 和 message_delta 事件（两者都包含 cache token）
 func (s *GatewayService) rewriteCacheTokensInSSELine(line string, transferRatio float64) string {
 	if !sseDataRe.MatchString(line) {
 		return line
@@ -3384,44 +3384,71 @@ func (s *GatewayService) rewriteCacheTokensInSSELine(line string, transferRatio 
 		return line
 	}
 
-	// 只处理 message_start 事件
-	if event["type"] != "message_start" {
-		return line
+	eventType, _ := event["type"].(string)
+
+	// 处理 message_start 事件（cache token 在 message.usage 中）
+	if eventType == "message_start" {
+		msg, ok := event["message"].(map[string]any)
+		if !ok {
+			return line
+		}
+		usage, ok := msg["usage"].(map[string]any)
+		if !ok {
+			return line
+		}
+		if !rewriteUsageMap(usage, transferRatio) {
+			return line
+		}
+		newData, err := json.Marshal(event)
+		if err != nil {
+			return line
+		}
+		return "data: " + string(newData)
 	}
 
-	msg, ok := event["message"].(map[string]any)
-	if !ok {
-		return line
+	// 处理 message_delta 事件（cache token 在 usage 中，是累计值）
+	if eventType == "message_delta" {
+		usage, ok := event["usage"].(map[string]any)
+		if !ok {
+			return line
+		}
+		if !rewriteUsageMap(usage, transferRatio) {
+			return line
+		}
+		newData, err := json.Marshal(event)
+		if err != nil {
+			return line
+		}
+		return "data: " + string(newData)
 	}
 
-	usage, ok := msg["usage"].(map[string]any)
-	if !ok {
-		return line
-	}
+	return line
+}
 
-	// 获取原始值
+// rewriteUsageMap 重写 usage map 中的缓存 token，返回是否有修改
+func rewriteUsageMap(usage map[string]any, transferRatio float64) bool {
 	cacheCreation := 0
 	cacheRead := 0
+	hasCache := false
+
 	if v, ok := usage["cache_creation_input_tokens"].(float64); ok {
 		cacheCreation = int(v)
+		hasCache = true
 	}
 	if v, ok := usage["cache_read_input_tokens"].(float64); ok {
 		cacheRead = int(v)
+		hasCache = true
 	}
 
-	// 应用转移
-	newCreation, newRead := TransferCacheTokens(cacheCreation, cacheRead, transferRatio)
+	// 没有 cache 字段或 cache_read 为 0 时不需要转移
+	if !hasCache || cacheRead == 0 {
+		return false
+	}
 
-	// 更新值
+	newCreation, newRead := TransferCacheTokens(cacheCreation, cacheRead, transferRatio)
 	usage["cache_creation_input_tokens"] = newCreation
 	usage["cache_read_input_tokens"] = newRead
-
-	newData, err := json.Marshal(event)
-	if err != nil {
-		return line
-	}
-
-	return "data: " + string(newData)
+	return true
 }
 
 func (s *GatewayService) parseSSEUsage(data string, usage *ClaudeUsage) {

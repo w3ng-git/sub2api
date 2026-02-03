@@ -111,6 +111,14 @@ backend/config.yaml
 deploy/config.yaml
 backend/.installed
 
+# 本地部署文档（包含服务器信息和凭据）
+*.local.md
+DEPLOY.local.md
+
+# 本地备份和编译产物
+backups/
+bin/
+
 # ===================
 # 其他
 # ===================
