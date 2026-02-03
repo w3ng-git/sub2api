@@ -46,6 +46,8 @@ type CreateGroupRequest struct {
 	// 缓存 token 转移配置
 	CacheReadTransferRatio       float64 `json:"cache_read_transfer_ratio" binding:"min=0,max=1"`
 	CacheReadTransferProbability float64 `json:"cache_read_transfer_probability" binding:"min=0,max=1"`
+	// 从指定分组复制账号（创建后自动绑定）
+	CopyAccountsFromGroupIDs []int64 `json:"copy_accounts_from_group_ids"`
 }
 
 // UpdateGroupRequest represents update group request
@@ -72,6 +74,8 @@ type UpdateGroupRequest struct {
 	// 缓存 token 转移配置
 	CacheReadTransferRatio       *float64 `json:"cache_read_transfer_ratio" binding:"omitempty,min=0,max=1"`
 	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability" binding:"omitempty,min=0,max=1"`
+	// 从指定分组复制账号（同步操作：先清空当前分组的账号绑定，再绑定源分组的账号）
+	CopyAccountsFromGroupIDs []int64 `json:"copy_accounts_from_group_ids"`
 }
 
 // List handles listing all groups with pagination
@@ -179,6 +183,7 @@ func (h *GroupHandler) Create(c *gin.Context) {
 		ModelRoutingEnabled:          req.ModelRoutingEnabled,
 		CacheReadTransferRatio:       req.CacheReadTransferRatio,
 		CacheReadTransferProbability: req.CacheReadTransferProbability,
+		CopyAccountsFromGroupIDs:     req.CopyAccountsFromGroupIDs,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)
@@ -223,6 +228,7 @@ func (h *GroupHandler) Update(c *gin.Context) {
 		ModelRoutingEnabled:          req.ModelRoutingEnabled,
 		CacheReadTransferRatio:       req.CacheReadTransferRatio,
 		CacheReadTransferProbability: req.CacheReadTransferProbability,
+		CopyAccountsFromGroupIDs:     req.CopyAccountsFromGroupIDs,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)
