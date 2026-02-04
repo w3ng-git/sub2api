@@ -69,18 +69,27 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 		return
 	}
 
+	// Get subscription info (may be nil) - 提前获取
+	subscription, _ := middleware2.GetSubscriptionFromContext(c)
+
+	// 提前初始化错误记录上下文（在请求解析之前）
+	errCtx := h.newOpenAIErrorRecordingContext(c, apiKey, subscription)
+
 	// Read request body
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		if maxErr, ok := extractMaxBytesError(err); ok {
+			errCtx.recordError("invalid_request", http.StatusRequestEntityTooLarge, buildBodyTooLargeMessage(maxErr.Limit), nil, "")
 			h.errorResponse(c, http.StatusRequestEntityTooLarge, "invalid_request_error", buildBodyTooLargeMessage(maxErr.Limit))
 			return
 		}
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "Failed to read request body", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "Failed to read request body")
 		return
 	}
 
 	if len(body) == 0 {
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "Request body is empty", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "Request body is empty")
 		return
 	}
@@ -90,6 +99,7 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 	// Parse request body to map for potential modification
 	var reqBody map[string]any
 	if err := json.Unmarshal(body, &reqBody); err != nil {
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "Failed to parse request body", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "Failed to parse request body")
 		return
 	}
@@ -98,8 +108,13 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 	reqModel, _ := reqBody["model"].(string)
 	reqStream, _ := reqBody["stream"].(bool)
 
+	// 更新 errCtx 的 model 和 stream
+	errCtx.setModel(reqModel)
+	errCtx.setStream(reqStream)
+
 	// 验证 model 必填
 	if reqModel == "" {
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "model is required", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "model is required")
 		return
 	}
@@ -113,6 +128,7 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 				// Re-serialize body
 				body, err = json.Marshal(reqBody)
 				if err != nil {
+					errCtx.recordError("invalid_request", http.StatusInternalServerError, "Failed to process request", nil, "")
 					h.errorResponse(c, http.StatusInternalServerError, "api_error", "Failed to process request")
 					return
 				}
@@ -130,12 +146,14 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 		if strings.TrimSpace(previousResponseID) == "" && !service.HasToolCallContext(reqBody) {
 			if service.HasFunctionCallOutputMissingCallID(reqBody) {
 				log.Printf("[OpenAI Handler] function_call_output 缺少 call_id: model=%s", reqModel)
+				errCtx.recordError("invalid_request", http.StatusBadRequest, "function_call_output requires call_id or previous_response_id", nil, "")
 				h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "function_call_output requires call_id or previous_response_id; if relying on history, ensure store=true and reuse previous_response_id")
 				return
 			}
 			callIDs := service.FunctionCallOutputCallIDs(reqBody)
 			if !service.HasItemReferenceForCallIDs(reqBody, callIDs) {
 				log.Printf("[OpenAI Handler] function_call_output 缺少匹配的 item_reference: model=%s", reqModel)
+				errCtx.recordError("invalid_request", http.StatusBadRequest, "function_call_output requires item_reference ids matching each call_id", nil, "")
 				h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "function_call_output requires item_reference ids matching each call_id, or previous_response_id/tool_call context; if relying on history, ensure store=true and reuse previous_response_id")
 				return
 			}
@@ -144,14 +162,6 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 
 	// Track if we've started streaming (for error handling)
 	streamStarted := false
-
-	// Get subscription info (may be nil)
-	subscription, _ := middleware2.GetSubscriptionFromContext(c)
-
-	// 初始化错误记录上下文
-	errCtx := h.newOpenAIErrorRecordingContext(c, apiKey, subscription)
-	errCtx.setModel(reqModel)
-	errCtx.setStream(reqStream)
 
 	// 0. Check if wait queue is full
 	maxWait := service.CalculateMaxWait(subject.Concurrency)

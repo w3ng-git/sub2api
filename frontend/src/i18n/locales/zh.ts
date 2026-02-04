@@ -2321,6 +2321,7 @@ export default {
       onlySuccess: '仅成功',
       errorType: '错误类型',
       allErrorTypes: '全部错误类型',
+      errorTypeInvalidRequest: '无效请求',
       errorTypeBilling: '计费错误',
       errorTypeRateLimit: '限流',
       errorTypeNoAccount: '无可用账号',

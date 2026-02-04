@@ -2174,6 +2174,7 @@ export default {
       onlySuccess: 'Success Only',
       errorType: 'Error Type',
       allErrorTypes: 'All Error Types',
+      errorTypeInvalidRequest: 'Invalid Request',
       errorTypeBilling: 'Billing Error',
       errorTypeRateLimit: 'Rate Limit',
       errorTypeNoAccount: 'No Account',

@@ -272,6 +272,7 @@ const errorStatusOptions = ref<SelectOption[]>([
 
 const errorTypeOptions = ref<SelectOption[]>([
   { value: null, label: t('admin.usage.allErrorTypes') },
+  { value: 'invalid_request', label: t('admin.usage.errorTypeInvalidRequest') },
   { value: 'billing_error', label: t('admin.usage.errorTypeBilling') },
   { value: 'rate_limit', label: t('admin.usage.errorTypeRateLimit') },
   { value: 'no_account', label: t('admin.usage.errorTypeNoAccount') },

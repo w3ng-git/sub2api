@@ -90,18 +90,27 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		return
 	}
 
+	// 获取订阅信息（可能为nil）- 提前获取用于后续检查
+	subscription, _ := middleware2.GetSubscriptionFromContext(c)
+
+	// 提前初始化错误记录上下文（在请求解析之前）
+	errCtx := h.newErrorRecordingContext(c, apiKey, subscription)
+
 	// 读取请求体
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		if maxErr, ok := extractMaxBytesError(err); ok {
+			errCtx.recordError("invalid_request", http.StatusRequestEntityTooLarge, buildBodyTooLargeMessage(maxErr.Limit), nil, "")
 			h.errorResponse(c, http.StatusRequestEntityTooLarge, "invalid_request_error", buildBodyTooLargeMessage(maxErr.Limit))
 			return
 		}
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "Failed to read request body", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "Failed to read request body")
 		return
 	}
 
 	if len(body) == 0 {
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "Request body is empty", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "Request body is empty")
 		return
 	}
@@ -113,30 +122,28 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 
 	parsedReq, err := service.ParseGatewayRequest(body)
 	if err != nil {
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "Failed to parse request body", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "Failed to parse request body")
 		return
 	}
 	reqModel := parsedReq.Model
 	reqStream := parsedReq.Stream
 
+	// 更新 errCtx 的 model 和 stream
+	errCtx.setModel(reqModel)
+	errCtx.setStream(reqStream)
+
 	setOpsRequestContext(c, reqModel, reqStream, body)
 
 	// 验证 model 必填
 	if reqModel == "" {
+		errCtx.recordError("invalid_request", http.StatusBadRequest, "model is required", nil, "")
 		h.errorResponse(c, http.StatusBadRequest, "invalid_request_error", "model is required")
 		return
 	}
 
 	// Track if we've started streaming (for error handling)
 	streamStarted := false
-
-	// 获取订阅信息（可能为nil）- 提前获取用于后续检查
-	subscription, _ := middleware2.GetSubscriptionFromContext(c)
-
-	// 初始化错误记录上下文
-	errCtx := h.newErrorRecordingContext(c, apiKey, subscription)
-	errCtx.setModel(reqModel)
-	errCtx.setStream(reqStream)
 
 	// 0. 检查wait队列是否已满
 	maxWait := service.CalculateMaxWait(subject.Concurrency)
