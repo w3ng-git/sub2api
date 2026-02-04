@@ -1805,6 +1805,161 @@ func (s *OpenAIGatewayService) RecordUsage(ctx context.Context, input *OpenAIRec
 	return nil
 }
 
+// OpenAIRecordErrorUsageInput input for recording error usage
+type OpenAIRecordErrorUsageInput struct {
+	RequestID            string
+	APIKey               *APIKey
+	User                 *User
+	Account              *Account          // optional
+	Subscription         *UserSubscription // optional
+	Model                string
+	Stream               bool
+	UserAgent            string
+	IPAddress            string
+	RequestHeaders       map[string]string
+	ErrorType            string
+	ErrorStatusCode      int
+	ErrorMessage         string
+	ErrorBody            string
+	UpstreamStatusCode   *int
+	UpstreamErrorMessage string
+	UpstreamErrors       []string
+	DurationMs           int
+}
+
+// RecordErrorUsage records error usage log (no billing)
+func (s *OpenAIGatewayService) RecordErrorUsage(ctx context.Context, input *OpenAIRecordErrorUsageInput) error {
+	if input == nil || input.APIKey == nil || input.User == nil {
+		return nil
+	}
+
+	apiKey := input.APIKey
+	user := input.User
+
+	// Serialize request headers
+	var requestHeaders *string
+	if len(input.RequestHeaders) > 0 {
+		if data, err := json.Marshal(input.RequestHeaders); err == nil {
+			s := string(data)
+			requestHeaders = &s
+		}
+	}
+
+	// Serialize upstream errors
+	var upstreamErrors *string
+	if len(input.UpstreamErrors) > 0 {
+		if data, err := json.Marshal(input.UpstreamErrors); err == nil {
+			s := string(data)
+			upstreamErrors = &s
+		}
+	}
+
+	// Get account ID
+	accountID := int64(0)
+	var accountRateMultiplier *float64
+	if input.Account != nil {
+		accountID = input.Account.ID
+		rate := input.Account.BillingRateMultiplier()
+		accountRateMultiplier = &rate
+	}
+
+	// Prepare optional fields
+	var errorType, errorMessage, errorBody, upstreamErrorMessage *string
+	var errorStatusCode, upstreamStatusCode *int
+
+	if input.ErrorType != "" {
+		errorType = &input.ErrorType
+	}
+	if input.ErrorMessage != "" {
+		errorMessage = &input.ErrorMessage
+	}
+	if input.ErrorBody != "" {
+		errorBody = &input.ErrorBody
+	}
+	if input.ErrorStatusCode > 0 {
+		errorStatusCode = &input.ErrorStatusCode
+	}
+	if input.UpstreamStatusCode != nil {
+		upstreamStatusCode = input.UpstreamStatusCode
+	}
+	if input.UpstreamErrorMessage != "" {
+		upstreamErrorMessage = &input.UpstreamErrorMessage
+	}
+
+	// Get rate multiplier
+	multiplier := s.cfg.Default.RateMultiplier
+	if apiKey.GroupID != nil && apiKey.Group != nil {
+		multiplier = apiKey.Group.RateMultiplier
+	}
+
+	// Determine billing type
+	isSubscriptionBilling := input.Subscription != nil && apiKey.Group != nil && apiKey.Group.IsSubscriptionType()
+	billingType := BillingTypeBalance
+	if isSubscriptionBilling {
+		billingType = BillingTypeSubscription
+	}
+
+	durationMs := input.DurationMs
+
+	usageLog := &UsageLog{
+		UserID:                user.ID,
+		APIKeyID:              apiKey.ID,
+		AccountID:             accountID,
+		RequestID:             input.RequestID,
+		Model:                 input.Model,
+		InputTokens:           0,
+		OutputTokens:          0,
+		CacheCreationTokens:   0,
+		CacheReadTokens:       0,
+		InputCost:             0,
+		OutputCost:            0,
+		CacheCreationCost:     0,
+		CacheReadCost:         0,
+		TotalCost:             0,
+		ActualCost:            0,
+		RateMultiplier:        multiplier,
+		AccountRateMultiplier: accountRateMultiplier,
+		BillingType:           billingType,
+		Stream:                input.Stream,
+		DurationMs:            &durationMs,
+		IsError:               true,
+		ErrorType:             errorType,
+		ErrorStatusCode:       errorStatusCode,
+		ErrorMessage:          errorMessage,
+		ErrorBody:             errorBody,
+		RequestHeaders:        requestHeaders,
+		UpstreamStatusCode:    upstreamStatusCode,
+		UpstreamErrorMessage:  upstreamErrorMessage,
+		UpstreamErrors:        upstreamErrors,
+		CreatedAt:             time.Now(),
+	}
+
+	// Add UserAgent
+	if input.UserAgent != "" {
+		usageLog.UserAgent = &input.UserAgent
+	}
+
+	// Add IPAddress
+	if input.IPAddress != "" {
+		usageLog.IPAddress = &input.IPAddress
+	}
+
+	// Add group and subscription associations
+	if apiKey.GroupID != nil {
+		usageLog.GroupID = apiKey.GroupID
+	}
+	if input.Subscription != nil {
+		usageLog.SubscriptionID = &input.Subscription.ID
+	}
+
+	if _, err := s.usageLogRepo.Create(ctx, usageLog); err != nil {
+		log.Printf("Create error usage log failed: %v", err)
+		return err
+	}
+
+	return nil
+}
+
 // ParseCodexRateLimitHeaders extracts Codex usage limits from response headers.
 // Exported for use in ratelimit_service when handling OpenAI 429 responses.
 func ParseCodexRateLimitHeaders(headers http.Header) *OpenAICodexUsageSnapshot {
