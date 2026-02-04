@@ -612,6 +612,194 @@ func (_u *UsageLogUpdate) ClearImageSize() *UsageLogUpdate {
 	return _u
 }
 
+// SetIsError sets the "is_error" field.
+func (_u *UsageLogUpdate) SetIsError(v bool) *UsageLogUpdate {
+	_u.mutation.SetIsError(v)
+	return _u
+}
+
+// SetNillableIsError sets the "is_error" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableIsError(v *bool) *UsageLogUpdate {
+	if v != nil {
+		_u.SetIsError(*v)
+	}
+	return _u
+}
+
+// SetErrorType sets the "error_type" field.
+func (_u *UsageLogUpdate) SetErrorType(v string) *UsageLogUpdate {
+	_u.mutation.SetErrorType(v)
+	return _u
+}
+
+// SetNillableErrorType sets the "error_type" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableErrorType(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetErrorType(*v)
+	}
+	return _u
+}
+
+// ClearErrorType clears the value of the "error_type" field.
+func (_u *UsageLogUpdate) ClearErrorType() *UsageLogUpdate {
+	_u.mutation.ClearErrorType()
+	return _u
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (_u *UsageLogUpdate) SetErrorStatusCode(v int) *UsageLogUpdate {
+	_u.mutation.ResetErrorStatusCode()
+	_u.mutation.SetErrorStatusCode(v)
+	return _u
+}
+
+// SetNillableErrorStatusCode sets the "error_status_code" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableErrorStatusCode(v *int) *UsageLogUpdate {
+	if v != nil {
+		_u.SetErrorStatusCode(*v)
+	}
+	return _u
+}
+
+// AddErrorStatusCode adds value to the "error_status_code" field.
+func (_u *UsageLogUpdate) AddErrorStatusCode(v int) *UsageLogUpdate {
+	_u.mutation.AddErrorStatusCode(v)
+	return _u
+}
+
+// ClearErrorStatusCode clears the value of the "error_status_code" field.
+func (_u *UsageLogUpdate) ClearErrorStatusCode() *UsageLogUpdate {
+	_u.mutation.ClearErrorStatusCode()
+	return _u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (_u *UsageLogUpdate) SetErrorMessage(v string) *UsageLogUpdate {
+	_u.mutation.SetErrorMessage(v)
+	return _u
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableErrorMessage(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetErrorMessage(*v)
+	}
+	return _u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (_u *UsageLogUpdate) ClearErrorMessage() *UsageLogUpdate {
+	_u.mutation.ClearErrorMessage()
+	return _u
+}
+
+// SetErrorBody sets the "error_body" field.
+func (_u *UsageLogUpdate) SetErrorBody(v string) *UsageLogUpdate {
+	_u.mutation.SetErrorBody(v)
+	return _u
+}
+
+// SetNillableErrorBody sets the "error_body" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableErrorBody(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetErrorBody(*v)
+	}
+	return _u
+}
+
+// ClearErrorBody clears the value of the "error_body" field.
+func (_u *UsageLogUpdate) ClearErrorBody() *UsageLogUpdate {
+	_u.mutation.ClearErrorBody()
+	return _u
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (_u *UsageLogUpdate) SetRequestHeaders(v string) *UsageLogUpdate {
+	_u.mutation.SetRequestHeaders(v)
+	return _u
+}
+
+// SetNillableRequestHeaders sets the "request_headers" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableRequestHeaders(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetRequestHeaders(*v)
+	}
+	return _u
+}
+
+// ClearRequestHeaders clears the value of the "request_headers" field.
+func (_u *UsageLogUpdate) ClearRequestHeaders() *UsageLogUpdate {
+	_u.mutation.ClearRequestHeaders()
+	return _u
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (_u *UsageLogUpdate) SetUpstreamStatusCode(v int) *UsageLogUpdate {
+	_u.mutation.ResetUpstreamStatusCode()
+	_u.mutation.SetUpstreamStatusCode(v)
+	return _u
+}
+
+// SetNillableUpstreamStatusCode sets the "upstream_status_code" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableUpstreamStatusCode(v *int) *UsageLogUpdate {
+	if v != nil {
+		_u.SetUpstreamStatusCode(*v)
+	}
+	return _u
+}
+
+// AddUpstreamStatusCode adds value to the "upstream_status_code" field.
+func (_u *UsageLogUpdate) AddUpstreamStatusCode(v int) *UsageLogUpdate {
+	_u.mutation.AddUpstreamStatusCode(v)
+	return _u
+}
+
+// ClearUpstreamStatusCode clears the value of the "upstream_status_code" field.
+func (_u *UsageLogUpdate) ClearUpstreamStatusCode() *UsageLogUpdate {
+	_u.mutation.ClearUpstreamStatusCode()
+	return _u
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (_u *UsageLogUpdate) SetUpstreamErrorMessage(v string) *UsageLogUpdate {
+	_u.mutation.SetUpstreamErrorMessage(v)
+	return _u
+}
+
+// SetNillableUpstreamErrorMessage sets the "upstream_error_message" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableUpstreamErrorMessage(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetUpstreamErrorMessage(*v)
+	}
+	return _u
+}
+
+// ClearUpstreamErrorMessage clears the value of the "upstream_error_message" field.
+func (_u *UsageLogUpdate) ClearUpstreamErrorMessage() *UsageLogUpdate {
+	_u.mutation.ClearUpstreamErrorMessage()
+	return _u
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (_u *UsageLogUpdate) SetUpstreamErrors(v string) *UsageLogUpdate {
+	_u.mutation.SetUpstreamErrors(v)
+	return _u
+}
+
+// SetNillableUpstreamErrors sets the "upstream_errors" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableUpstreamErrors(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetUpstreamErrors(*v)
+	}
+	return _u
+}
+
+// ClearUpstreamErrors clears the value of the "upstream_errors" field.
+func (_u *UsageLogUpdate) ClearUpstreamErrors() *UsageLogUpdate {
+	_u.mutation.ClearUpstreamErrors()
+	return _u
+}
+
 // SetUser sets the "user" edge to the User entity.
 func (_u *UsageLogUpdate) SetUser(v *User) *UsageLogUpdate {
 	return _u.SetUserID(v.ID)
@@ -724,6 +912,16 @@ func (_u *UsageLogUpdate) check() error {
 	if v, ok := _u.mutation.ImageSize(); ok {
 		if err := usagelog.ImageSizeValidator(v); err != nil {
 			return &ValidationError{Name: "image_size", err: fmt.Errorf(`ent: validator failed for field "UsageLog.image_size": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ErrorType(); ok {
+		if err := usagelog.ErrorTypeValidator(v); err != nil {
+			return &ValidationError{Name: "error_type", err: fmt.Errorf(`ent: validator failed for field "UsageLog.error_type": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ErrorMessage(); ok {
+		if err := usagelog.ErrorMessageValidator(v); err != nil {
+			return &ValidationError{Name: "error_message", err: fmt.Errorf(`ent: validator failed for field "UsageLog.error_message": %w`, err)}
 		}
 	}
 	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
@@ -893,6 +1091,63 @@ func (_u *UsageLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.ImageSizeCleared() {
 		_spec.ClearField(usagelog.FieldImageSize, field.TypeString)
+	}
+	if value, ok := _u.mutation.IsError(); ok {
+		_spec.SetField(usagelog.FieldIsError, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ErrorType(); ok {
+		_spec.SetField(usagelog.FieldErrorType, field.TypeString, value)
+	}
+	if _u.mutation.ErrorTypeCleared() {
+		_spec.ClearField(usagelog.FieldErrorType, field.TypeString)
+	}
+	if value, ok := _u.mutation.ErrorStatusCode(); ok {
+		_spec.SetField(usagelog.FieldErrorStatusCode, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedErrorStatusCode(); ok {
+		_spec.AddField(usagelog.FieldErrorStatusCode, field.TypeInt, value)
+	}
+	if _u.mutation.ErrorStatusCodeCleared() {
+		_spec.ClearField(usagelog.FieldErrorStatusCode, field.TypeInt)
+	}
+	if value, ok := _u.mutation.ErrorMessage(); ok {
+		_spec.SetField(usagelog.FieldErrorMessage, field.TypeString, value)
+	}
+	if _u.mutation.ErrorMessageCleared() {
+		_spec.ClearField(usagelog.FieldErrorMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.ErrorBody(); ok {
+		_spec.SetField(usagelog.FieldErrorBody, field.TypeString, value)
+	}
+	if _u.mutation.ErrorBodyCleared() {
+		_spec.ClearField(usagelog.FieldErrorBody, field.TypeString)
+	}
+	if value, ok := _u.mutation.RequestHeaders(); ok {
+		_spec.SetField(usagelog.FieldRequestHeaders, field.TypeString, value)
+	}
+	if _u.mutation.RequestHeadersCleared() {
+		_spec.ClearField(usagelog.FieldRequestHeaders, field.TypeString)
+	}
+	if value, ok := _u.mutation.UpstreamStatusCode(); ok {
+		_spec.SetField(usagelog.FieldUpstreamStatusCode, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUpstreamStatusCode(); ok {
+		_spec.AddField(usagelog.FieldUpstreamStatusCode, field.TypeInt, value)
+	}
+	if _u.mutation.UpstreamStatusCodeCleared() {
+		_spec.ClearField(usagelog.FieldUpstreamStatusCode, field.TypeInt)
+	}
+	if value, ok := _u.mutation.UpstreamErrorMessage(); ok {
+		_spec.SetField(usagelog.FieldUpstreamErrorMessage, field.TypeString, value)
+	}
+	if _u.mutation.UpstreamErrorMessageCleared() {
+		_spec.ClearField(usagelog.FieldUpstreamErrorMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.UpstreamErrors(); ok {
+		_spec.SetField(usagelog.FieldUpstreamErrors, field.TypeString, value)
+	}
+	if _u.mutation.UpstreamErrorsCleared() {
+		_spec.ClearField(usagelog.FieldUpstreamErrors, field.TypeString)
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1639,6 +1894,194 @@ func (_u *UsageLogUpdateOne) ClearImageSize() *UsageLogUpdateOne {
 	return _u
 }
 
+// SetIsError sets the "is_error" field.
+func (_u *UsageLogUpdateOne) SetIsError(v bool) *UsageLogUpdateOne {
+	_u.mutation.SetIsError(v)
+	return _u
+}
+
+// SetNillableIsError sets the "is_error" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableIsError(v *bool) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetIsError(*v)
+	}
+	return _u
+}
+
+// SetErrorType sets the "error_type" field.
+func (_u *UsageLogUpdateOne) SetErrorType(v string) *UsageLogUpdateOne {
+	_u.mutation.SetErrorType(v)
+	return _u
+}
+
+// SetNillableErrorType sets the "error_type" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableErrorType(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetErrorType(*v)
+	}
+	return _u
+}
+
+// ClearErrorType clears the value of the "error_type" field.
+func (_u *UsageLogUpdateOne) ClearErrorType() *UsageLogUpdateOne {
+	_u.mutation.ClearErrorType()
+	return _u
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (_u *UsageLogUpdateOne) SetErrorStatusCode(v int) *UsageLogUpdateOne {
+	_u.mutation.ResetErrorStatusCode()
+	_u.mutation.SetErrorStatusCode(v)
+	return _u
+}
+
+// SetNillableErrorStatusCode sets the "error_status_code" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableErrorStatusCode(v *int) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetErrorStatusCode(*v)
+	}
+	return _u
+}
+
+// AddErrorStatusCode adds value to the "error_status_code" field.
+func (_u *UsageLogUpdateOne) AddErrorStatusCode(v int) *UsageLogUpdateOne {
+	_u.mutation.AddErrorStatusCode(v)
+	return _u
+}
+
+// ClearErrorStatusCode clears the value of the "error_status_code" field.
+func (_u *UsageLogUpdateOne) ClearErrorStatusCode() *UsageLogUpdateOne {
+	_u.mutation.ClearErrorStatusCode()
+	return _u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (_u *UsageLogUpdateOne) SetErrorMessage(v string) *UsageLogUpdateOne {
+	_u.mutation.SetErrorMessage(v)
+	return _u
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableErrorMessage(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetErrorMessage(*v)
+	}
+	return _u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (_u *UsageLogUpdateOne) ClearErrorMessage() *UsageLogUpdateOne {
+	_u.mutation.ClearErrorMessage()
+	return _u
+}
+
+// SetErrorBody sets the "error_body" field.
+func (_u *UsageLogUpdateOne) SetErrorBody(v string) *UsageLogUpdateOne {
+	_u.mutation.SetErrorBody(v)
+	return _u
+}
+
+// SetNillableErrorBody sets the "error_body" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableErrorBody(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetErrorBody(*v)
+	}
+	return _u
+}
+
+// ClearErrorBody clears the value of the "error_body" field.
+func (_u *UsageLogUpdateOne) ClearErrorBody() *UsageLogUpdateOne {
+	_u.mutation.ClearErrorBody()
+	return _u
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (_u *UsageLogUpdateOne) SetRequestHeaders(v string) *UsageLogUpdateOne {
+	_u.mutation.SetRequestHeaders(v)
+	return _u
+}
+
+// SetNillableRequestHeaders sets the "request_headers" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableRequestHeaders(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetRequestHeaders(*v)
+	}
+	return _u
+}
+
+// ClearRequestHeaders clears the value of the "request_headers" field.
+func (_u *UsageLogUpdateOne) ClearRequestHeaders() *UsageLogUpdateOne {
+	_u.mutation.ClearRequestHeaders()
+	return _u
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (_u *UsageLogUpdateOne) SetUpstreamStatusCode(v int) *UsageLogUpdateOne {
+	_u.mutation.ResetUpstreamStatusCode()
+	_u.mutation.SetUpstreamStatusCode(v)
+	return _u
+}
+
+// SetNillableUpstreamStatusCode sets the "upstream_status_code" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableUpstreamStatusCode(v *int) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetUpstreamStatusCode(*v)
+	}
+	return _u
+}
+
+// AddUpstreamStatusCode adds value to the "upstream_status_code" field.
+func (_u *UsageLogUpdateOne) AddUpstreamStatusCode(v int) *UsageLogUpdateOne {
+	_u.mutation.AddUpstreamStatusCode(v)
+	return _u
+}
+
+// ClearUpstreamStatusCode clears the value of the "upstream_status_code" field.
+func (_u *UsageLogUpdateOne) ClearUpstreamStatusCode() *UsageLogUpdateOne {
+	_u.mutation.ClearUpstreamStatusCode()
+	return _u
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (_u *UsageLogUpdateOne) SetUpstreamErrorMessage(v string) *UsageLogUpdateOne {
+	_u.mutation.SetUpstreamErrorMessage(v)
+	return _u
+}
+
+// SetNillableUpstreamErrorMessage sets the "upstream_error_message" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableUpstreamErrorMessage(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetUpstreamErrorMessage(*v)
+	}
+	return _u
+}
+
+// ClearUpstreamErrorMessage clears the value of the "upstream_error_message" field.
+func (_u *UsageLogUpdateOne) ClearUpstreamErrorMessage() *UsageLogUpdateOne {
+	_u.mutation.ClearUpstreamErrorMessage()
+	return _u
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (_u *UsageLogUpdateOne) SetUpstreamErrors(v string) *UsageLogUpdateOne {
+	_u.mutation.SetUpstreamErrors(v)
+	return _u
+}
+
+// SetNillableUpstreamErrors sets the "upstream_errors" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableUpstreamErrors(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetUpstreamErrors(*v)
+	}
+	return _u
+}
+
+// ClearUpstreamErrors clears the value of the "upstream_errors" field.
+func (_u *UsageLogUpdateOne) ClearUpstreamErrors() *UsageLogUpdateOne {
+	_u.mutation.ClearUpstreamErrors()
+	return _u
+}
+
 // SetUser sets the "user" edge to the User entity.
 func (_u *UsageLogUpdateOne) SetUser(v *User) *UsageLogUpdateOne {
 	return _u.SetUserID(v.ID)
@@ -1764,6 +2207,16 @@ func (_u *UsageLogUpdateOne) check() error {
 	if v, ok := _u.mutation.ImageSize(); ok {
 		if err := usagelog.ImageSizeValidator(v); err != nil {
 			return &ValidationError{Name: "image_size", err: fmt.Errorf(`ent: validator failed for field "UsageLog.image_size": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ErrorType(); ok {
+		if err := usagelog.ErrorTypeValidator(v); err != nil {
+			return &ValidationError{Name: "error_type", err: fmt.Errorf(`ent: validator failed for field "UsageLog.error_type": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ErrorMessage(); ok {
+		if err := usagelog.ErrorMessageValidator(v); err != nil {
+			return &ValidationError{Name: "error_message", err: fmt.Errorf(`ent: validator failed for field "UsageLog.error_message": %w`, err)}
 		}
 	}
 	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
@@ -1950,6 +2403,63 @@ func (_u *UsageLogUpdateOne) sqlSave(ctx context.Context) (_node *UsageLog, err 
 	}
 	if _u.mutation.ImageSizeCleared() {
 		_spec.ClearField(usagelog.FieldImageSize, field.TypeString)
+	}
+	if value, ok := _u.mutation.IsError(); ok {
+		_spec.SetField(usagelog.FieldIsError, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ErrorType(); ok {
+		_spec.SetField(usagelog.FieldErrorType, field.TypeString, value)
+	}
+	if _u.mutation.ErrorTypeCleared() {
+		_spec.ClearField(usagelog.FieldErrorType, field.TypeString)
+	}
+	if value, ok := _u.mutation.ErrorStatusCode(); ok {
+		_spec.SetField(usagelog.FieldErrorStatusCode, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedErrorStatusCode(); ok {
+		_spec.AddField(usagelog.FieldErrorStatusCode, field.TypeInt, value)
+	}
+	if _u.mutation.ErrorStatusCodeCleared() {
+		_spec.ClearField(usagelog.FieldErrorStatusCode, field.TypeInt)
+	}
+	if value, ok := _u.mutation.ErrorMessage(); ok {
+		_spec.SetField(usagelog.FieldErrorMessage, field.TypeString, value)
+	}
+	if _u.mutation.ErrorMessageCleared() {
+		_spec.ClearField(usagelog.FieldErrorMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.ErrorBody(); ok {
+		_spec.SetField(usagelog.FieldErrorBody, field.TypeString, value)
+	}
+	if _u.mutation.ErrorBodyCleared() {
+		_spec.ClearField(usagelog.FieldErrorBody, field.TypeString)
+	}
+	if value, ok := _u.mutation.RequestHeaders(); ok {
+		_spec.SetField(usagelog.FieldRequestHeaders, field.TypeString, value)
+	}
+	if _u.mutation.RequestHeadersCleared() {
+		_spec.ClearField(usagelog.FieldRequestHeaders, field.TypeString)
+	}
+	if value, ok := _u.mutation.UpstreamStatusCode(); ok {
+		_spec.SetField(usagelog.FieldUpstreamStatusCode, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUpstreamStatusCode(); ok {
+		_spec.AddField(usagelog.FieldUpstreamStatusCode, field.TypeInt, value)
+	}
+	if _u.mutation.UpstreamStatusCodeCleared() {
+		_spec.ClearField(usagelog.FieldUpstreamStatusCode, field.TypeInt)
+	}
+	if value, ok := _u.mutation.UpstreamErrorMessage(); ok {
+		_spec.SetField(usagelog.FieldUpstreamErrorMessage, field.TypeString, value)
+	}
+	if _u.mutation.UpstreamErrorMessageCleared() {
+		_spec.ClearField(usagelog.FieldUpstreamErrorMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.UpstreamErrors(); ok {
+		_spec.SetField(usagelog.FieldUpstreamErrors, field.TypeString, value)
+	}
+	if _u.mutation.UpstreamErrorsCleared() {
+		_spec.ClearField(usagelog.FieldUpstreamErrors, field.TypeString)
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -22,7 +22,7 @@ import (
 	"github.com/lib/pq"
 )
 
-const usageLogSelectColumns = "id, user_id, api_key_id, account_id, request_id, model, group_id, subscription_id, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, cache_creation_5m_tokens, cache_creation_1h_tokens, input_cost, output_cost, cache_creation_cost, cache_read_cost, total_cost, actual_cost, rate_multiplier, account_rate_multiplier, billing_type, stream, duration_ms, first_token_ms, user_agent, ip_address, image_count, image_size, reasoning_effort, created_at"
+const usageLogSelectColumns = "id, user_id, api_key_id, account_id, request_id, model, group_id, subscription_id, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, cache_creation_5m_tokens, cache_creation_1h_tokens, input_cost, output_cost, cache_creation_cost, cache_read_cost, total_cost, actual_cost, rate_multiplier, account_rate_multiplier, billing_type, stream, duration_ms, first_token_ms, user_agent, ip_address, image_count, image_size, reasoning_effort, is_error, error_type, error_status_code, error_message, error_body, request_headers, upstream_status_code, upstream_error_message, upstream_errors, created_at"
 
 type usageLogRepository struct {
 	client *dbent.Client
@@ -111,22 +111,32 @@ func (r *usageLogRepository) Create(ctx context.Context, log *service.UsageLog) 
 			duration_ms,
 			first_token_ms,
 			user_agent,
-				ip_address,
-				image_count,
-				image_size,
-				reasoning_effort,
-				created_at
-			) VALUES (
-				$1, $2, $3, $4, $5,
-				$6, $7,
-				$8, $9, $10, $11,
-				$12, $13,
-				$14, $15, $16, $17, $18, $19,
-				$20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31
-			)
-			ON CONFLICT (request_id, api_key_id) DO NOTHING
-			RETURNING id, created_at
-		`
+			ip_address,
+			image_count,
+			image_size,
+			reasoning_effort,
+			is_error,
+			error_type,
+			error_status_code,
+			error_message,
+			error_body,
+			request_headers,
+			upstream_status_code,
+			upstream_error_message,
+			upstream_errors,
+			created_at
+		) VALUES (
+			$1, $2, $3, $4, $5,
+			$6, $7,
+			$8, $9, $10, $11,
+			$12, $13,
+			$14, $15, $16, $17, $18, $19,
+			$20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+			$31, $32, $33, $34, $35, $36, $37, $38, $39, $40
+		)
+		ON CONFLICT (request_id, api_key_id) DO NOTHING
+		RETURNING id, created_at
+	`
 
 	groupID := nullInt64(log.GroupID)
 	subscriptionID := nullInt64(log.SubscriptionID)
@@ -136,6 +146,14 @@ func (r *usageLogRepository) Create(ctx context.Context, log *service.UsageLog) 
 	ipAddress := nullString(log.IPAddress)
 	imageSize := nullString(log.ImageSize)
 	reasoningEffort := nullString(log.ReasoningEffort)
+	errorType := nullString(log.ErrorType)
+	errorStatusCode := nullIntPtr(log.ErrorStatusCode)
+	errorMessage := nullString(log.ErrorMessage)
+	errorBody := nullString(log.ErrorBody)
+	requestHeaders := nullString(log.RequestHeaders)
+	upstreamStatusCode := nullIntPtr(log.UpstreamStatusCode)
+	upstreamErrorMessage := nullString(log.UpstreamErrorMessage)
+	upstreamErrors := nullString(log.UpstreamErrors)
 
 	var requestIDArg any
 	if requestID != "" {
@@ -173,6 +191,15 @@ func (r *usageLogRepository) Create(ctx context.Context, log *service.UsageLog) 
 		log.ImageCount,
 		imageSize,
 		reasoningEffort,
+		log.IsError,
+		errorType,
+		errorStatusCode,
+		errorMessage,
+		errorBody,
+		requestHeaders,
+		upstreamStatusCode,
+		upstreamErrorMessage,
+		upstreamErrors,
 		createdAt,
 	}
 	if err := scanSingleRow(ctx, sqlq, query, args, &log.ID, &log.CreatedAt); err != nil {
@@ -1210,8 +1237,8 @@ type UsageLogFilters = usagestats.UsageLogFilters
 
 // ListWithFilters lists usage logs with optional filters (for admin)
 func (r *usageLogRepository) ListWithFilters(ctx context.Context, params pagination.PaginationParams, filters UsageLogFilters) ([]service.UsageLog, *pagination.PaginationResult, error) {
-	conditions := make([]string, 0, 8)
-	args := make([]any, 0, 8)
+	conditions := make([]string, 0, 12)
+	args := make([]any, 0, 12)
 
 	if filters.UserID > 0 {
 		conditions = append(conditions, fmt.Sprintf("user_id = $%d", len(args)+1))
@@ -1248,6 +1275,20 @@ func (r *usageLogRepository) ListWithFilters(ctx context.Context, params paginat
 	if filters.EndTime != nil {
 		conditions = append(conditions, fmt.Sprintf("created_at <= $%d", len(args)+1))
 		args = append(args, *filters.EndTime)
+	}
+	// 错误过滤
+	if filters.IsError != nil {
+		conditions = append(conditions, fmt.Sprintf("is_error = $%d", len(args)+1))
+		args = append(args, *filters.IsError)
+	}
+	if filters.ErrorType != "" {
+		conditions = append(conditions, fmt.Sprintf("error_type = $%d", len(args)+1))
+		args = append(args, filters.ErrorType)
+	}
+	if filters.ErrorSearch != "" {
+		searchPattern := "%" + filters.ErrorSearch + "%"
+		conditions = append(conditions, fmt.Sprintf("(error_message ILIKE $%d OR error_body ILIKE $%d OR upstream_error_message ILIKE $%d)", len(args)+1, len(args)+1, len(args)+1))
+		args = append(args, searchPattern)
 	}
 
 	whereClause := buildWhere(conditions)
@@ -2094,6 +2135,15 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 		imageCount            int
 		imageSize             sql.NullString
 		reasoningEffort       sql.NullString
+		isError               bool
+		errorType             sql.NullString
+		errorStatusCode       sql.NullInt64
+		errorMessage          sql.NullString
+		errorBody             sql.NullString
+		requestHeaders        sql.NullString
+		upstreamStatusCode    sql.NullInt64
+		upstreamErrorMessage  sql.NullString
+		upstreamErrors        sql.NullString
 		createdAt             time.Time
 	)
 
@@ -2129,6 +2179,15 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 		&imageCount,
 		&imageSize,
 		&reasoningEffort,
+		&isError,
+		&errorType,
+		&errorStatusCode,
+		&errorMessage,
+		&errorBody,
+		&requestHeaders,
+		&upstreamStatusCode,
+		&upstreamErrorMessage,
+		&upstreamErrors,
 		&createdAt,
 	); err != nil {
 		return nil, err
@@ -2157,6 +2216,7 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 		BillingType:           int8(billingType),
 		Stream:                stream,
 		ImageCount:            imageCount,
+		IsError:               isError,
 		CreatedAt:             createdAt,
 	}
 
@@ -2190,6 +2250,32 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 	}
 	if reasoningEffort.Valid {
 		log.ReasoningEffort = &reasoningEffort.String
+	}
+	if errorType.Valid {
+		log.ErrorType = &errorType.String
+	}
+	if errorStatusCode.Valid {
+		value := int(errorStatusCode.Int64)
+		log.ErrorStatusCode = &value
+	}
+	if errorMessage.Valid {
+		log.ErrorMessage = &errorMessage.String
+	}
+	if errorBody.Valid {
+		log.ErrorBody = &errorBody.String
+	}
+	if requestHeaders.Valid {
+		log.RequestHeaders = &requestHeaders.String
+	}
+	if upstreamStatusCode.Valid {
+		value := int(upstreamStatusCode.Int64)
+		log.UpstreamStatusCode = &value
+	}
+	if upstreamErrorMessage.Valid {
+		log.UpstreamErrorMessage = &upstreamErrorMessage.String
+	}
+	if upstreamErrors.Valid {
+		log.UpstreamErrors = &upstreamErrors.String
 	}
 
 	return log, nil
@@ -2257,6 +2343,13 @@ func nullInt64(v *int64) sql.NullInt64 {
 }
 
 func nullInt(v *int) sql.NullInt64 {
+	if v == nil {
+		return sql.NullInt64{}
+	}
+	return sql.NullInt64{Int64: int64(*v), Valid: true}
+}
+
+func nullIntPtr(v *int) sql.NullInt64 {
 	if v == nil {
 		return sql.NullInt64{}
 	}

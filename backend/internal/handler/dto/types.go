@@ -341,6 +341,17 @@ type AdminUsageLog struct {
 
 	// Account 最小账号信息（避免泄露敏感字段）
 	Account *AccountSummary `json:"account,omitempty"`
+
+	// 错误记录字段
+	IsError              bool    `json:"is_error"`
+	ErrorType            *string `json:"error_type,omitempty"`
+	ErrorStatusCode      *int    `json:"error_status_code,omitempty"`
+	ErrorMessage         *string `json:"error_message,omitempty"`
+	ErrorBody            *string `json:"error_body,omitempty"`
+	RequestHeaders       *string `json:"request_headers,omitempty"`
+	UpstreamStatusCode   *int    `json:"upstream_status_code,omitempty"`
+	UpstreamErrorMessage *string `json:"upstream_error_message,omitempty"`
+	UpstreamErrors       *string `json:"upstream_errors,omitempty"`
 }
 
 type UsageCleanupFilters struct {

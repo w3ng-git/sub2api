@@ -4799,6 +4799,159 @@ func (s *GatewayService) RecordUsage(ctx context.Context, input *RecordUsageInpu
 	return nil
 }
 
+// RecordErrorUsageInput 记录错误使用量的输入参数
+type RecordErrorUsageInput struct {
+	RequestID            string            // 请求 ID
+	APIKey               *APIKey           // API Key
+	User                 *User             // 用户
+	Account              *Account          // 账号（可选，failover 场景可能没有）
+	Subscription         *UserSubscription // 订阅（可选）
+	Model                string            // 请求的模型
+	Stream               bool              // 是否流式请求
+	UserAgent            string            // 请求的 User-Agent
+	IPAddress            string            // 请求的客户端 IP 地址
+	RequestHeaders       map[string]string // 请求头（白名单过滤后）
+	ErrorType            string            // 错误类型
+	ErrorStatusCode      int               // 返回给客户端的状态码
+	ErrorMessage         string            // 错误消息
+	ErrorBody            string            // 完整错误响应体
+	UpstreamStatusCode   *int              // 上游状态码
+	UpstreamErrorMessage string            // 上游错误消息
+	UpstreamErrors       []string          // 上游错误事件列表（SSE error 事件）
+	DurationMs           int               // 请求耗时
+}
+
+// RecordErrorUsage 记录错误请求的使用日志（不扣费）
+func (s *GatewayService) RecordErrorUsage(ctx context.Context, input *RecordErrorUsageInput) error {
+	if input == nil || input.APIKey == nil || input.User == nil {
+		return nil
+	}
+
+	apiKey := input.APIKey
+	user := input.User
+
+	// 序列化请求头
+	var requestHeaders *string
+	if len(input.RequestHeaders) > 0 {
+		if data, err := json.Marshal(input.RequestHeaders); err == nil {
+			s := string(data)
+			requestHeaders = &s
+		}
+	}
+
+	// 序列化上游错误事件
+	var upstreamErrors *string
+	if len(input.UpstreamErrors) > 0 {
+		if data, err := json.Marshal(input.UpstreamErrors); err == nil {
+			s := string(data)
+			upstreamErrors = &s
+		}
+	}
+
+	// 创建使用日志
+	var accountID int64
+	var accountRateMultiplier *float64
+	if input.Account != nil {
+		accountID = input.Account.ID
+		m := input.Account.BillingRateMultiplier()
+		accountRateMultiplier = &m
+	}
+
+	durationMs := input.DurationMs
+	var errorType, errorMessage, errorBody, upstreamErrorMessage *string
+	var errorStatusCode, upstreamStatusCode *int
+
+	if input.ErrorType != "" {
+		errorType = &input.ErrorType
+	}
+	if input.ErrorMessage != "" {
+		errorMessage = &input.ErrorMessage
+	}
+	if input.ErrorBody != "" {
+		errorBody = &input.ErrorBody
+	}
+	if input.ErrorStatusCode > 0 {
+		errorStatusCode = &input.ErrorStatusCode
+	}
+	if input.UpstreamStatusCode != nil {
+		upstreamStatusCode = input.UpstreamStatusCode
+	}
+	if input.UpstreamErrorMessage != "" {
+		upstreamErrorMessage = &input.UpstreamErrorMessage
+	}
+
+	// 获取费率（仅用于日志记录，不扣费）
+	multiplier := s.cfg.Default.RateMultiplier
+	if apiKey.GroupID != nil && apiKey.Group != nil {
+		multiplier = apiKey.Group.RateMultiplier
+	}
+
+	// 判断计费类型
+	isSubscriptionBilling := input.Subscription != nil && apiKey.Group != nil && apiKey.Group.IsSubscriptionType()
+	billingType := BillingTypeBalance
+	if isSubscriptionBilling {
+		billingType = BillingTypeSubscription
+	}
+
+	usageLog := &UsageLog{
+		UserID:                user.ID,
+		APIKeyID:              apiKey.ID,
+		AccountID:             accountID,
+		RequestID:             input.RequestID,
+		Model:                 input.Model,
+		InputTokens:           0,
+		OutputTokens:          0,
+		CacheCreationTokens:   0,
+		CacheReadTokens:       0,
+		InputCost:             0,
+		OutputCost:            0,
+		CacheCreationCost:     0,
+		CacheReadCost:         0,
+		TotalCost:             0,
+		ActualCost:            0,
+		RateMultiplier:        multiplier,
+		AccountRateMultiplier: accountRateMultiplier,
+		BillingType:           billingType,
+		Stream:                input.Stream,
+		DurationMs:            &durationMs,
+		IsError:               true,
+		ErrorType:             errorType,
+		ErrorStatusCode:       errorStatusCode,
+		ErrorMessage:          errorMessage,
+		ErrorBody:             errorBody,
+		RequestHeaders:        requestHeaders,
+		UpstreamStatusCode:    upstreamStatusCode,
+		UpstreamErrorMessage:  upstreamErrorMessage,
+		UpstreamErrors:        upstreamErrors,
+		CreatedAt:             time.Now(),
+	}
+
+	// 添加 UserAgent
+	if input.UserAgent != "" {
+		usageLog.UserAgent = &input.UserAgent
+	}
+
+	// 添加 IPAddress
+	if input.IPAddress != "" {
+		usageLog.IPAddress = &input.IPAddress
+	}
+
+	// 添加分组和订阅关联
+	if apiKey.GroupID != nil {
+		usageLog.GroupID = apiKey.GroupID
+	}
+	if input.Subscription != nil {
+		usageLog.SubscriptionID = &input.Subscription.ID
+	}
+
+	if _, err := s.usageLogRepo.Create(ctx, usageLog); err != nil {
+		log.Printf("Create error usage log failed: %v", err)
+		return err
+	}
+
+	return nil
+}
+
 // RecordUsageLongContextInput 记录使用量的输入参数（支持长上下文双倍计费）
 type RecordUsageLongContextInput struct {
 	Result                *ForwardResult

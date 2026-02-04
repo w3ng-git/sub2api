@@ -72,6 +72,24 @@ const (
 	FieldImageCount = "image_count"
 	// FieldImageSize holds the string denoting the image_size field in the database.
 	FieldImageSize = "image_size"
+	// FieldIsError holds the string denoting the is_error field in the database.
+	FieldIsError = "is_error"
+	// FieldErrorType holds the string denoting the error_type field in the database.
+	FieldErrorType = "error_type"
+	// FieldErrorStatusCode holds the string denoting the error_status_code field in the database.
+	FieldErrorStatusCode = "error_status_code"
+	// FieldErrorMessage holds the string denoting the error_message field in the database.
+	FieldErrorMessage = "error_message"
+	// FieldErrorBody holds the string denoting the error_body field in the database.
+	FieldErrorBody = "error_body"
+	// FieldRequestHeaders holds the string denoting the request_headers field in the database.
+	FieldRequestHeaders = "request_headers"
+	// FieldUpstreamStatusCode holds the string denoting the upstream_status_code field in the database.
+	FieldUpstreamStatusCode = "upstream_status_code"
+	// FieldUpstreamErrorMessage holds the string denoting the upstream_error_message field in the database.
+	FieldUpstreamErrorMessage = "upstream_error_message"
+	// FieldUpstreamErrors holds the string denoting the upstream_errors field in the database.
+	FieldUpstreamErrors = "upstream_errors"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -155,6 +173,15 @@ var Columns = []string{
 	FieldIPAddress,
 	FieldImageCount,
 	FieldImageSize,
+	FieldIsError,
+	FieldErrorType,
+	FieldErrorStatusCode,
+	FieldErrorMessage,
+	FieldErrorBody,
+	FieldRequestHeaders,
+	FieldUpstreamStatusCode,
+	FieldUpstreamErrorMessage,
+	FieldUpstreamErrors,
 	FieldCreatedAt,
 }
 
@@ -211,6 +238,12 @@ var (
 	DefaultImageCount int
 	// ImageSizeValidator is a validator for the "image_size" field. It is called by the builders before save.
 	ImageSizeValidator func(string) error
+	// DefaultIsError holds the default value on creation for the "is_error" field.
+	DefaultIsError bool
+	// ErrorTypeValidator is a validator for the "error_type" field. It is called by the builders before save.
+	ErrorTypeValidator func(string) error
+	// ErrorMessageValidator is a validator for the "error_message" field. It is called by the builders before save.
+	ErrorMessageValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
@@ -366,6 +399,51 @@ func ByImageCount(opts ...sql.OrderTermOption) OrderOption {
 // ByImageSize orders the results by the image_size field.
 func ByImageSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldImageSize, opts...).ToFunc()
+}
+
+// ByIsError orders the results by the is_error field.
+func ByIsError(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsError, opts...).ToFunc()
+}
+
+// ByErrorType orders the results by the error_type field.
+func ByErrorType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorType, opts...).ToFunc()
+}
+
+// ByErrorStatusCode orders the results by the error_status_code field.
+func ByErrorStatusCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorStatusCode, opts...).ToFunc()
+}
+
+// ByErrorMessage orders the results by the error_message field.
+func ByErrorMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorMessage, opts...).ToFunc()
+}
+
+// ByErrorBody orders the results by the error_body field.
+func ByErrorBody(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorBody, opts...).ToFunc()
+}
+
+// ByRequestHeaders orders the results by the request_headers field.
+func ByRequestHeaders(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequestHeaders, opts...).ToFunc()
+}
+
+// ByUpstreamStatusCode orders the results by the upstream_status_code field.
+func ByUpstreamStatusCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpstreamStatusCode, opts...).ToFunc()
+}
+
+// ByUpstreamErrorMessage orders the results by the upstream_error_message field.
+func ByUpstreamErrorMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpstreamErrorMessage, opts...).ToFunc()
+}
+
+// ByUpstreamErrors orders the results by the upstream_errors field.
+func ByUpstreamErrors(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpstreamErrors, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

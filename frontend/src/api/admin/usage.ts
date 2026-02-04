@@ -73,6 +73,10 @@ export interface CreateUsageCleanupTaskRequest {
 
 export interface AdminUsageQueryParams extends UsageQueryParams {
   user_id?: number
+  // 错误过滤参数
+  is_error?: boolean
+  error_type?: string
+  error_search?: string
 }
 
 // ==================== API Functions ====================

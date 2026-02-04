@@ -776,6 +776,17 @@ export interface AdminUsageLog extends UsageLog {
 
   // 最小账号信息（仅管理员接口返回）
   account?: UsageLogAccountSummary
+
+  // 错误记录字段
+  is_error: boolean
+  error_type?: string | null
+  error_status_code?: number | null
+  error_message?: string | null
+  error_body?: string | null
+  request_headers?: string | null
+  upstream_status_code?: number | null
+  upstream_error_message?: string | null
+  upstream_errors?: string | null
 }
 
 export interface UsageCleanupFilters {

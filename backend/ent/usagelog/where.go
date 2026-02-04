@@ -200,6 +200,51 @@ func ImageSize(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldEQ(FieldImageSize, v))
 }
 
+// IsError applies equality check predicate on the "is_error" field. It's identical to IsErrorEQ.
+func IsError(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldIsError, v))
+}
+
+// ErrorType applies equality check predicate on the "error_type" field. It's identical to ErrorTypeEQ.
+func ErrorType(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorType, v))
+}
+
+// ErrorStatusCode applies equality check predicate on the "error_status_code" field. It's identical to ErrorStatusCodeEQ.
+func ErrorStatusCode(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorStatusCode, v))
+}
+
+// ErrorMessage applies equality check predicate on the "error_message" field. It's identical to ErrorMessageEQ.
+func ErrorMessage(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorMessage, v))
+}
+
+// ErrorBody applies equality check predicate on the "error_body" field. It's identical to ErrorBodyEQ.
+func ErrorBody(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorBody, v))
+}
+
+// RequestHeaders applies equality check predicate on the "request_headers" field. It's identical to RequestHeadersEQ.
+func RequestHeaders(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestHeaders, v))
+}
+
+// UpstreamStatusCode applies equality check predicate on the "upstream_status_code" field. It's identical to UpstreamStatusCodeEQ.
+func UpstreamStatusCode(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamErrorMessage applies equality check predicate on the "upstream_error_message" field. It's identical to UpstreamErrorMessageEQ.
+func UpstreamErrorMessage(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrors applies equality check predicate on the "upstream_errors" field. It's identical to UpstreamErrorsEQ.
+func UpstreamErrors(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldUpstreamErrors, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldEQ(FieldCreatedAt, v))
@@ -1438,6 +1483,566 @@ func ImageSizeEqualFold(v string) predicate.UsageLog {
 // ImageSizeContainsFold applies the ContainsFold predicate on the "image_size" field.
 func ImageSizeContainsFold(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldContainsFold(FieldImageSize, v))
+}
+
+// IsErrorEQ applies the EQ predicate on the "is_error" field.
+func IsErrorEQ(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldIsError, v))
+}
+
+// IsErrorNEQ applies the NEQ predicate on the "is_error" field.
+func IsErrorNEQ(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldIsError, v))
+}
+
+// ErrorTypeEQ applies the EQ predicate on the "error_type" field.
+func ErrorTypeEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorType, v))
+}
+
+// ErrorTypeNEQ applies the NEQ predicate on the "error_type" field.
+func ErrorTypeNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldErrorType, v))
+}
+
+// ErrorTypeIn applies the In predicate on the "error_type" field.
+func ErrorTypeIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldErrorType, vs...))
+}
+
+// ErrorTypeNotIn applies the NotIn predicate on the "error_type" field.
+func ErrorTypeNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldErrorType, vs...))
+}
+
+// ErrorTypeGT applies the GT predicate on the "error_type" field.
+func ErrorTypeGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldErrorType, v))
+}
+
+// ErrorTypeGTE applies the GTE predicate on the "error_type" field.
+func ErrorTypeGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldErrorType, v))
+}
+
+// ErrorTypeLT applies the LT predicate on the "error_type" field.
+func ErrorTypeLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldErrorType, v))
+}
+
+// ErrorTypeLTE applies the LTE predicate on the "error_type" field.
+func ErrorTypeLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldErrorType, v))
+}
+
+// ErrorTypeContains applies the Contains predicate on the "error_type" field.
+func ErrorTypeContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldErrorType, v))
+}
+
+// ErrorTypeHasPrefix applies the HasPrefix predicate on the "error_type" field.
+func ErrorTypeHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldErrorType, v))
+}
+
+// ErrorTypeHasSuffix applies the HasSuffix predicate on the "error_type" field.
+func ErrorTypeHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldErrorType, v))
+}
+
+// ErrorTypeIsNil applies the IsNil predicate on the "error_type" field.
+func ErrorTypeIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldErrorType))
+}
+
+// ErrorTypeNotNil applies the NotNil predicate on the "error_type" field.
+func ErrorTypeNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldErrorType))
+}
+
+// ErrorTypeEqualFold applies the EqualFold predicate on the "error_type" field.
+func ErrorTypeEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldErrorType, v))
+}
+
+// ErrorTypeContainsFold applies the ContainsFold predicate on the "error_type" field.
+func ErrorTypeContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldErrorType, v))
+}
+
+// ErrorStatusCodeEQ applies the EQ predicate on the "error_status_code" field.
+func ErrorStatusCodeEQ(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorStatusCode, v))
+}
+
+// ErrorStatusCodeNEQ applies the NEQ predicate on the "error_status_code" field.
+func ErrorStatusCodeNEQ(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldErrorStatusCode, v))
+}
+
+// ErrorStatusCodeIn applies the In predicate on the "error_status_code" field.
+func ErrorStatusCodeIn(vs ...int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldErrorStatusCode, vs...))
+}
+
+// ErrorStatusCodeNotIn applies the NotIn predicate on the "error_status_code" field.
+func ErrorStatusCodeNotIn(vs ...int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldErrorStatusCode, vs...))
+}
+
+// ErrorStatusCodeGT applies the GT predicate on the "error_status_code" field.
+func ErrorStatusCodeGT(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldErrorStatusCode, v))
+}
+
+// ErrorStatusCodeGTE applies the GTE predicate on the "error_status_code" field.
+func ErrorStatusCodeGTE(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldErrorStatusCode, v))
+}
+
+// ErrorStatusCodeLT applies the LT predicate on the "error_status_code" field.
+func ErrorStatusCodeLT(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldErrorStatusCode, v))
+}
+
+// ErrorStatusCodeLTE applies the LTE predicate on the "error_status_code" field.
+func ErrorStatusCodeLTE(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldErrorStatusCode, v))
+}
+
+// ErrorStatusCodeIsNil applies the IsNil predicate on the "error_status_code" field.
+func ErrorStatusCodeIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldErrorStatusCode))
+}
+
+// ErrorStatusCodeNotNil applies the NotNil predicate on the "error_status_code" field.
+func ErrorStatusCodeNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldErrorStatusCode))
+}
+
+// ErrorMessageEQ applies the EQ predicate on the "error_message" field.
+func ErrorMessageEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorMessage, v))
+}
+
+// ErrorMessageNEQ applies the NEQ predicate on the "error_message" field.
+func ErrorMessageNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldErrorMessage, v))
+}
+
+// ErrorMessageIn applies the In predicate on the "error_message" field.
+func ErrorMessageIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldErrorMessage, vs...))
+}
+
+// ErrorMessageNotIn applies the NotIn predicate on the "error_message" field.
+func ErrorMessageNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldErrorMessage, vs...))
+}
+
+// ErrorMessageGT applies the GT predicate on the "error_message" field.
+func ErrorMessageGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldErrorMessage, v))
+}
+
+// ErrorMessageGTE applies the GTE predicate on the "error_message" field.
+func ErrorMessageGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldErrorMessage, v))
+}
+
+// ErrorMessageLT applies the LT predicate on the "error_message" field.
+func ErrorMessageLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldErrorMessage, v))
+}
+
+// ErrorMessageLTE applies the LTE predicate on the "error_message" field.
+func ErrorMessageLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldErrorMessage, v))
+}
+
+// ErrorMessageContains applies the Contains predicate on the "error_message" field.
+func ErrorMessageContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldErrorMessage, v))
+}
+
+// ErrorMessageHasPrefix applies the HasPrefix predicate on the "error_message" field.
+func ErrorMessageHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldErrorMessage, v))
+}
+
+// ErrorMessageHasSuffix applies the HasSuffix predicate on the "error_message" field.
+func ErrorMessageHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldErrorMessage, v))
+}
+
+// ErrorMessageIsNil applies the IsNil predicate on the "error_message" field.
+func ErrorMessageIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldErrorMessage))
+}
+
+// ErrorMessageNotNil applies the NotNil predicate on the "error_message" field.
+func ErrorMessageNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldErrorMessage))
+}
+
+// ErrorMessageEqualFold applies the EqualFold predicate on the "error_message" field.
+func ErrorMessageEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldErrorMessage, v))
+}
+
+// ErrorMessageContainsFold applies the ContainsFold predicate on the "error_message" field.
+func ErrorMessageContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldErrorMessage, v))
+}
+
+// ErrorBodyEQ applies the EQ predicate on the "error_body" field.
+func ErrorBodyEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldErrorBody, v))
+}
+
+// ErrorBodyNEQ applies the NEQ predicate on the "error_body" field.
+func ErrorBodyNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldErrorBody, v))
+}
+
+// ErrorBodyIn applies the In predicate on the "error_body" field.
+func ErrorBodyIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldErrorBody, vs...))
+}
+
+// ErrorBodyNotIn applies the NotIn predicate on the "error_body" field.
+func ErrorBodyNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldErrorBody, vs...))
+}
+
+// ErrorBodyGT applies the GT predicate on the "error_body" field.
+func ErrorBodyGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldErrorBody, v))
+}
+
+// ErrorBodyGTE applies the GTE predicate on the "error_body" field.
+func ErrorBodyGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldErrorBody, v))
+}
+
+// ErrorBodyLT applies the LT predicate on the "error_body" field.
+func ErrorBodyLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldErrorBody, v))
+}
+
+// ErrorBodyLTE applies the LTE predicate on the "error_body" field.
+func ErrorBodyLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldErrorBody, v))
+}
+
+// ErrorBodyContains applies the Contains predicate on the "error_body" field.
+func ErrorBodyContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldErrorBody, v))
+}
+
+// ErrorBodyHasPrefix applies the HasPrefix predicate on the "error_body" field.
+func ErrorBodyHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldErrorBody, v))
+}
+
+// ErrorBodyHasSuffix applies the HasSuffix predicate on the "error_body" field.
+func ErrorBodyHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldErrorBody, v))
+}
+
+// ErrorBodyIsNil applies the IsNil predicate on the "error_body" field.
+func ErrorBodyIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldErrorBody))
+}
+
+// ErrorBodyNotNil applies the NotNil predicate on the "error_body" field.
+func ErrorBodyNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldErrorBody))
+}
+
+// ErrorBodyEqualFold applies the EqualFold predicate on the "error_body" field.
+func ErrorBodyEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldErrorBody, v))
+}
+
+// ErrorBodyContainsFold applies the ContainsFold predicate on the "error_body" field.
+func ErrorBodyContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldErrorBody, v))
+}
+
+// RequestHeadersEQ applies the EQ predicate on the "request_headers" field.
+func RequestHeadersEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestHeaders, v))
+}
+
+// RequestHeadersNEQ applies the NEQ predicate on the "request_headers" field.
+func RequestHeadersNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldRequestHeaders, v))
+}
+
+// RequestHeadersIn applies the In predicate on the "request_headers" field.
+func RequestHeadersIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldRequestHeaders, vs...))
+}
+
+// RequestHeadersNotIn applies the NotIn predicate on the "request_headers" field.
+func RequestHeadersNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldRequestHeaders, vs...))
+}
+
+// RequestHeadersGT applies the GT predicate on the "request_headers" field.
+func RequestHeadersGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldRequestHeaders, v))
+}
+
+// RequestHeadersGTE applies the GTE predicate on the "request_headers" field.
+func RequestHeadersGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldRequestHeaders, v))
+}
+
+// RequestHeadersLT applies the LT predicate on the "request_headers" field.
+func RequestHeadersLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldRequestHeaders, v))
+}
+
+// RequestHeadersLTE applies the LTE predicate on the "request_headers" field.
+func RequestHeadersLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldRequestHeaders, v))
+}
+
+// RequestHeadersContains applies the Contains predicate on the "request_headers" field.
+func RequestHeadersContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldRequestHeaders, v))
+}
+
+// RequestHeadersHasPrefix applies the HasPrefix predicate on the "request_headers" field.
+func RequestHeadersHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldRequestHeaders, v))
+}
+
+// RequestHeadersHasSuffix applies the HasSuffix predicate on the "request_headers" field.
+func RequestHeadersHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldRequestHeaders, v))
+}
+
+// RequestHeadersIsNil applies the IsNil predicate on the "request_headers" field.
+func RequestHeadersIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldRequestHeaders))
+}
+
+// RequestHeadersNotNil applies the NotNil predicate on the "request_headers" field.
+func RequestHeadersNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldRequestHeaders))
+}
+
+// RequestHeadersEqualFold applies the EqualFold predicate on the "request_headers" field.
+func RequestHeadersEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldRequestHeaders, v))
+}
+
+// RequestHeadersContainsFold applies the ContainsFold predicate on the "request_headers" field.
+func RequestHeadersContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldRequestHeaders, v))
+}
+
+// UpstreamStatusCodeEQ applies the EQ predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeEQ(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamStatusCodeNEQ applies the NEQ predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeNEQ(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamStatusCodeIn applies the In predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeIn(vs ...int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldUpstreamStatusCode, vs...))
+}
+
+// UpstreamStatusCodeNotIn applies the NotIn predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeNotIn(vs ...int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldUpstreamStatusCode, vs...))
+}
+
+// UpstreamStatusCodeGT applies the GT predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeGT(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamStatusCodeGTE applies the GTE predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeGTE(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamStatusCodeLT applies the LT predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeLT(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamStatusCodeLTE applies the LTE predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeLTE(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldUpstreamStatusCode, v))
+}
+
+// UpstreamStatusCodeIsNil applies the IsNil predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldUpstreamStatusCode))
+}
+
+// UpstreamStatusCodeNotNil applies the NotNil predicate on the "upstream_status_code" field.
+func UpstreamStatusCodeNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldUpstreamStatusCode))
+}
+
+// UpstreamErrorMessageEQ applies the EQ predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageNEQ applies the NEQ predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageIn applies the In predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldUpstreamErrorMessage, vs...))
+}
+
+// UpstreamErrorMessageNotIn applies the NotIn predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldUpstreamErrorMessage, vs...))
+}
+
+// UpstreamErrorMessageGT applies the GT predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageGTE applies the GTE predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageLT applies the LT predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageLTE applies the LTE predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageContains applies the Contains predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageHasPrefix applies the HasPrefix predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageHasSuffix applies the HasSuffix predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageIsNil applies the IsNil predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldUpstreamErrorMessage))
+}
+
+// UpstreamErrorMessageNotNil applies the NotNil predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldUpstreamErrorMessage))
+}
+
+// UpstreamErrorMessageEqualFold applies the EqualFold predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorMessageContainsFold applies the ContainsFold predicate on the "upstream_error_message" field.
+func UpstreamErrorMessageContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldUpstreamErrorMessage, v))
+}
+
+// UpstreamErrorsEQ applies the EQ predicate on the "upstream_errors" field.
+func UpstreamErrorsEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsNEQ applies the NEQ predicate on the "upstream_errors" field.
+func UpstreamErrorsNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsIn applies the In predicate on the "upstream_errors" field.
+func UpstreamErrorsIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldUpstreamErrors, vs...))
+}
+
+// UpstreamErrorsNotIn applies the NotIn predicate on the "upstream_errors" field.
+func UpstreamErrorsNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldUpstreamErrors, vs...))
+}
+
+// UpstreamErrorsGT applies the GT predicate on the "upstream_errors" field.
+func UpstreamErrorsGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsGTE applies the GTE predicate on the "upstream_errors" field.
+func UpstreamErrorsGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsLT applies the LT predicate on the "upstream_errors" field.
+func UpstreamErrorsLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsLTE applies the LTE predicate on the "upstream_errors" field.
+func UpstreamErrorsLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsContains applies the Contains predicate on the "upstream_errors" field.
+func UpstreamErrorsContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsHasPrefix applies the HasPrefix predicate on the "upstream_errors" field.
+func UpstreamErrorsHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsHasSuffix applies the HasSuffix predicate on the "upstream_errors" field.
+func UpstreamErrorsHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsIsNil applies the IsNil predicate on the "upstream_errors" field.
+func UpstreamErrorsIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldUpstreamErrors))
+}
+
+// UpstreamErrorsNotNil applies the NotNil predicate on the "upstream_errors" field.
+func UpstreamErrorsNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldUpstreamErrors))
+}
+
+// UpstreamErrorsEqualFold applies the EqualFold predicate on the "upstream_errors" field.
+func UpstreamErrorsEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldUpstreamErrors, v))
+}
+
+// UpstreamErrorsContainsFold applies the ContainsFold predicate on the "upstream_errors" field.
+func UpstreamErrorsContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldUpstreamErrors, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

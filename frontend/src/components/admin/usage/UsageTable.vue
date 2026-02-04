@@ -2,6 +2,23 @@
   <div class="card overflow-hidden">
     <div class="overflow-auto">
       <DataTable :columns="cols" :data="data" :loading="loading">
+        <template #cell-status="{ row }">
+          <div class="flex items-center gap-1.5">
+            <span v-if="row.is_error" class="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ t('admin.usage.error') }}
+            </span>
+            <span v-else class="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              {{ t('admin.usage.success') }}
+            </span>
+          </div>
+        </template>
+
         <template #cell-user="{ row }">
           <div class="text-sm">
             <span class="font-medium text-gray-900 dark:text-white">{{ row.user?.email || '-' }}</span>
@@ -128,6 +145,17 @@
         <template #cell-ip_address="{ row }">
           <span v-if="row.ip_address" class="text-sm font-mono text-gray-600 dark:text-gray-400">{{ row.ip_address }}</span>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
+        </template>
+
+        <template #cell-actions="{ row }">
+          <button
+            v-if="row.is_error"
+            type="button"
+            @click="$emit('view-error', row)"
+            class="btn btn-sm btn-secondary"
+          >
+            {{ t('admin.usage.viewDetails') }}
+          </button>
         </template>
 
         <template #empty><EmptyState :message="t('usage.noRecords')" /></template>
@@ -261,6 +289,7 @@ const tokenTooltipPosition = ref({ x: 0, y: 0 })
 const tokenTooltipData = ref<AdminUsageLog | null>(null)
 
 const cols = computed(() => [
+  { key: 'status', label: t('admin.usage.status'), sortable: false },
   { key: 'user', label: t('admin.usage.user'), sortable: false },
   { key: 'api_key', label: t('usage.apiKeyFilter'), sortable: false },
   { key: 'account', label: t('admin.usage.account'), sortable: false },
@@ -274,7 +303,8 @@ const cols = computed(() => [
   { key: 'duration', label: t('usage.duration'), sortable: false },
   { key: 'created_at', label: t('usage.time'), sortable: true },
   { key: 'user_agent', label: t('usage.userAgent'), sortable: false },
-  { key: 'ip_address', label: t('admin.usage.ipAddress'), sortable: false }
+  { key: 'ip_address', label: t('admin.usage.ipAddress'), sortable: false },
+  { key: 'actions', label: t('common.actions'), sortable: false }
 ])
 
 const formatCacheTokens = (tokens: number): string => {

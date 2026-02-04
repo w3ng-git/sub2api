@@ -119,6 +119,36 @@ func (UsageLog) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
+		// 错误记录字段
+		field.Bool("is_error").
+			Default(false),
+		field.String("error_type").
+			MaxLen(64).
+			Optional().
+			Nillable(),
+		field.Int("error_status_code").
+			Optional().
+			Nillable(),
+		field.String("error_message").
+			MaxLen(2048).
+			Optional().
+			Nillable(),
+		field.Text("error_body").
+			Optional().
+			Nillable(),
+		field.Text("request_headers").
+			Optional().
+			Nillable(),
+		field.Int("upstream_status_code").
+			Optional().
+			Nillable(),
+		field.Text("upstream_error_message").
+			Optional().
+			Nillable(),
+		field.Text("upstream_errors").
+			Optional().
+			Nillable(),
+
 		// 时间戳（只有 created_at，日志不可修改）
 		field.Time("created_at").
 			Default(time.Now).
@@ -170,5 +200,9 @@ func (UsageLog) Indexes() []ent.Index {
 		// 复合索引用于时间范围查询
 		index.Fields("user_id", "created_at"),
 		index.Fields("api_key_id", "created_at"),
+		// 错误记录索引
+		index.Fields("is_error"),
+		index.Fields("error_type"),
+		index.Fields("is_error", "created_at"),
 	}
 }

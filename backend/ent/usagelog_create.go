@@ -393,6 +393,132 @@ func (_c *UsageLogCreate) SetNillableImageSize(v *string) *UsageLogCreate {
 	return _c
 }
 
+// SetIsError sets the "is_error" field.
+func (_c *UsageLogCreate) SetIsError(v bool) *UsageLogCreate {
+	_c.mutation.SetIsError(v)
+	return _c
+}
+
+// SetNillableIsError sets the "is_error" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableIsError(v *bool) *UsageLogCreate {
+	if v != nil {
+		_c.SetIsError(*v)
+	}
+	return _c
+}
+
+// SetErrorType sets the "error_type" field.
+func (_c *UsageLogCreate) SetErrorType(v string) *UsageLogCreate {
+	_c.mutation.SetErrorType(v)
+	return _c
+}
+
+// SetNillableErrorType sets the "error_type" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableErrorType(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetErrorType(*v)
+	}
+	return _c
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (_c *UsageLogCreate) SetErrorStatusCode(v int) *UsageLogCreate {
+	_c.mutation.SetErrorStatusCode(v)
+	return _c
+}
+
+// SetNillableErrorStatusCode sets the "error_status_code" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableErrorStatusCode(v *int) *UsageLogCreate {
+	if v != nil {
+		_c.SetErrorStatusCode(*v)
+	}
+	return _c
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (_c *UsageLogCreate) SetErrorMessage(v string) *UsageLogCreate {
+	_c.mutation.SetErrorMessage(v)
+	return _c
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableErrorMessage(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetErrorMessage(*v)
+	}
+	return _c
+}
+
+// SetErrorBody sets the "error_body" field.
+func (_c *UsageLogCreate) SetErrorBody(v string) *UsageLogCreate {
+	_c.mutation.SetErrorBody(v)
+	return _c
+}
+
+// SetNillableErrorBody sets the "error_body" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableErrorBody(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetErrorBody(*v)
+	}
+	return _c
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (_c *UsageLogCreate) SetRequestHeaders(v string) *UsageLogCreate {
+	_c.mutation.SetRequestHeaders(v)
+	return _c
+}
+
+// SetNillableRequestHeaders sets the "request_headers" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableRequestHeaders(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetRequestHeaders(*v)
+	}
+	return _c
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (_c *UsageLogCreate) SetUpstreamStatusCode(v int) *UsageLogCreate {
+	_c.mutation.SetUpstreamStatusCode(v)
+	return _c
+}
+
+// SetNillableUpstreamStatusCode sets the "upstream_status_code" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableUpstreamStatusCode(v *int) *UsageLogCreate {
+	if v != nil {
+		_c.SetUpstreamStatusCode(*v)
+	}
+	return _c
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (_c *UsageLogCreate) SetUpstreamErrorMessage(v string) *UsageLogCreate {
+	_c.mutation.SetUpstreamErrorMessage(v)
+	return _c
+}
+
+// SetNillableUpstreamErrorMessage sets the "upstream_error_message" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableUpstreamErrorMessage(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetUpstreamErrorMessage(*v)
+	}
+	return _c
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (_c *UsageLogCreate) SetUpstreamErrors(v string) *UsageLogCreate {
+	_c.mutation.SetUpstreamErrors(v)
+	return _c
+}
+
+// SetNillableUpstreamErrors sets the "upstream_errors" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableUpstreamErrors(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetUpstreamErrors(*v)
+	}
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *UsageLogCreate) SetCreatedAt(v time.Time) *UsageLogCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -531,6 +657,10 @@ func (_c *UsageLogCreate) defaults() {
 		v := usagelog.DefaultImageCount
 		_c.mutation.SetImageCount(v)
 	}
+	if _, ok := _c.mutation.IsError(); !ok {
+		v := usagelog.DefaultIsError
+		_c.mutation.SetIsError(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := usagelog.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -625,6 +755,19 @@ func (_c *UsageLogCreate) check() error {
 	if v, ok := _c.mutation.ImageSize(); ok {
 		if err := usagelog.ImageSizeValidator(v); err != nil {
 			return &ValidationError{Name: "image_size", err: fmt.Errorf(`ent: validator failed for field "UsageLog.image_size": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.IsError(); !ok {
+		return &ValidationError{Name: "is_error", err: errors.New(`ent: missing required field "UsageLog.is_error"`)}
+	}
+	if v, ok := _c.mutation.ErrorType(); ok {
+		if err := usagelog.ErrorTypeValidator(v); err != nil {
+			return &ValidationError{Name: "error_type", err: fmt.Errorf(`ent: validator failed for field "UsageLog.error_type": %w`, err)}
+		}
+	}
+	if v, ok := _c.mutation.ErrorMessage(); ok {
+		if err := usagelog.ErrorMessageValidator(v); err != nil {
+			return &ValidationError{Name: "error_message", err: fmt.Errorf(`ent: validator failed for field "UsageLog.error_message": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
@@ -761,6 +904,42 @@ func (_c *UsageLogCreate) createSpec() (*UsageLog, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ImageSize(); ok {
 		_spec.SetField(usagelog.FieldImageSize, field.TypeString, value)
 		_node.ImageSize = &value
+	}
+	if value, ok := _c.mutation.IsError(); ok {
+		_spec.SetField(usagelog.FieldIsError, field.TypeBool, value)
+		_node.IsError = value
+	}
+	if value, ok := _c.mutation.ErrorType(); ok {
+		_spec.SetField(usagelog.FieldErrorType, field.TypeString, value)
+		_node.ErrorType = &value
+	}
+	if value, ok := _c.mutation.ErrorStatusCode(); ok {
+		_spec.SetField(usagelog.FieldErrorStatusCode, field.TypeInt, value)
+		_node.ErrorStatusCode = &value
+	}
+	if value, ok := _c.mutation.ErrorMessage(); ok {
+		_spec.SetField(usagelog.FieldErrorMessage, field.TypeString, value)
+		_node.ErrorMessage = &value
+	}
+	if value, ok := _c.mutation.ErrorBody(); ok {
+		_spec.SetField(usagelog.FieldErrorBody, field.TypeString, value)
+		_node.ErrorBody = &value
+	}
+	if value, ok := _c.mutation.RequestHeaders(); ok {
+		_spec.SetField(usagelog.FieldRequestHeaders, field.TypeString, value)
+		_node.RequestHeaders = &value
+	}
+	if value, ok := _c.mutation.UpstreamStatusCode(); ok {
+		_spec.SetField(usagelog.FieldUpstreamStatusCode, field.TypeInt, value)
+		_node.UpstreamStatusCode = &value
+	}
+	if value, ok := _c.mutation.UpstreamErrorMessage(); ok {
+		_spec.SetField(usagelog.FieldUpstreamErrorMessage, field.TypeString, value)
+		_node.UpstreamErrorMessage = &value
+	}
+	if value, ok := _c.mutation.UpstreamErrors(); ok {
+		_spec.SetField(usagelog.FieldUpstreamErrors, field.TypeString, value)
+		_node.UpstreamErrors = &value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(usagelog.FieldCreatedAt, field.TypeTime, value)
@@ -1407,6 +1586,174 @@ func (u *UsageLogUpsert) ClearImageSize() *UsageLogUpsert {
 	return u
 }
 
+// SetIsError sets the "is_error" field.
+func (u *UsageLogUpsert) SetIsError(v bool) *UsageLogUpsert {
+	u.Set(usagelog.FieldIsError, v)
+	return u
+}
+
+// UpdateIsError sets the "is_error" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateIsError() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldIsError)
+	return u
+}
+
+// SetErrorType sets the "error_type" field.
+func (u *UsageLogUpsert) SetErrorType(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldErrorType, v)
+	return u
+}
+
+// UpdateErrorType sets the "error_type" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateErrorType() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldErrorType)
+	return u
+}
+
+// ClearErrorType clears the value of the "error_type" field.
+func (u *UsageLogUpsert) ClearErrorType() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldErrorType)
+	return u
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (u *UsageLogUpsert) SetErrorStatusCode(v int) *UsageLogUpsert {
+	u.Set(usagelog.FieldErrorStatusCode, v)
+	return u
+}
+
+// UpdateErrorStatusCode sets the "error_status_code" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateErrorStatusCode() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldErrorStatusCode)
+	return u
+}
+
+// AddErrorStatusCode adds v to the "error_status_code" field.
+func (u *UsageLogUpsert) AddErrorStatusCode(v int) *UsageLogUpsert {
+	u.Add(usagelog.FieldErrorStatusCode, v)
+	return u
+}
+
+// ClearErrorStatusCode clears the value of the "error_status_code" field.
+func (u *UsageLogUpsert) ClearErrorStatusCode() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldErrorStatusCode)
+	return u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *UsageLogUpsert) SetErrorMessage(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldErrorMessage, v)
+	return u
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateErrorMessage() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldErrorMessage)
+	return u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *UsageLogUpsert) ClearErrorMessage() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldErrorMessage)
+	return u
+}
+
+// SetErrorBody sets the "error_body" field.
+func (u *UsageLogUpsert) SetErrorBody(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldErrorBody, v)
+	return u
+}
+
+// UpdateErrorBody sets the "error_body" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateErrorBody() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldErrorBody)
+	return u
+}
+
+// ClearErrorBody clears the value of the "error_body" field.
+func (u *UsageLogUpsert) ClearErrorBody() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldErrorBody)
+	return u
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (u *UsageLogUpsert) SetRequestHeaders(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldRequestHeaders, v)
+	return u
+}
+
+// UpdateRequestHeaders sets the "request_headers" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateRequestHeaders() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldRequestHeaders)
+	return u
+}
+
+// ClearRequestHeaders clears the value of the "request_headers" field.
+func (u *UsageLogUpsert) ClearRequestHeaders() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldRequestHeaders)
+	return u
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (u *UsageLogUpsert) SetUpstreamStatusCode(v int) *UsageLogUpsert {
+	u.Set(usagelog.FieldUpstreamStatusCode, v)
+	return u
+}
+
+// UpdateUpstreamStatusCode sets the "upstream_status_code" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateUpstreamStatusCode() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldUpstreamStatusCode)
+	return u
+}
+
+// AddUpstreamStatusCode adds v to the "upstream_status_code" field.
+func (u *UsageLogUpsert) AddUpstreamStatusCode(v int) *UsageLogUpsert {
+	u.Add(usagelog.FieldUpstreamStatusCode, v)
+	return u
+}
+
+// ClearUpstreamStatusCode clears the value of the "upstream_status_code" field.
+func (u *UsageLogUpsert) ClearUpstreamStatusCode() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldUpstreamStatusCode)
+	return u
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (u *UsageLogUpsert) SetUpstreamErrorMessage(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldUpstreamErrorMessage, v)
+	return u
+}
+
+// UpdateUpstreamErrorMessage sets the "upstream_error_message" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateUpstreamErrorMessage() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldUpstreamErrorMessage)
+	return u
+}
+
+// ClearUpstreamErrorMessage clears the value of the "upstream_error_message" field.
+func (u *UsageLogUpsert) ClearUpstreamErrorMessage() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldUpstreamErrorMessage)
+	return u
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (u *UsageLogUpsert) SetUpstreamErrors(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldUpstreamErrors, v)
+	return u
+}
+
+// UpdateUpstreamErrors sets the "upstream_errors" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateUpstreamErrors() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldUpstreamErrors)
+	return u
+}
+
+// ClearUpstreamErrors clears the value of the "upstream_errors" field.
+func (u *UsageLogUpsert) ClearUpstreamErrors() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldUpstreamErrors)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -2037,6 +2384,202 @@ func (u *UsageLogUpsertOne) UpdateImageSize() *UsageLogUpsertOne {
 func (u *UsageLogUpsertOne) ClearImageSize() *UsageLogUpsertOne {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.ClearImageSize()
+	})
+}
+
+// SetIsError sets the "is_error" field.
+func (u *UsageLogUpsertOne) SetIsError(v bool) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetIsError(v)
+	})
+}
+
+// UpdateIsError sets the "is_error" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateIsError() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateIsError()
+	})
+}
+
+// SetErrorType sets the "error_type" field.
+func (u *UsageLogUpsertOne) SetErrorType(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorType(v)
+	})
+}
+
+// UpdateErrorType sets the "error_type" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateErrorType() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorType()
+	})
+}
+
+// ClearErrorType clears the value of the "error_type" field.
+func (u *UsageLogUpsertOne) ClearErrorType() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorType()
+	})
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (u *UsageLogUpsertOne) SetErrorStatusCode(v int) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorStatusCode(v)
+	})
+}
+
+// AddErrorStatusCode adds v to the "error_status_code" field.
+func (u *UsageLogUpsertOne) AddErrorStatusCode(v int) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddErrorStatusCode(v)
+	})
+}
+
+// UpdateErrorStatusCode sets the "error_status_code" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateErrorStatusCode() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorStatusCode()
+	})
+}
+
+// ClearErrorStatusCode clears the value of the "error_status_code" field.
+func (u *UsageLogUpsertOne) ClearErrorStatusCode() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorStatusCode()
+	})
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *UsageLogUpsertOne) SetErrorMessage(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorMessage(v)
+	})
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateErrorMessage() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorMessage()
+	})
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *UsageLogUpsertOne) ClearErrorMessage() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorMessage()
+	})
+}
+
+// SetErrorBody sets the "error_body" field.
+func (u *UsageLogUpsertOne) SetErrorBody(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorBody(v)
+	})
+}
+
+// UpdateErrorBody sets the "error_body" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateErrorBody() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorBody()
+	})
+}
+
+// ClearErrorBody clears the value of the "error_body" field.
+func (u *UsageLogUpsertOne) ClearErrorBody() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorBody()
+	})
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (u *UsageLogUpsertOne) SetRequestHeaders(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestHeaders(v)
+	})
+}
+
+// UpdateRequestHeaders sets the "request_headers" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateRequestHeaders() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestHeaders()
+	})
+}
+
+// ClearRequestHeaders clears the value of the "request_headers" field.
+func (u *UsageLogUpsertOne) ClearRequestHeaders() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestHeaders()
+	})
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (u *UsageLogUpsertOne) SetUpstreamStatusCode(v int) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetUpstreamStatusCode(v)
+	})
+}
+
+// AddUpstreamStatusCode adds v to the "upstream_status_code" field.
+func (u *UsageLogUpsertOne) AddUpstreamStatusCode(v int) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddUpstreamStatusCode(v)
+	})
+}
+
+// UpdateUpstreamStatusCode sets the "upstream_status_code" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateUpstreamStatusCode() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateUpstreamStatusCode()
+	})
+}
+
+// ClearUpstreamStatusCode clears the value of the "upstream_status_code" field.
+func (u *UsageLogUpsertOne) ClearUpstreamStatusCode() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearUpstreamStatusCode()
+	})
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (u *UsageLogUpsertOne) SetUpstreamErrorMessage(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetUpstreamErrorMessage(v)
+	})
+}
+
+// UpdateUpstreamErrorMessage sets the "upstream_error_message" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateUpstreamErrorMessage() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateUpstreamErrorMessage()
+	})
+}
+
+// ClearUpstreamErrorMessage clears the value of the "upstream_error_message" field.
+func (u *UsageLogUpsertOne) ClearUpstreamErrorMessage() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearUpstreamErrorMessage()
+	})
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (u *UsageLogUpsertOne) SetUpstreamErrors(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetUpstreamErrors(v)
+	})
+}
+
+// UpdateUpstreamErrors sets the "upstream_errors" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateUpstreamErrors() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateUpstreamErrors()
+	})
+}
+
+// ClearUpstreamErrors clears the value of the "upstream_errors" field.
+func (u *UsageLogUpsertOne) ClearUpstreamErrors() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearUpstreamErrors()
 	})
 }
 
@@ -2836,6 +3379,202 @@ func (u *UsageLogUpsertBulk) UpdateImageSize() *UsageLogUpsertBulk {
 func (u *UsageLogUpsertBulk) ClearImageSize() *UsageLogUpsertBulk {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.ClearImageSize()
+	})
+}
+
+// SetIsError sets the "is_error" field.
+func (u *UsageLogUpsertBulk) SetIsError(v bool) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetIsError(v)
+	})
+}
+
+// UpdateIsError sets the "is_error" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateIsError() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateIsError()
+	})
+}
+
+// SetErrorType sets the "error_type" field.
+func (u *UsageLogUpsertBulk) SetErrorType(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorType(v)
+	})
+}
+
+// UpdateErrorType sets the "error_type" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateErrorType() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorType()
+	})
+}
+
+// ClearErrorType clears the value of the "error_type" field.
+func (u *UsageLogUpsertBulk) ClearErrorType() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorType()
+	})
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (u *UsageLogUpsertBulk) SetErrorStatusCode(v int) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorStatusCode(v)
+	})
+}
+
+// AddErrorStatusCode adds v to the "error_status_code" field.
+func (u *UsageLogUpsertBulk) AddErrorStatusCode(v int) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddErrorStatusCode(v)
+	})
+}
+
+// UpdateErrorStatusCode sets the "error_status_code" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateErrorStatusCode() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorStatusCode()
+	})
+}
+
+// ClearErrorStatusCode clears the value of the "error_status_code" field.
+func (u *UsageLogUpsertBulk) ClearErrorStatusCode() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorStatusCode()
+	})
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *UsageLogUpsertBulk) SetErrorMessage(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorMessage(v)
+	})
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateErrorMessage() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorMessage()
+	})
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *UsageLogUpsertBulk) ClearErrorMessage() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorMessage()
+	})
+}
+
+// SetErrorBody sets the "error_body" field.
+func (u *UsageLogUpsertBulk) SetErrorBody(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetErrorBody(v)
+	})
+}
+
+// UpdateErrorBody sets the "error_body" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateErrorBody() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateErrorBody()
+	})
+}
+
+// ClearErrorBody clears the value of the "error_body" field.
+func (u *UsageLogUpsertBulk) ClearErrorBody() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearErrorBody()
+	})
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (u *UsageLogUpsertBulk) SetRequestHeaders(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestHeaders(v)
+	})
+}
+
+// UpdateRequestHeaders sets the "request_headers" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateRequestHeaders() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestHeaders()
+	})
+}
+
+// ClearRequestHeaders clears the value of the "request_headers" field.
+func (u *UsageLogUpsertBulk) ClearRequestHeaders() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestHeaders()
+	})
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (u *UsageLogUpsertBulk) SetUpstreamStatusCode(v int) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetUpstreamStatusCode(v)
+	})
+}
+
+// AddUpstreamStatusCode adds v to the "upstream_status_code" field.
+func (u *UsageLogUpsertBulk) AddUpstreamStatusCode(v int) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddUpstreamStatusCode(v)
+	})
+}
+
+// UpdateUpstreamStatusCode sets the "upstream_status_code" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateUpstreamStatusCode() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateUpstreamStatusCode()
+	})
+}
+
+// ClearUpstreamStatusCode clears the value of the "upstream_status_code" field.
+func (u *UsageLogUpsertBulk) ClearUpstreamStatusCode() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearUpstreamStatusCode()
+	})
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (u *UsageLogUpsertBulk) SetUpstreamErrorMessage(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetUpstreamErrorMessage(v)
+	})
+}
+
+// UpdateUpstreamErrorMessage sets the "upstream_error_message" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateUpstreamErrorMessage() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateUpstreamErrorMessage()
+	})
+}
+
+// ClearUpstreamErrorMessage clears the value of the "upstream_error_message" field.
+func (u *UsageLogUpsertBulk) ClearUpstreamErrorMessage() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearUpstreamErrorMessage()
+	})
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (u *UsageLogUpsertBulk) SetUpstreamErrors(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetUpstreamErrors(v)
+	})
+}
+
+// UpdateUpstreamErrors sets the "upstream_errors" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateUpstreamErrors() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateUpstreamErrors()
+	})
+}
+
+// ClearUpstreamErrors clears the value of the "upstream_errors" field.
+func (u *UsageLogUpsertBulk) ClearUpstreamErrors() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearUpstreamErrors()
 	})
 }
 

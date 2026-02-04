@@ -80,6 +80,24 @@ type UsageLog struct {
 	ImageCount int `json:"image_count,omitempty"`
 	// ImageSize holds the value of the "image_size" field.
 	ImageSize *string `json:"image_size,omitempty"`
+	// IsError holds the value of the "is_error" field.
+	IsError bool `json:"is_error,omitempty"`
+	// ErrorType holds the value of the "error_type" field.
+	ErrorType *string `json:"error_type,omitempty"`
+	// ErrorStatusCode holds the value of the "error_status_code" field.
+	ErrorStatusCode *int `json:"error_status_code,omitempty"`
+	// ErrorMessage holds the value of the "error_message" field.
+	ErrorMessage *string `json:"error_message,omitempty"`
+	// ErrorBody holds the value of the "error_body" field.
+	ErrorBody *string `json:"error_body,omitempty"`
+	// RequestHeaders holds the value of the "request_headers" field.
+	RequestHeaders *string `json:"request_headers,omitempty"`
+	// UpstreamStatusCode holds the value of the "upstream_status_code" field.
+	UpstreamStatusCode *int `json:"upstream_status_code,omitempty"`
+	// UpstreamErrorMessage holds the value of the "upstream_error_message" field.
+	UpstreamErrorMessage *string `json:"upstream_error_message,omitempty"`
+	// UpstreamErrors holds the value of the "upstream_errors" field.
+	UpstreamErrors *string `json:"upstream_errors,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -165,13 +183,13 @@ func (*UsageLog) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case usagelog.FieldStream:
+		case usagelog.FieldStream, usagelog.FieldIsError:
 			values[i] = new(sql.NullBool)
 		case usagelog.FieldInputCost, usagelog.FieldOutputCost, usagelog.FieldCacheCreationCost, usagelog.FieldCacheReadCost, usagelog.FieldTotalCost, usagelog.FieldActualCost, usagelog.FieldRateMultiplier, usagelog.FieldAccountRateMultiplier:
 			values[i] = new(sql.NullFloat64)
-		case usagelog.FieldID, usagelog.FieldUserID, usagelog.FieldAPIKeyID, usagelog.FieldAccountID, usagelog.FieldGroupID, usagelog.FieldSubscriptionID, usagelog.FieldInputTokens, usagelog.FieldOutputTokens, usagelog.FieldCacheCreationTokens, usagelog.FieldCacheReadTokens, usagelog.FieldCacheCreation5mTokens, usagelog.FieldCacheCreation1hTokens, usagelog.FieldBillingType, usagelog.FieldDurationMs, usagelog.FieldFirstTokenMs, usagelog.FieldImageCount:
+		case usagelog.FieldID, usagelog.FieldUserID, usagelog.FieldAPIKeyID, usagelog.FieldAccountID, usagelog.FieldGroupID, usagelog.FieldSubscriptionID, usagelog.FieldInputTokens, usagelog.FieldOutputTokens, usagelog.FieldCacheCreationTokens, usagelog.FieldCacheReadTokens, usagelog.FieldCacheCreation5mTokens, usagelog.FieldCacheCreation1hTokens, usagelog.FieldBillingType, usagelog.FieldDurationMs, usagelog.FieldFirstTokenMs, usagelog.FieldImageCount, usagelog.FieldErrorStatusCode, usagelog.FieldUpstreamStatusCode:
 			values[i] = new(sql.NullInt64)
-		case usagelog.FieldRequestID, usagelog.FieldModel, usagelog.FieldUserAgent, usagelog.FieldIPAddress, usagelog.FieldImageSize:
+		case usagelog.FieldRequestID, usagelog.FieldModel, usagelog.FieldUserAgent, usagelog.FieldIPAddress, usagelog.FieldImageSize, usagelog.FieldErrorType, usagelog.FieldErrorMessage, usagelog.FieldErrorBody, usagelog.FieldRequestHeaders, usagelog.FieldUpstreamErrorMessage, usagelog.FieldUpstreamErrors:
 			values[i] = new(sql.NullString)
 		case usagelog.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -378,6 +396,68 @@ func (_m *UsageLog) assignValues(columns []string, values []any) error {
 				_m.ImageSize = new(string)
 				*_m.ImageSize = value.String
 			}
+		case usagelog.FieldIsError:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_error", values[i])
+			} else if value.Valid {
+				_m.IsError = value.Bool
+			}
+		case usagelog.FieldErrorType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field error_type", values[i])
+			} else if value.Valid {
+				_m.ErrorType = new(string)
+				*_m.ErrorType = value.String
+			}
+		case usagelog.FieldErrorStatusCode:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field error_status_code", values[i])
+			} else if value.Valid {
+				_m.ErrorStatusCode = new(int)
+				*_m.ErrorStatusCode = int(value.Int64)
+			}
+		case usagelog.FieldErrorMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field error_message", values[i])
+			} else if value.Valid {
+				_m.ErrorMessage = new(string)
+				*_m.ErrorMessage = value.String
+			}
+		case usagelog.FieldErrorBody:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field error_body", values[i])
+			} else if value.Valid {
+				_m.ErrorBody = new(string)
+				*_m.ErrorBody = value.String
+			}
+		case usagelog.FieldRequestHeaders:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field request_headers", values[i])
+			} else if value.Valid {
+				_m.RequestHeaders = new(string)
+				*_m.RequestHeaders = value.String
+			}
+		case usagelog.FieldUpstreamStatusCode:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field upstream_status_code", values[i])
+			} else if value.Valid {
+				_m.UpstreamStatusCode = new(int)
+				*_m.UpstreamStatusCode = int(value.Int64)
+			}
+		case usagelog.FieldUpstreamErrorMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field upstream_error_message", values[i])
+			} else if value.Valid {
+				_m.UpstreamErrorMessage = new(string)
+				*_m.UpstreamErrorMessage = value.String
+			}
+		case usagelog.FieldUpstreamErrors:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field upstream_errors", values[i])
+			} else if value.Valid {
+				_m.UpstreamErrors = new(string)
+				*_m.UpstreamErrors = value.String
+			}
 		case usagelog.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -545,6 +625,49 @@ func (_m *UsageLog) String() string {
 	builder.WriteString(", ")
 	if v := _m.ImageSize; v != nil {
 		builder.WriteString("image_size=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("is_error=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IsError))
+	builder.WriteString(", ")
+	if v := _m.ErrorType; v != nil {
+		builder.WriteString("error_type=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.ErrorStatusCode; v != nil {
+		builder.WriteString("error_status_code=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.ErrorMessage; v != nil {
+		builder.WriteString("error_message=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.ErrorBody; v != nil {
+		builder.WriteString("error_body=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.RequestHeaders; v != nil {
+		builder.WriteString("request_headers=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.UpstreamStatusCode; v != nil {
+		builder.WriteString("upstream_status_code=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.UpstreamErrorMessage; v != nil {
+		builder.WriteString("upstream_error_message=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.UpstreamErrors; v != nil {
+		builder.WriteString("upstream_errors=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")

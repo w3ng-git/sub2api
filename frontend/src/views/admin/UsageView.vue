@@ -18,7 +18,7 @@
         </div>
       </div>
       <UsageFilters v-model="filters" v-model:startDate="startDate" v-model:endDate="endDate" :exporting="exporting" @change="applyFilters" @reset="resetFilters" @cleanup="openCleanupDialog" @export="exportToExcel" />
-      <UsageTable :data="usageLogs" :loading="loading" />
+      <UsageTable :data="usageLogs" :loading="loading" @view-error="openErrorDetail" />
       <Pagination v-if="pagination.total > 0" :page="pagination.page" :total="pagination.total" :page-size="pagination.page_size" @update:page="handlePageChange" @update:pageSize="handlePageSizeChange" />
     </div>
   </AppLayout>
@@ -29,6 +29,11 @@
     :start-date="startDate"
     :end-date="endDate"
     @close="cleanupDialogVisible = false"
+  />
+  <UsageErrorDetailDialog
+    :show="errorDetailVisible"
+    :log="selectedErrorLog"
+    @close="errorDetailVisible = false"
   />
 </template>
 
@@ -42,6 +47,7 @@ import { useI18n } from 'vue-i18n'
   import UsageStatsCards from '@/components/admin/usage/UsageStatsCards.vue'; import UsageFilters from '@/components/admin/usage/UsageFilters.vue'
   import UsageTable from '@/components/admin/usage/UsageTable.vue'; import UsageExportProgress from '@/components/admin/usage/UsageExportProgress.vue'
   import UsageCleanupDialog from '@/components/admin/usage/UsageCleanupDialog.vue'
+  import UsageErrorDetailDialog from '@/components/admin/usage/UsageErrorDetailDialog.vue'
 import ModelDistributionChart from '@/components/charts/ModelDistributionChart.vue'; import TokenUsageTrend from '@/components/charts/TokenUsageTrend.vue'
 import type { AdminUsageLog, TrendDataPoint, ModelStat } from '@/types'; import type { AdminUsageStatsResponse, AdminUsageQueryParams } from '@/api/admin/usage'
 
@@ -52,6 +58,13 @@ const trendData = ref<TrendDataPoint[]>([]); const modelStats = ref<ModelStat[]>
 let abortController: AbortController | null = null; let exportAbortController: AbortController | null = null
 const exportProgress = reactive({ show: false, progress: 0, current: 0, total: 0, estimatedTime: '' })
 const cleanupDialogVisible = ref(false)
+const errorDetailVisible = ref(false)
+const selectedErrorLog = ref<AdminUsageLog | null>(null)
+
+const openErrorDetail = (log: AdminUsageLog) => {
+  selectedErrorLog.value = log
+  errorDetailVisible.value = true
+}
 
 const granularityOptions = computed(() => [{ value: 'day', label: t('admin.dashboard.day') }, { value: 'hour', label: t('admin.dashboard.hour') }])
 // Use local timezone to avoid UTC timezone issues

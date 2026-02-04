@@ -143,6 +143,10 @@ type UsageLogFilters struct {
 	BillingType *int8
 	StartTime   *time.Time
 	EndTime     *time.Time
+	// 错误过滤
+	IsError     *bool  // nil=全部, true=仅错误, false=仅成功
+	ErrorType   string // 错误类型过滤
+	ErrorSearch string // 错误内容搜索（搜索 error_message, error_body, upstream_error_message）
 }
 
 // UsageStats represents usage statistics

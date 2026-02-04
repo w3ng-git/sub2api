@@ -144,6 +144,19 @@ func (h *UsageHandler) List(c *gin.Context) {
 		endTime = &t
 	}
 
+	// Parse error filters
+	var isError *bool
+	if isErrorStr := c.Query("is_error"); isErrorStr != "" {
+		val, err := strconv.ParseBool(isErrorStr)
+		if err != nil {
+			response.BadRequest(c, "Invalid is_error value, use true or false")
+			return
+		}
+		isError = &val
+	}
+	errorType := c.Query("error_type")
+	errorSearch := c.Query("error_search")
+
 	params := pagination.PaginationParams{Page: page, PageSize: pageSize}
 	filters := usagestats.UsageLogFilters{
 		UserID:      userID,
@@ -155,6 +168,9 @@ func (h *UsageHandler) List(c *gin.Context) {
 		BillingType: billingType,
 		StartTime:   startTime,
 		EndTime:     endTime,
+		IsError:     isError,
+		ErrorType:   errorType,
+		ErrorSearch: errorSearch,
 	}
 
 	records, result, err := h.usageService.ListWithFilters(c.Request.Context(), params, filters)

@@ -707,8 +707,20 @@ func init() {
 	usagelogDescImageSize := usagelogFields[28].Descriptor()
 	// usagelog.ImageSizeValidator is a validator for the "image_size" field. It is called by the builders before save.
 	usagelog.ImageSizeValidator = usagelogDescImageSize.Validators[0].(func(string) error)
+	// usagelogDescIsError is the schema descriptor for is_error field.
+	usagelogDescIsError := usagelogFields[29].Descriptor()
+	// usagelog.DefaultIsError holds the default value on creation for the is_error field.
+	usagelog.DefaultIsError = usagelogDescIsError.Default.(bool)
+	// usagelogDescErrorType is the schema descriptor for error_type field.
+	usagelogDescErrorType := usagelogFields[30].Descriptor()
+	// usagelog.ErrorTypeValidator is a validator for the "error_type" field. It is called by the builders before save.
+	usagelog.ErrorTypeValidator = usagelogDescErrorType.Validators[0].(func(string) error)
+	// usagelogDescErrorMessage is the schema descriptor for error_message field.
+	usagelogDescErrorMessage := usagelogFields[32].Descriptor()
+	// usagelog.ErrorMessageValidator is a validator for the "error_message" field. It is called by the builders before save.
+	usagelog.ErrorMessageValidator = usagelogDescErrorMessage.Validators[0].(func(string) error)
 	// usagelogDescCreatedAt is the schema descriptor for created_at field.
-	usagelogDescCreatedAt := usagelogFields[29].Descriptor()
+	usagelogDescCreatedAt := usagelogFields[38].Descriptor()
 	// usagelog.DefaultCreatedAt holds the default value on creation for the created_at field.
 	usagelog.DefaultCreatedAt = usagelogDescCreatedAt.Default.(func() time.Time)
 	userMixin := schema.User{}.Mixin()

@@ -139,6 +139,30 @@
           <Select v-model="filters.group_id" :options="groupOptions" searchable @change="emitChange" />
         </div>
 
+        <!-- Error Status Filter -->
+        <div class="w-full sm:w-auto sm:min-w-[150px]">
+          <label class="input-label">{{ t('admin.usage.errorStatus') }}</label>
+          <Select v-model="filters.is_error" :options="errorStatusOptions" @change="emitChange" />
+        </div>
+
+        <!-- Error Type Filter -->
+        <div v-if="filters.is_error === true" class="w-full sm:w-auto sm:min-w-[180px]">
+          <label class="input-label">{{ t('admin.usage.errorType') }}</label>
+          <Select v-model="filters.error_type" :options="errorTypeOptions" @change="emitChange" />
+        </div>
+
+        <!-- Error Search -->
+        <div v-if="filters.is_error === true" class="w-full sm:w-auto sm:min-w-[220px]">
+          <label class="input-label">{{ t('admin.usage.errorSearch') }}</label>
+          <input
+            v-model="filters.error_search"
+            type="text"
+            class="input"
+            :placeholder="t('admin.usage.errorSearchPlaceholder')"
+            @input="debounceErrorSearch"
+          />
+        </div>
+
         <!-- Date Range Filter -->
         <div class="w-full sm:w-auto [&_.date-picker-trigger]:w-full">
           <label class="input-label">{{ t('usage.timeRange') }}</label>
@@ -239,6 +263,30 @@ const billingTypeOptions = ref<SelectOption[]>([
   { value: 0, label: t('admin.usage.billingTypeBalance') },
   { value: 1, label: t('admin.usage.billingTypeSubscription') }
 ])
+
+const errorStatusOptions = ref<SelectOption[]>([
+  { value: null, label: t('admin.usage.allStatus') },
+  { value: true, label: t('admin.usage.onlyErrors') },
+  { value: false, label: t('admin.usage.onlySuccess') }
+])
+
+const errorTypeOptions = ref<SelectOption[]>([
+  { value: null, label: t('admin.usage.allErrorTypes') },
+  { value: 'billing_error', label: t('admin.usage.errorTypeBilling') },
+  { value: 'rate_limit', label: t('admin.usage.errorTypeRateLimit') },
+  { value: 'no_account', label: t('admin.usage.errorTypeNoAccount') },
+  { value: 'upstream_error', label: t('admin.usage.errorTypeUpstream') },
+  { value: 'concurrency_limit', label: t('admin.usage.errorTypeConcurrency') },
+  { value: 'forward_error', label: t('admin.usage.errorTypeForward') }
+])
+
+let errorSearchTimeout: ReturnType<typeof setTimeout> | null = null
+const debounceErrorSearch = () => {
+  if (errorSearchTimeout) clearTimeout(errorSearchTimeout)
+  errorSearchTimeout = setTimeout(() => {
+    emitChange()
+  }, 300)
+}
 
 const emitChange = () => emit('change')
 

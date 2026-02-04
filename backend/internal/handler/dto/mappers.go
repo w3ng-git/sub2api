@@ -456,6 +456,15 @@ func UsageLogFromServiceAdmin(l *service.UsageLog) *AdminUsageLog {
 		AccountRateMultiplier: l.AccountRateMultiplier,
 		IPAddress:             l.IPAddress,
 		Account:               AccountSummaryFromService(l.Account),
+		IsError:               l.IsError,
+		ErrorType:             l.ErrorType,
+		ErrorStatusCode:       l.ErrorStatusCode,
+		ErrorMessage:          l.ErrorMessage,
+		ErrorBody:             l.ErrorBody,
+		RequestHeaders:        l.RequestHeaders,
+		UpstreamStatusCode:    l.UpstreamStatusCode,
+		UpstreamErrorMessage:  l.UpstreamErrorMessage,
+		UpstreamErrors:        l.UpstreamErrors,
 	}
 }
 

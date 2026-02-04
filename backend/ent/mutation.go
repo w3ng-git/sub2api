@@ -13348,6 +13348,17 @@ type UsageLogMutation struct {
 	image_count                 *int
 	addimage_count              *int
 	image_size                  *string
+	is_error                    *bool
+	error_type                  *string
+	error_status_code           *int
+	adderror_status_code        *int
+	error_message               *string
+	error_body                  *string
+	request_headers             *string
+	upstream_status_code        *int
+	addupstream_status_code     *int
+	upstream_error_message      *string
+	upstream_errors             *string
 	created_at                  *time.Time
 	clearedFields               map[string]struct{}
 	user                        *int64
@@ -14974,6 +14985,476 @@ func (m *UsageLogMutation) ResetImageSize() {
 	delete(m.clearedFields, usagelog.FieldImageSize)
 }
 
+// SetIsError sets the "is_error" field.
+func (m *UsageLogMutation) SetIsError(b bool) {
+	m.is_error = &b
+}
+
+// IsError returns the value of the "is_error" field in the mutation.
+func (m *UsageLogMutation) IsError() (r bool, exists bool) {
+	v := m.is_error
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsError returns the old "is_error" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldIsError(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsError is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsError requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsError: %w", err)
+	}
+	return oldValue.IsError, nil
+}
+
+// ResetIsError resets all changes to the "is_error" field.
+func (m *UsageLogMutation) ResetIsError() {
+	m.is_error = nil
+}
+
+// SetErrorType sets the "error_type" field.
+func (m *UsageLogMutation) SetErrorType(s string) {
+	m.error_type = &s
+}
+
+// ErrorType returns the value of the "error_type" field in the mutation.
+func (m *UsageLogMutation) ErrorType() (r string, exists bool) {
+	v := m.error_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorType returns the old "error_type" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldErrorType(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorType: %w", err)
+	}
+	return oldValue.ErrorType, nil
+}
+
+// ClearErrorType clears the value of the "error_type" field.
+func (m *UsageLogMutation) ClearErrorType() {
+	m.error_type = nil
+	m.clearedFields[usagelog.FieldErrorType] = struct{}{}
+}
+
+// ErrorTypeCleared returns if the "error_type" field was cleared in this mutation.
+func (m *UsageLogMutation) ErrorTypeCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldErrorType]
+	return ok
+}
+
+// ResetErrorType resets all changes to the "error_type" field.
+func (m *UsageLogMutation) ResetErrorType() {
+	m.error_type = nil
+	delete(m.clearedFields, usagelog.FieldErrorType)
+}
+
+// SetErrorStatusCode sets the "error_status_code" field.
+func (m *UsageLogMutation) SetErrorStatusCode(i int) {
+	m.error_status_code = &i
+	m.adderror_status_code = nil
+}
+
+// ErrorStatusCode returns the value of the "error_status_code" field in the mutation.
+func (m *UsageLogMutation) ErrorStatusCode() (r int, exists bool) {
+	v := m.error_status_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorStatusCode returns the old "error_status_code" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldErrorStatusCode(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorStatusCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorStatusCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorStatusCode: %w", err)
+	}
+	return oldValue.ErrorStatusCode, nil
+}
+
+// AddErrorStatusCode adds i to the "error_status_code" field.
+func (m *UsageLogMutation) AddErrorStatusCode(i int) {
+	if m.adderror_status_code != nil {
+		*m.adderror_status_code += i
+	} else {
+		m.adderror_status_code = &i
+	}
+}
+
+// AddedErrorStatusCode returns the value that was added to the "error_status_code" field in this mutation.
+func (m *UsageLogMutation) AddedErrorStatusCode() (r int, exists bool) {
+	v := m.adderror_status_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearErrorStatusCode clears the value of the "error_status_code" field.
+func (m *UsageLogMutation) ClearErrorStatusCode() {
+	m.error_status_code = nil
+	m.adderror_status_code = nil
+	m.clearedFields[usagelog.FieldErrorStatusCode] = struct{}{}
+}
+
+// ErrorStatusCodeCleared returns if the "error_status_code" field was cleared in this mutation.
+func (m *UsageLogMutation) ErrorStatusCodeCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldErrorStatusCode]
+	return ok
+}
+
+// ResetErrorStatusCode resets all changes to the "error_status_code" field.
+func (m *UsageLogMutation) ResetErrorStatusCode() {
+	m.error_status_code = nil
+	m.adderror_status_code = nil
+	delete(m.clearedFields, usagelog.FieldErrorStatusCode)
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (m *UsageLogMutation) SetErrorMessage(s string) {
+	m.error_message = &s
+}
+
+// ErrorMessage returns the value of the "error_message" field in the mutation.
+func (m *UsageLogMutation) ErrorMessage() (r string, exists bool) {
+	v := m.error_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorMessage returns the old "error_message" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldErrorMessage(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorMessage: %w", err)
+	}
+	return oldValue.ErrorMessage, nil
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (m *UsageLogMutation) ClearErrorMessage() {
+	m.error_message = nil
+	m.clearedFields[usagelog.FieldErrorMessage] = struct{}{}
+}
+
+// ErrorMessageCleared returns if the "error_message" field was cleared in this mutation.
+func (m *UsageLogMutation) ErrorMessageCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldErrorMessage]
+	return ok
+}
+
+// ResetErrorMessage resets all changes to the "error_message" field.
+func (m *UsageLogMutation) ResetErrorMessage() {
+	m.error_message = nil
+	delete(m.clearedFields, usagelog.FieldErrorMessage)
+}
+
+// SetErrorBody sets the "error_body" field.
+func (m *UsageLogMutation) SetErrorBody(s string) {
+	m.error_body = &s
+}
+
+// ErrorBody returns the value of the "error_body" field in the mutation.
+func (m *UsageLogMutation) ErrorBody() (r string, exists bool) {
+	v := m.error_body
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorBody returns the old "error_body" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldErrorBody(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorBody is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorBody requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorBody: %w", err)
+	}
+	return oldValue.ErrorBody, nil
+}
+
+// ClearErrorBody clears the value of the "error_body" field.
+func (m *UsageLogMutation) ClearErrorBody() {
+	m.error_body = nil
+	m.clearedFields[usagelog.FieldErrorBody] = struct{}{}
+}
+
+// ErrorBodyCleared returns if the "error_body" field was cleared in this mutation.
+func (m *UsageLogMutation) ErrorBodyCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldErrorBody]
+	return ok
+}
+
+// ResetErrorBody resets all changes to the "error_body" field.
+func (m *UsageLogMutation) ResetErrorBody() {
+	m.error_body = nil
+	delete(m.clearedFields, usagelog.FieldErrorBody)
+}
+
+// SetRequestHeaders sets the "request_headers" field.
+func (m *UsageLogMutation) SetRequestHeaders(s string) {
+	m.request_headers = &s
+}
+
+// RequestHeaders returns the value of the "request_headers" field in the mutation.
+func (m *UsageLogMutation) RequestHeaders() (r string, exists bool) {
+	v := m.request_headers
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestHeaders returns the old "request_headers" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldRequestHeaders(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestHeaders is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestHeaders requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestHeaders: %w", err)
+	}
+	return oldValue.RequestHeaders, nil
+}
+
+// ClearRequestHeaders clears the value of the "request_headers" field.
+func (m *UsageLogMutation) ClearRequestHeaders() {
+	m.request_headers = nil
+	m.clearedFields[usagelog.FieldRequestHeaders] = struct{}{}
+}
+
+// RequestHeadersCleared returns if the "request_headers" field was cleared in this mutation.
+func (m *UsageLogMutation) RequestHeadersCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldRequestHeaders]
+	return ok
+}
+
+// ResetRequestHeaders resets all changes to the "request_headers" field.
+func (m *UsageLogMutation) ResetRequestHeaders() {
+	m.request_headers = nil
+	delete(m.clearedFields, usagelog.FieldRequestHeaders)
+}
+
+// SetUpstreamStatusCode sets the "upstream_status_code" field.
+func (m *UsageLogMutation) SetUpstreamStatusCode(i int) {
+	m.upstream_status_code = &i
+	m.addupstream_status_code = nil
+}
+
+// UpstreamStatusCode returns the value of the "upstream_status_code" field in the mutation.
+func (m *UsageLogMutation) UpstreamStatusCode() (r int, exists bool) {
+	v := m.upstream_status_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpstreamStatusCode returns the old "upstream_status_code" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldUpstreamStatusCode(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpstreamStatusCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpstreamStatusCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpstreamStatusCode: %w", err)
+	}
+	return oldValue.UpstreamStatusCode, nil
+}
+
+// AddUpstreamStatusCode adds i to the "upstream_status_code" field.
+func (m *UsageLogMutation) AddUpstreamStatusCode(i int) {
+	if m.addupstream_status_code != nil {
+		*m.addupstream_status_code += i
+	} else {
+		m.addupstream_status_code = &i
+	}
+}
+
+// AddedUpstreamStatusCode returns the value that was added to the "upstream_status_code" field in this mutation.
+func (m *UsageLogMutation) AddedUpstreamStatusCode() (r int, exists bool) {
+	v := m.addupstream_status_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpstreamStatusCode clears the value of the "upstream_status_code" field.
+func (m *UsageLogMutation) ClearUpstreamStatusCode() {
+	m.upstream_status_code = nil
+	m.addupstream_status_code = nil
+	m.clearedFields[usagelog.FieldUpstreamStatusCode] = struct{}{}
+}
+
+// UpstreamStatusCodeCleared returns if the "upstream_status_code" field was cleared in this mutation.
+func (m *UsageLogMutation) UpstreamStatusCodeCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldUpstreamStatusCode]
+	return ok
+}
+
+// ResetUpstreamStatusCode resets all changes to the "upstream_status_code" field.
+func (m *UsageLogMutation) ResetUpstreamStatusCode() {
+	m.upstream_status_code = nil
+	m.addupstream_status_code = nil
+	delete(m.clearedFields, usagelog.FieldUpstreamStatusCode)
+}
+
+// SetUpstreamErrorMessage sets the "upstream_error_message" field.
+func (m *UsageLogMutation) SetUpstreamErrorMessage(s string) {
+	m.upstream_error_message = &s
+}
+
+// UpstreamErrorMessage returns the value of the "upstream_error_message" field in the mutation.
+func (m *UsageLogMutation) UpstreamErrorMessage() (r string, exists bool) {
+	v := m.upstream_error_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpstreamErrorMessage returns the old "upstream_error_message" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldUpstreamErrorMessage(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpstreamErrorMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpstreamErrorMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpstreamErrorMessage: %w", err)
+	}
+	return oldValue.UpstreamErrorMessage, nil
+}
+
+// ClearUpstreamErrorMessage clears the value of the "upstream_error_message" field.
+func (m *UsageLogMutation) ClearUpstreamErrorMessage() {
+	m.upstream_error_message = nil
+	m.clearedFields[usagelog.FieldUpstreamErrorMessage] = struct{}{}
+}
+
+// UpstreamErrorMessageCleared returns if the "upstream_error_message" field was cleared in this mutation.
+func (m *UsageLogMutation) UpstreamErrorMessageCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldUpstreamErrorMessage]
+	return ok
+}
+
+// ResetUpstreamErrorMessage resets all changes to the "upstream_error_message" field.
+func (m *UsageLogMutation) ResetUpstreamErrorMessage() {
+	m.upstream_error_message = nil
+	delete(m.clearedFields, usagelog.FieldUpstreamErrorMessage)
+}
+
+// SetUpstreamErrors sets the "upstream_errors" field.
+func (m *UsageLogMutation) SetUpstreamErrors(s string) {
+	m.upstream_errors = &s
+}
+
+// UpstreamErrors returns the value of the "upstream_errors" field in the mutation.
+func (m *UsageLogMutation) UpstreamErrors() (r string, exists bool) {
+	v := m.upstream_errors
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpstreamErrors returns the old "upstream_errors" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldUpstreamErrors(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpstreamErrors is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpstreamErrors requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpstreamErrors: %w", err)
+	}
+	return oldValue.UpstreamErrors, nil
+}
+
+// ClearUpstreamErrors clears the value of the "upstream_errors" field.
+func (m *UsageLogMutation) ClearUpstreamErrors() {
+	m.upstream_errors = nil
+	m.clearedFields[usagelog.FieldUpstreamErrors] = struct{}{}
+}
+
+// UpstreamErrorsCleared returns if the "upstream_errors" field was cleared in this mutation.
+func (m *UsageLogMutation) UpstreamErrorsCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldUpstreamErrors]
+	return ok
+}
+
+// ResetUpstreamErrors resets all changes to the "upstream_errors" field.
+func (m *UsageLogMutation) ResetUpstreamErrors() {
+	m.upstream_errors = nil
+	delete(m.clearedFields, usagelog.FieldUpstreamErrors)
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *UsageLogMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -15179,7 +15660,7 @@ func (m *UsageLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UsageLogMutation) Fields() []string {
-	fields := make([]string, 0, 30)
+	fields := make([]string, 0, 39)
 	if m.user != nil {
 		fields = append(fields, usagelog.FieldUserID)
 	}
@@ -15267,6 +15748,33 @@ func (m *UsageLogMutation) Fields() []string {
 	if m.image_size != nil {
 		fields = append(fields, usagelog.FieldImageSize)
 	}
+	if m.is_error != nil {
+		fields = append(fields, usagelog.FieldIsError)
+	}
+	if m.error_type != nil {
+		fields = append(fields, usagelog.FieldErrorType)
+	}
+	if m.error_status_code != nil {
+		fields = append(fields, usagelog.FieldErrorStatusCode)
+	}
+	if m.error_message != nil {
+		fields = append(fields, usagelog.FieldErrorMessage)
+	}
+	if m.error_body != nil {
+		fields = append(fields, usagelog.FieldErrorBody)
+	}
+	if m.request_headers != nil {
+		fields = append(fields, usagelog.FieldRequestHeaders)
+	}
+	if m.upstream_status_code != nil {
+		fields = append(fields, usagelog.FieldUpstreamStatusCode)
+	}
+	if m.upstream_error_message != nil {
+		fields = append(fields, usagelog.FieldUpstreamErrorMessage)
+	}
+	if m.upstream_errors != nil {
+		fields = append(fields, usagelog.FieldUpstreamErrors)
+	}
 	if m.created_at != nil {
 		fields = append(fields, usagelog.FieldCreatedAt)
 	}
@@ -15336,6 +15844,24 @@ func (m *UsageLogMutation) Field(name string) (ent.Value, bool) {
 		return m.ImageCount()
 	case usagelog.FieldImageSize:
 		return m.ImageSize()
+	case usagelog.FieldIsError:
+		return m.IsError()
+	case usagelog.FieldErrorType:
+		return m.ErrorType()
+	case usagelog.FieldErrorStatusCode:
+		return m.ErrorStatusCode()
+	case usagelog.FieldErrorMessage:
+		return m.ErrorMessage()
+	case usagelog.FieldErrorBody:
+		return m.ErrorBody()
+	case usagelog.FieldRequestHeaders:
+		return m.RequestHeaders()
+	case usagelog.FieldUpstreamStatusCode:
+		return m.UpstreamStatusCode()
+	case usagelog.FieldUpstreamErrorMessage:
+		return m.UpstreamErrorMessage()
+	case usagelog.FieldUpstreamErrors:
+		return m.UpstreamErrors()
 	case usagelog.FieldCreatedAt:
 		return m.CreatedAt()
 	}
@@ -15405,6 +15931,24 @@ func (m *UsageLogMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldImageCount(ctx)
 	case usagelog.FieldImageSize:
 		return m.OldImageSize(ctx)
+	case usagelog.FieldIsError:
+		return m.OldIsError(ctx)
+	case usagelog.FieldErrorType:
+		return m.OldErrorType(ctx)
+	case usagelog.FieldErrorStatusCode:
+		return m.OldErrorStatusCode(ctx)
+	case usagelog.FieldErrorMessage:
+		return m.OldErrorMessage(ctx)
+	case usagelog.FieldErrorBody:
+		return m.OldErrorBody(ctx)
+	case usagelog.FieldRequestHeaders:
+		return m.OldRequestHeaders(ctx)
+	case usagelog.FieldUpstreamStatusCode:
+		return m.OldUpstreamStatusCode(ctx)
+	case usagelog.FieldUpstreamErrorMessage:
+		return m.OldUpstreamErrorMessage(ctx)
+	case usagelog.FieldUpstreamErrors:
+		return m.OldUpstreamErrors(ctx)
 	case usagelog.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	}
@@ -15619,6 +16163,69 @@ func (m *UsageLogMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetImageSize(v)
 		return nil
+	case usagelog.FieldIsError:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsError(v)
+		return nil
+	case usagelog.FieldErrorType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorType(v)
+		return nil
+	case usagelog.FieldErrorStatusCode:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorStatusCode(v)
+		return nil
+	case usagelog.FieldErrorMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorMessage(v)
+		return nil
+	case usagelog.FieldErrorBody:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorBody(v)
+		return nil
+	case usagelog.FieldRequestHeaders:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestHeaders(v)
+		return nil
+	case usagelog.FieldUpstreamStatusCode:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpstreamStatusCode(v)
+		return nil
+	case usagelog.FieldUpstreamErrorMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpstreamErrorMessage(v)
+		return nil
+	case usagelog.FieldUpstreamErrors:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpstreamErrors(v)
+		return nil
 	case usagelog.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -15688,6 +16295,12 @@ func (m *UsageLogMutation) AddedFields() []string {
 	if m.addimage_count != nil {
 		fields = append(fields, usagelog.FieldImageCount)
 	}
+	if m.adderror_status_code != nil {
+		fields = append(fields, usagelog.FieldErrorStatusCode)
+	}
+	if m.addupstream_status_code != nil {
+		fields = append(fields, usagelog.FieldUpstreamStatusCode)
+	}
 	return fields
 }
 
@@ -15732,6 +16345,10 @@ func (m *UsageLogMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedFirstTokenMs()
 	case usagelog.FieldImageCount:
 		return m.AddedImageCount()
+	case usagelog.FieldErrorStatusCode:
+		return m.AddedErrorStatusCode()
+	case usagelog.FieldUpstreamStatusCode:
+		return m.AddedUpstreamStatusCode()
 	}
 	return nil, false
 }
@@ -15867,6 +16484,20 @@ func (m *UsageLogMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddImageCount(v)
 		return nil
+	case usagelog.FieldErrorStatusCode:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddErrorStatusCode(v)
+		return nil
+	case usagelog.FieldUpstreamStatusCode:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpstreamStatusCode(v)
+		return nil
 	}
 	return fmt.Errorf("unknown UsageLog numeric field %s", name)
 }
@@ -15898,6 +16529,30 @@ func (m *UsageLogMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(usagelog.FieldImageSize) {
 		fields = append(fields, usagelog.FieldImageSize)
+	}
+	if m.FieldCleared(usagelog.FieldErrorType) {
+		fields = append(fields, usagelog.FieldErrorType)
+	}
+	if m.FieldCleared(usagelog.FieldErrorStatusCode) {
+		fields = append(fields, usagelog.FieldErrorStatusCode)
+	}
+	if m.FieldCleared(usagelog.FieldErrorMessage) {
+		fields = append(fields, usagelog.FieldErrorMessage)
+	}
+	if m.FieldCleared(usagelog.FieldErrorBody) {
+		fields = append(fields, usagelog.FieldErrorBody)
+	}
+	if m.FieldCleared(usagelog.FieldRequestHeaders) {
+		fields = append(fields, usagelog.FieldRequestHeaders)
+	}
+	if m.FieldCleared(usagelog.FieldUpstreamStatusCode) {
+		fields = append(fields, usagelog.FieldUpstreamStatusCode)
+	}
+	if m.FieldCleared(usagelog.FieldUpstreamErrorMessage) {
+		fields = append(fields, usagelog.FieldUpstreamErrorMessage)
+	}
+	if m.FieldCleared(usagelog.FieldUpstreamErrors) {
+		fields = append(fields, usagelog.FieldUpstreamErrors)
 	}
 	return fields
 }
@@ -15936,6 +16591,30 @@ func (m *UsageLogMutation) ClearField(name string) error {
 		return nil
 	case usagelog.FieldImageSize:
 		m.ClearImageSize()
+		return nil
+	case usagelog.FieldErrorType:
+		m.ClearErrorType()
+		return nil
+	case usagelog.FieldErrorStatusCode:
+		m.ClearErrorStatusCode()
+		return nil
+	case usagelog.FieldErrorMessage:
+		m.ClearErrorMessage()
+		return nil
+	case usagelog.FieldErrorBody:
+		m.ClearErrorBody()
+		return nil
+	case usagelog.FieldRequestHeaders:
+		m.ClearRequestHeaders()
+		return nil
+	case usagelog.FieldUpstreamStatusCode:
+		m.ClearUpstreamStatusCode()
+		return nil
+	case usagelog.FieldUpstreamErrorMessage:
+		m.ClearUpstreamErrorMessage()
+		return nil
+	case usagelog.FieldUpstreamErrors:
+		m.ClearUpstreamErrors()
 		return nil
 	}
 	return fmt.Errorf("unknown UsageLog nullable field %s", name)
@@ -16031,6 +16710,33 @@ func (m *UsageLogMutation) ResetField(name string) error {
 		return nil
 	case usagelog.FieldImageSize:
 		m.ResetImageSize()
+		return nil
+	case usagelog.FieldIsError:
+		m.ResetIsError()
+		return nil
+	case usagelog.FieldErrorType:
+		m.ResetErrorType()
+		return nil
+	case usagelog.FieldErrorStatusCode:
+		m.ResetErrorStatusCode()
+		return nil
+	case usagelog.FieldErrorMessage:
+		m.ResetErrorMessage()
+		return nil
+	case usagelog.FieldErrorBody:
+		m.ResetErrorBody()
+		return nil
+	case usagelog.FieldRequestHeaders:
+		m.ResetRequestHeaders()
+		return nil
+	case usagelog.FieldUpstreamStatusCode:
+		m.ResetUpstreamStatusCode()
+		return nil
+	case usagelog.FieldUpstreamErrorMessage:
+		m.ResetUpstreamErrorMessage()
+		return nil
+	case usagelog.FieldUpstreamErrors:
+		m.ResetUpstreamErrors()
 		return nil
 	case usagelog.FieldCreatedAt:
 		m.ResetCreatedAt()

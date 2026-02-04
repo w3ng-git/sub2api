@@ -50,6 +50,17 @@ type UsageLog struct {
 	ImageCount int
 	ImageSize  *string
 
+	// 错误记录字段
+	IsError              bool
+	ErrorType            *string
+	ErrorStatusCode      *int
+	ErrorMessage         *string
+	ErrorBody            *string
+	RequestHeaders       *string
+	UpstreamStatusCode   *int
+	UpstreamErrorMessage *string
+	UpstreamErrors       *string
+
 	CreatedAt time.Time
 
 	User         *User
