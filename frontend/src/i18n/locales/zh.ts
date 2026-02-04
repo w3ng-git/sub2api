@@ -1148,19 +1148,17 @@ export default {
         fallbackHint: '非 Claude Code 请求将使用此分组，留空则直接拒绝',
         noFallback: '不降级（直接拒绝）'
       },
-<<<<<<< HEAD
       cacheTransfer: {
         title: '缓存 Token 转移比例',
         tooltip: '将一定比例的 cache_read_input_tokens 转移为 cache_creation_input_tokens。例如设置为 0.1，则 10% 的缓存读取 token 将按缓存创建价格计费。',
         hint: '范围 0~1，0 表示不转移，1 表示全部转移',
         probabilityTitle: '转移触发概率',
         probabilityHint: '0~1，1 表示每次都触发，0.3 表示 30% 概率触发'
-=======
+      },
       invalidRequestFallback: {
         title: '无效请求兜底分组',
         hint: '仅当上游明确返回 prompt too long 时才会触发，留空表示不兜底',
         noFallback: '不兜底'
->>>>>>> upstream/main
       },
       copyAccounts: {
         title: '从分组复制账号',

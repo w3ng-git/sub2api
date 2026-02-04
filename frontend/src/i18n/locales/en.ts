@@ -1063,19 +1063,17 @@ export default {
         fallbackHint: 'Non-Claude Code requests will use this group. Leave empty to reject directly.',
         noFallback: 'No Fallback (Reject)'
       },
-<<<<<<< HEAD
       cacheTransfer: {
         title: 'Cache Token Transfer Ratio',
         tooltip: 'Transfer a percentage of cache_read_input_tokens to cache_creation_input_tokens. For example, 0.1 means 10% of cache read tokens will be billed at cache creation price.',
         hint: 'Range 0~1, 0 means no transfer, 1 means transfer all',
         probabilityTitle: 'Transfer Trigger Probability',
         probabilityHint: '0~1, 1 means always trigger, 0.3 means 30% chance'
-=======
+      },
       invalidRequestFallback: {
         title: 'Invalid Request Fallback Group',
         hint: 'Triggered only when upstream explicitly returns prompt too long. Leave empty to disable fallback.',
         noFallback: 'No Fallback'
->>>>>>> upstream/main
       },
       copyAccounts: {
         title: 'Copy Accounts from Groups',

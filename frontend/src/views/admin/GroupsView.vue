@@ -625,8 +625,7 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- 缓存 token 转移比例（仅 anthropic 平台） -->
+<!-- 缓存 token 转移比例（仅 anthropic 平台） -->
         <div v-if="createForm.platform === 'anthropic'" class="border-t pt-4">
           <div class="mb-1.5 flex items-center gap-1">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -675,7 +674,8 @@
             />
             <p class="input-hint">{{ t('admin.groups.cacheTransfer.probabilityHint') }}</p>
           </div>
-=======
+        </div>
+
         <!-- 无效请求兜底（仅 anthropic/antigravity 平台，且非订阅分组） -->
         <div
           v-if="['anthropic', 'antigravity'].includes(createForm.platform) && createForm.subscription_type !== 'subscription'"
@@ -688,7 +688,6 @@
             :placeholder="t('admin.groups.invalidRequestFallback.noFallback')"
           />
           <p class="input-hint">{{ t('admin.groups.invalidRequestFallback.hint') }}</p>
->>>>>>> upstream/main
         </div>
 
         <!-- 模型路由配置（仅 anthropic 平台） -->
@@ -1299,8 +1298,7 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- 缓存 token 转移比例（仅 anthropic 平台） -->
+<!-- 缓存 token 转移比例（仅 anthropic 平台） -->
         <div v-if="editForm.platform === 'anthropic'" class="border-t pt-4">
           <div class="mb-1.5 flex items-center gap-1">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -1349,7 +1347,8 @@
             />
             <p class="input-hint">{{ t('admin.groups.cacheTransfer.probabilityHint') }}</p>
           </div>
-=======
+        </div>
+
         <!-- 无效请求兜底（仅 anthropic/antigravity 平台，且非订阅分组） -->
         <div
           v-if="['anthropic', 'antigravity'].includes(editForm.platform) && editForm.subscription_type !== 'subscription'"
@@ -1362,7 +1361,6 @@
             :placeholder="t('admin.groups.invalidRequestFallback.noFallback')"
           />
           <p class="input-hint">{{ t('admin.groups.invalidRequestFallback.hint') }}</p>
->>>>>>> upstream/main
         </div>
 
         <!-- 模型路由配置（仅 anthropic 平台） -->
@@ -1765,14 +1763,11 @@ const createForm = reactive({
   // Claude Code 客户端限制（仅 anthropic 平台使用）
   claude_code_only: false,
   fallback_group_id: null as number | null,
-<<<<<<< HEAD
-  // 缓存 token 转移比例（仅 anthropic 平台使用）
+// 缓存 token 转移比例（仅 anthropic 平台使用）
   cache_read_transfer_ratio: 0,
   // 缓存转移触发概率（仅 anthropic 平台使用）
   cache_read_transfer_probability: 1,
-=======
   fallback_group_id_on_invalid_request: null as number | null,
->>>>>>> upstream/main
   // 模型路由开关
   model_routing_enabled: false,
   // 支持的模型系列（仅 antigravity 平台）
@@ -1970,14 +1965,11 @@ const editForm = reactive({
   // Claude Code 客户端限制（仅 anthropic 平台使用）
   claude_code_only: false,
   fallback_group_id: null as number | null,
-<<<<<<< HEAD
-  // 缓存 token 转移比例（仅 anthropic 平台使用）
+// 缓存 token 转移比例（仅 anthropic 平台使用）
   cache_read_transfer_ratio: 0,
   // 缓存转移触发概率（仅 anthropic 平台使用）
   cache_read_transfer_probability: 1,
-=======
   fallback_group_id_on_invalid_request: null as number | null,
->>>>>>> upstream/main
   // 模型路由开关
   model_routing_enabled: false,
   // 支持的模型系列（仅 antigravity 平台）
@@ -2067,14 +2059,11 @@ const closeCreateModal = () => {
   createForm.image_price_4k = null
   createForm.claude_code_only = false
   createForm.fallback_group_id = null
-<<<<<<< HEAD
-  createForm.cache_read_transfer_ratio = 0
+createForm.cache_read_transfer_ratio = 0
   createForm.cache_read_transfer_probability = 1
-=======
   createForm.fallback_group_id_on_invalid_request = null
   createForm.supported_model_scopes = ['claude', 'gemini_text', 'gemini_image']
   createForm.mcp_xml_inject = true
->>>>>>> upstream/main
   createForm.copy_accounts_from_group_ids = []
   createModelRoutingRules.value = []
 }
@@ -2125,12 +2114,9 @@ const handleEdit = async (group: AdminGroup) => {
   editForm.image_price_4k = group.image_price_4k
   editForm.claude_code_only = group.claude_code_only || false
   editForm.fallback_group_id = group.fallback_group_id
-<<<<<<< HEAD
-  editForm.cache_read_transfer_ratio = group.cache_read_transfer_ratio || 0
+editForm.cache_read_transfer_ratio = group.cache_read_transfer_ratio || 0
   editForm.cache_read_transfer_probability = group.cache_read_transfer_probability ?? 1
-=======
   editForm.fallback_group_id_on_invalid_request = group.fallback_group_id_on_invalid_request
->>>>>>> upstream/main
   editForm.model_routing_enabled = group.model_routing_enabled || false
   editForm.supported_model_scopes = group.supported_model_scopes || ['claude', 'gemini_text', 'gemini_image']
   editForm.mcp_xml_inject = group.mcp_xml_inject ?? true
