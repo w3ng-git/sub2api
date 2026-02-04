@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/Wei-Shaw/sub2api/internal/config"
 	"github.com/Wei-Shaw/sub2api/internal/pkg/antigravity"
 	"github.com/Wei-Shaw/sub2api/internal/pkg/claude"
@@ -131,6 +133,11 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 	// 获取订阅信息（可能为nil）- 提前获取用于后续检查
 	subscription, _ := middleware2.GetSubscriptionFromContext(c)
 
+	// 初始化错误记录上下文
+	errCtx := h.newErrorRecordingContext(c, apiKey, subscription)
+	errCtx.setModel(reqModel)
+	errCtx.setStream(reqStream)
+
 	// 0. 检查wait队列是否已满
 	maxWait := service.CalculateMaxWait(subject.Concurrency)
 	canWait, err := h.concurrencyHelper.IncrementWaitCount(c.Request.Context(), subject.UserID, maxWait)
@@ -139,6 +146,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		log.Printf("Increment wait count failed: %v", err)
 		// On error, allow request to proceed
 	} else if !canWait {
+		errCtx.recordError("concurrency_limit", http.StatusTooManyRequests, "Too many pending requests, please retry later", nil, "")
 		h.errorResponse(c, http.StatusTooManyRequests, "rate_limit_error", "Too many pending requests, please retry later")
 		return
 	}
@@ -156,6 +164,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 	userReleaseFunc, err := h.concurrencyHelper.AcquireUserSlotWithWait(c, subject.UserID, subject.Concurrency, reqStream, &streamStarted)
 	if err != nil {
 		log.Printf("User concurrency acquire failed: %v", err)
+		errCtx.recordError("concurrency_limit", http.StatusTooManyRequests, "Concurrency limit exceeded for user, please retry later", nil, "")
 		h.handleConcurrencyError(c, err, "user", streamStarted)
 		return
 	}
@@ -174,6 +183,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 	if err := h.billingCacheService.CheckBillingEligibility(c.Request.Context(), apiKey.User, apiKey, apiKey.Group, subscription); err != nil {
 		log.Printf("Billing eligibility check failed after wait: %v", err)
 		status, code, message := billingErrorDetails(err)
+		errCtx.recordError("billing_error", status, message, nil, "")
 		h.handleStreamingAwareError(c, status, code, message, streamStarted)
 		return
 	}
@@ -203,13 +213,17 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 			selection, err := h.gatewayService.SelectAccountWithLoadAwareness(c.Request.Context(), apiKey.GroupID, sessionKey, reqModel, failedAccountIDs, "") // Gemini 不使用会话限制
 			if err != nil {
 				if len(failedAccountIDs) == 0 {
+					errCtx.recordError("no_account", http.StatusServiceUnavailable, "No available accounts: "+err.Error(), nil, "")
 					h.handleStreamingAwareError(c, http.StatusServiceUnavailable, "api_error", "No available accounts: "+err.Error(), streamStarted)
 					return
 				}
+				status, _, errMsg := h.mapUpstreamError(lastFailoverStatus)
+				errCtx.recordError("upstream_error", status, errMsg, &lastFailoverStatus, "")
 				h.handleFailoverExhausted(c, lastFailoverStatus, streamStarted)
 				return
 			}
 			account := selection.Account
+			errCtx.setAccount(account)
 			setOpsSelectedAccount(c, account.ID)
 
 			// 检查请求拦截（预热请求、SUGGESTION MODE等）
@@ -232,6 +246,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 			accountReleaseFunc := selection.ReleaseFunc
 			if !selection.Acquired {
 				if selection.WaitPlan == nil {
+					errCtx.recordError("no_account", http.StatusServiceUnavailable, "No available accounts", nil, "")
 					h.handleStreamingAwareError(c, http.StatusServiceUnavailable, "api_error", "No available accounts", streamStarted)
 					return
 				}
@@ -241,6 +256,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 					log.Printf("Increment account wait count failed: %v", err)
 				} else if !canWait {
 					log.Printf("Account wait queue full: account=%d", account.ID)
+					errCtx.recordError("concurrency_limit", http.StatusTooManyRequests, "Too many pending requests, please retry later", nil, "")
 					h.handleStreamingAwareError(c, http.StatusTooManyRequests, "rate_limit_error", "Too many pending requests, please retry later", streamStarted)
 					return
 				}
@@ -264,6 +280,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 				)
 				if err != nil {
 					log.Printf("Account concurrency acquire failed: %v", err)
+					errCtx.recordError("concurrency_limit", http.StatusTooManyRequests, "Concurrency limit exceeded for account, please retry later", nil, "")
 					h.handleConcurrencyError(c, err, "account", streamStarted)
 					return
 				}
@@ -342,13 +359,17 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		selection, err := h.gatewayService.SelectAccountWithLoadAwareness(c.Request.Context(), apiKey.GroupID, sessionKey, reqModel, failedAccountIDs, parsedReq.MetadataUserID)
 		if err != nil {
 			if len(failedAccountIDs) == 0 {
+				errCtx.recordError("no_account", http.StatusServiceUnavailable, "No available accounts: "+err.Error(), nil, "")
 				h.handleStreamingAwareError(c, http.StatusServiceUnavailable, "api_error", "No available accounts: "+err.Error(), streamStarted)
 				return
 			}
+			status, _, errMsg := h.mapUpstreamError(lastFailoverStatus)
+			errCtx.recordError("upstream_error", status, errMsg, &lastFailoverStatus, "")
 			h.handleFailoverExhausted(c, lastFailoverStatus, streamStarted)
 			return
 		}
 		account := selection.Account
+		errCtx.setAccount(account)
 		setOpsSelectedAccount(c, account.ID)
 
 		// 检查请求拦截（预热请求、SUGGESTION MODE等）
@@ -371,6 +392,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 		accountReleaseFunc := selection.ReleaseFunc
 		if !selection.Acquired {
 			if selection.WaitPlan == nil {
+				errCtx.recordError("no_account", http.StatusServiceUnavailable, "No available accounts", nil, "")
 				h.handleStreamingAwareError(c, http.StatusServiceUnavailable, "api_error", "No available accounts", streamStarted)
 				return
 			}
@@ -380,6 +402,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 				log.Printf("Increment account wait count failed: %v", err)
 			} else if !canWait {
 				log.Printf("Account wait queue full: account=%d", account.ID)
+				errCtx.recordError("concurrency_limit", http.StatusTooManyRequests, "Too many pending requests, please retry later", nil, "")
 				h.handleStreamingAwareError(c, http.StatusTooManyRequests, "rate_limit_error", "Too many pending requests, please retry later", streamStarted)
 				return
 			}
@@ -402,6 +425,7 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 			)
 			if err != nil {
 				log.Printf("Account concurrency acquire failed: %v", err)
+				errCtx.recordError("concurrency_limit", http.StatusTooManyRequests, "Concurrency limit exceeded for account, please retry later", nil, "")
 				h.handleConcurrencyError(c, err, "account", streamStarted)
 				return
 			}
@@ -773,6 +797,112 @@ func (h *GatewayHandler) errorResponse(c *gin.Context, status int, errType, mess
 			"message": message,
 		},
 	})
+}
+
+// errorRecordingContext 用于跟踪请求上下文以便记录错误
+type errorRecordingContext struct {
+	handler      *GatewayHandler
+	c            *gin.Context
+	startTime    time.Time
+	requestID    string
+	apiKey       *service.APIKey
+	subscription *service.UserSubscription
+	model        string
+	stream       bool
+	account      *service.Account // 可能在选择账号后设置
+}
+
+// newErrorRecordingContext 创建新的错误记录上下文
+func (h *GatewayHandler) newErrorRecordingContext(c *gin.Context, apiKey *service.APIKey, subscription *service.UserSubscription) *errorRecordingContext {
+	return &errorRecordingContext{
+		handler:      h,
+		c:            c,
+		startTime:    time.Now(),
+		requestID:    "err-" + uuid.New().String(),
+		apiKey:       apiKey,
+		subscription: subscription,
+	}
+}
+
+// setModel 设置请求的模型
+func (e *errorRecordingContext) setModel(model string) {
+	e.model = model
+}
+
+// setStream 设置是否为流式请求
+func (e *errorRecordingContext) setStream(stream bool) {
+	e.stream = stream
+}
+
+// setAccount 设置选中的账号
+func (e *errorRecordingContext) setAccount(account *service.Account) {
+	e.account = account
+}
+
+// recordError 异步记录错误到使用日志
+func (e *errorRecordingContext) recordError(errorType string, statusCode int, message string, upstreamStatusCode *int, upstreamErrorMessage string) {
+	if e.apiKey == nil || e.apiKey.User == nil {
+		return
+	}
+
+	userAgent := e.c.GetHeader("User-Agent")
+	clientIP := ip.GetClientIP(e.c)
+	durationMs := int(time.Since(e.startTime).Milliseconds())
+
+	// 收集请求头（白名单过滤）
+	requestHeaders := make(map[string]string)
+	headerWhitelist := []string{
+		"Content-Type",
+		"Accept",
+		"X-Request-ID",
+		"X-Forwarded-For",
+		"X-Real-IP",
+		"Anthropic-Version",
+		"Anthropic-Beta",
+	}
+	for _, header := range headerWhitelist {
+		if value := e.c.GetHeader(header); value != "" {
+			requestHeaders[header] = value
+		}
+	}
+
+	// 构建错误响应体
+	errorBody, _ := json.Marshal(map[string]any{
+		"type": "error",
+		"error": map[string]string{
+			"type":    errorType,
+			"message": message,
+		},
+	})
+
+	input := &service.RecordErrorUsageInput{
+		RequestID:            e.requestID,
+		APIKey:               e.apiKey,
+		User:                 e.apiKey.User,
+		Account:              e.account,
+		Subscription:         e.subscription,
+		Model:                e.model,
+		Stream:               e.stream,
+		UserAgent:            userAgent,
+		IPAddress:            clientIP,
+		RequestHeaders:       requestHeaders,
+		ErrorType:            errorType,
+		ErrorStatusCode:      statusCode,
+		ErrorMessage:         message,
+		ErrorBody:            string(errorBody),
+		UpstreamStatusCode:   upstreamStatusCode,
+		UpstreamErrorMessage: upstreamErrorMessage,
+		DurationMs:           durationMs,
+	}
+
+	// 异步记录
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err := e.handler.gatewayService.RecordErrorUsage(ctx, input); err != nil {
+			log.Printf("Record error usage failed: %v", err)
+		}
+	}()
 }
 
 // CountTokens handles token counting endpoint
