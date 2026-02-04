@@ -29,6 +29,8 @@ type Group struct {
 	// Claude Code 客户端限制
 	ClaudeCodeOnly  bool
 	FallbackGroupID *int64
+	// 无效请求兜底分组（仅 anthropic 平台使用）
+	FallbackGroupIDOnInvalidRequest *int64
 
 	// 模型路由配置
 	// key: 模型匹配模式（支持 * 通配符，如 "claude-opus-*"）
@@ -39,6 +41,13 @@ type Group struct {
 	// 缓存 token 转移配置
 	CacheReadTransferRatio       float64 // 缓存 token 转移比例（0~1）
 	CacheReadTransferProbability float64 // 转移触发概率（0~1），默认 1.0
+
+	// MCP XML 协议注入开关（仅 antigravity 平台使用）
+	MCPXMLInject bool
+
+	// 支持的模型系列（仅 antigravity 平台使用）
+	// 可选值: claude, gemini_text, gemini_image
+	SupportedModelScopes []string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

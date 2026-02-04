@@ -53,6 +53,8 @@ const (
 	FieldClaudeCodeOnly = "claude_code_only"
 	// FieldFallbackGroupID holds the string denoting the fallback_group_id field in the database.
 	FieldFallbackGroupID = "fallback_group_id"
+	// FieldFallbackGroupIDOnInvalidRequest holds the string denoting the fallback_group_id_on_invalid_request field in the database.
+	FieldFallbackGroupIDOnInvalidRequest = "fallback_group_id_on_invalid_request"
 	// FieldModelRouting holds the string denoting the model_routing field in the database.
 	FieldModelRouting = "model_routing"
 	// FieldModelRoutingEnabled holds the string denoting the model_routing_enabled field in the database.
@@ -61,6 +63,10 @@ const (
 	FieldCacheReadTransferRatio = "cache_read_transfer_ratio"
 	// FieldCacheReadTransferProbability holds the string denoting the cache_read_transfer_probability field in the database.
 	FieldCacheReadTransferProbability = "cache_read_transfer_probability"
+	// FieldMcpXMLInject holds the string denoting the mcp_xml_inject field in the database.
+	FieldMcpXMLInject = "mcp_xml_inject"
+	// FieldSupportedModelScopes holds the string denoting the supported_model_scopes field in the database.
+	FieldSupportedModelScopes = "supported_model_scopes"
 	// EdgeAPIKeys holds the string denoting the api_keys edge name in mutations.
 	EdgeAPIKeys = "api_keys"
 	// EdgeRedeemCodes holds the string denoting the redeem_codes edge name in mutations.
@@ -155,10 +161,13 @@ var Columns = []string{
 	FieldImagePrice4k,
 	FieldClaudeCodeOnly,
 	FieldFallbackGroupID,
+	FieldFallbackGroupIDOnInvalidRequest,
 	FieldModelRouting,
 	FieldModelRoutingEnabled,
 	FieldCacheReadTransferRatio,
 	FieldCacheReadTransferProbability,
+	FieldMcpXMLInject,
+	FieldSupportedModelScopes,
 }
 
 var (
@@ -222,6 +231,10 @@ var (
 	DefaultCacheReadTransferRatio float64
 	// DefaultCacheReadTransferProbability holds the default value on creation for the "cache_read_transfer_probability" field.
 	DefaultCacheReadTransferProbability float64
+	// DefaultMcpXMLInject holds the default value on creation for the "mcp_xml_inject" field.
+	DefaultMcpXMLInject bool
+	// DefaultSupportedModelScopes holds the default value on creation for the "supported_model_scopes" field.
+	DefaultSupportedModelScopes []string
 )
 
 // OrderOption defines the ordering options for the Group queries.
@@ -327,6 +340,11 @@ func ByFallbackGroupID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFallbackGroupID, opts...).ToFunc()
 }
 
+// ByFallbackGroupIDOnInvalidRequest orders the results by the fallback_group_id_on_invalid_request field.
+func ByFallbackGroupIDOnInvalidRequest(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFallbackGroupIDOnInvalidRequest, opts...).ToFunc()
+}
+
 // ByModelRoutingEnabled orders the results by the model_routing_enabled field.
 func ByModelRoutingEnabled(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModelRoutingEnabled, opts...).ToFunc()
@@ -340,6 +358,11 @@ func ByCacheReadTransferRatio(opts ...sql.OrderTermOption) OrderOption {
 // ByCacheReadTransferProbability orders the results by the cache_read_transfer_probability field.
 func ByCacheReadTransferProbability(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCacheReadTransferProbability, opts...).ToFunc()
+}
+
+// ByMcpXMLInject orders the results by the mcp_xml_inject field.
+func ByMcpXMLInject(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMcpXMLInject, opts...).ToFunc()
 }
 
 // ByAPIKeysCount orders the results by api_keys count.
