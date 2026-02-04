@@ -4080,7 +4080,7 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 				block = "event: " + eventName + "\n"
 			}
 			block += "data: " + replaced + "\n\n"
-			return []string{block}, replaced, nil
+			return []string{block}, dataLine, nil // 返回原始 dataLine 用于 usage 收集
 		}
 
 		eventType, _ := event["type"].(string)
@@ -4156,7 +4156,7 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 								stopBlock = "event: " + eventName + "\n"
 							}
 							stopBlock += "data: " + string(stopBytes) + "\n\n"
-							return []string{synthBlock, stopBlock}, string(stopBytes), nil
+							return []string{synthBlock, stopBlock}, dataLine, nil // 返回原始 dataLine 用于 usage 收集
 						}
 					}
 				}
@@ -4177,7 +4177,7 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 				block = "event: " + eventName + "\n"
 			}
 			block += "data: " + replaced + "\n\n"
-			return []string{block}, replaced, nil
+			return []string{block}, dataLine, nil // 返回原始 dataLine 用于 usage 收集
 		}
 
 		block := ""
@@ -4185,7 +4185,7 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 			block = "event: " + eventName + "\n"
 		}
 		block += "data: " + string(newData) + "\n\n"
-		return []string{block}, string(newData), nil
+		return []string{block}, dataLine, nil // 返回原始 dataLine 用于 usage 收集
 	}
 
 	for {
