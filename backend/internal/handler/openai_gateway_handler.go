@@ -294,6 +294,8 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 				failedAccountIDs[account.ID] = struct{}{}
 				if switchCount >= maxAccountSwitches {
 					lastFailoverStatus = failoverErr.StatusCode
+					status, _, errMsg := h.mapUpstreamError(lastFailoverStatus)
+					errCtx.recordError("upstream_error", status, errMsg, &lastFailoverStatus, "")
 					h.handleFailoverExhausted(c, lastFailoverStatus, streamStarted)
 					return
 				}
@@ -302,7 +304,8 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 				log.Printf("Account %d: upstream error %d, switching account %d/%d", account.ID, failoverErr.StatusCode, switchCount, maxAccountSwitches)
 				continue
 			}
-			// Error response already handled in Forward, just log
+			// Error response already handled in Forward, record forward_error
+			errCtx.recordError("forward_error", http.StatusBadGateway, err.Error(), nil, "")
 			log.Printf("Account %d: Forward request failed: %v", account.ID, err)
 			return
 		}

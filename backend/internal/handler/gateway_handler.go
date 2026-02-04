@@ -312,6 +312,8 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 					failedAccountIDs[account.ID] = struct{}{}
 					lastFailoverStatus = failoverErr.StatusCode
 					if switchCount >= maxAccountSwitches {
+						status, _, errMsg := h.mapUpstreamError(lastFailoverStatus)
+						errCtx.recordError("upstream_error", status, errMsg, &lastFailoverStatus, "")
 						h.handleFailoverExhausted(c, lastFailoverStatus, streamStarted)
 						return
 					}
@@ -319,7 +321,8 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 					log.Printf("Account %d: upstream error %d, switching account %d/%d", account.ID, failoverErr.StatusCode, switchCount, maxAccountSwitches)
 					continue
 				}
-				// 错误响应已在Forward中处理，这里只记录日志
+				// 错误响应已在Forward中处理，记录 forward_error
+				errCtx.recordError("forward_error", http.StatusBadGateway, err.Error(), nil, "")
 				log.Printf("Forward request failed: %v", err)
 				return
 			}
@@ -483,6 +486,8 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 				failedAccountIDs[account.ID] = struct{}{}
 				lastFailoverStatus = failoverErr.StatusCode
 				if switchCount >= maxAccountSwitches {
+					status, _, errMsg := h.mapUpstreamError(lastFailoverStatus)
+					errCtx.recordError("upstream_error", status, errMsg, &lastFailoverStatus, "")
 					h.handleFailoverExhausted(c, lastFailoverStatus, streamStarted)
 					return
 				}
@@ -490,7 +495,8 @@ func (h *GatewayHandler) Messages(c *gin.Context) {
 				log.Printf("Account %d: upstream error %d, switching account %d/%d", account.ID, failoverErr.StatusCode, switchCount, maxAccountSwitches)
 				continue
 			}
-			// 错误响应已在Forward中处理，这里只记录日志
+			// 错误响应已在Forward中处理，记录 forward_error
+			errCtx.recordError("forward_error", http.StatusBadGateway, err.Error(), nil, "")
 			log.Printf("Account %d: Forward request failed: %v", account.ID, err)
 			return
 		}
