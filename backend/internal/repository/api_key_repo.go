@@ -493,6 +493,7 @@ ID:                              g.ID,
 		CacheReadTransferProbability:    g.CacheReadTransferProbability,
 		MCPXMLInject:                    g.McpXMLInject,
 		SupportedModelScopes:            g.SupportedModelScopes,
+		SortOrder:                       g.SortOrder,
 		CreatedAt:                       g.CreatedAt,
 		UpdatedAt:                       g.UpdatedAt,
 	}

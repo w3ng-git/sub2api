@@ -44,6 +44,10 @@ export interface AdminUser extends User {
   // 用户级缓存转移配置（null = 使用分组配置）
   cache_read_transfer_ratio: number | null
   cache_read_transfer_probability: number | null
+  // 用户专属分组倍率配置 (group_id -> rate_multiplier)
+  group_rates?: Record<number, number>
+  // 当前并发数（仅管理员列表接口返回）
+  current_concurrency?: number
 }
 
 export interface LoginRequest {
@@ -95,6 +99,8 @@ export interface PublicSettings {
 
 export interface AuthResponse {
   access_token: string
+  refresh_token?: string  // New: Refresh Token for token renewal
+  expires_in?: number     // New: Access Token expiry time in seconds
   token_type: string
   user: User & { run_mode?: 'standard' | 'simple' }
 }
@@ -380,6 +386,9 @@ export interface AdminGroup extends Group {
 
   // 分组下账号数量（仅管理员可见）
   account_count?: number
+
+  // 分组排序
+  sort_order: number
 }
 
 export interface ApiKey {
@@ -564,7 +573,10 @@ export interface Account {
   platform: AccountPlatform
   type: AccountType
   credentials?: Record<string, unknown>
-  extra?: CodexUsageSnapshot & Record<string, unknown> // Extra fields including Codex usage
+  // Extra fields including Codex usage and model-level rate limits (Antigravity smart retry)
+  extra?: (CodexUsageSnapshot & {
+    model_rate_limits?: Record<string, { rate_limited_at: string; rate_limit_reset_at: string }>
+  } & Record<string, unknown>)
   proxy_id: number | null
   concurrency: number
   current_concurrency?: number // Real-time concurrency count from Redis
@@ -588,9 +600,6 @@ export interface Account {
   overload_until: string | null
   temp_unschedulable_until: string | null
   temp_unschedulable_reason: string | null
-
-  // Antigravity scope 级限流状态
-  scope_rate_limits?: Record<string, { reset_at: string; remaining_sec: number }>
 
   // Session window fields (5-hour window)
   session_window_start: string | null
@@ -730,6 +739,56 @@ export interface UpdateProxyRequest {
   username?: string | null
   password?: string | null
   status?: 'active' | 'inactive'
+}
+
+export interface AdminDataPayload {
+  type?: string
+  version?: number
+  exported_at: string
+  proxies: AdminDataProxy[]
+  accounts: AdminDataAccount[]
+}
+
+export interface AdminDataProxy {
+  proxy_key: string
+  name: string
+  protocol: ProxyProtocol
+  host: string
+  port: number
+  username?: string | null
+  password?: string | null
+  status: 'active' | 'inactive'
+}
+
+export interface AdminDataAccount {
+  name: string
+  notes?: string | null
+  platform: AccountPlatform
+  type: AccountType
+  credentials: Record<string, unknown>
+  extra?: Record<string, unknown>
+  proxy_key?: string | null
+  concurrency: number
+  priority: number
+  rate_multiplier?: number | null
+  expires_at?: number | null
+  auto_pause_on_expired?: boolean
+}
+
+export interface AdminDataImportError {
+  kind: 'proxy' | 'account'
+  name?: string
+  proxy_key?: string
+  message: string
+}
+
+export interface AdminDataImportResult {
+  proxy_created: number
+  proxy_reused: number
+  proxy_failed: number
+  account_created: number
+  account_failed: number
+  errors?: AdminDataImportError[]
 }
 
 // ==================== Usage & Redeem Types ====================
@@ -984,6 +1043,9 @@ export interface UpdateUserRequest {
   allowed_groups?: number[] | null
   cache_read_transfer_ratio?: number | null
   cache_read_transfer_probability?: number | null
+  // 用户专属分组倍率配置 (group_id -> rate_multiplier | null)
+  // null 表示删除该分组的专属倍率
+  group_rates?: Record<number, number | null>
 }
 
 export interface ChangePasswordRequest {

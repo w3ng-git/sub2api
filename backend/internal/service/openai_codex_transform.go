@@ -21,6 +21,17 @@ const (
 var codexCLIInstructions string
 
 var codexModelMap = map[string]string{
+	"gpt-5.3":                   "gpt-5.3",
+	"gpt-5.3-none":              "gpt-5.3",
+	"gpt-5.3-low":               "gpt-5.3",
+	"gpt-5.3-medium":            "gpt-5.3",
+	"gpt-5.3-high":              "gpt-5.3",
+	"gpt-5.3-xhigh":             "gpt-5.3",
+	"gpt-5.3-codex":             "gpt-5.3-codex",
+	"gpt-5.3-codex-low":         "gpt-5.3-codex",
+	"gpt-5.3-codex-medium":      "gpt-5.3-codex",
+	"gpt-5.3-codex-high":        "gpt-5.3-codex",
+	"gpt-5.3-codex-xhigh":       "gpt-5.3-codex",
 	"gpt-5.1-codex":             "gpt-5.1-codex",
 	"gpt-5.1-codex-low":         "gpt-5.1-codex",
 	"gpt-5.1-codex-medium":      "gpt-5.1-codex",
@@ -155,6 +166,12 @@ func normalizeCodexModel(model string) string {
 	}
 	if strings.Contains(normalized, "gpt-5.2") || strings.Contains(normalized, "gpt 5.2") {
 		return "gpt-5.2"
+	}
+	if strings.Contains(normalized, "gpt-5.3-codex") || strings.Contains(normalized, "gpt 5.3 codex") {
+		return "gpt-5.3-codex"
+	}
+	if strings.Contains(normalized, "gpt-5.3") || strings.Contains(normalized, "gpt 5.3") {
+		return "gpt-5.3"
 	}
 	if strings.Contains(normalized, "gpt-5.1-codex-max") || strings.Contains(normalized, "gpt 5.1 codex max") {
 		return "gpt-5.1-codex-max"
@@ -327,47 +344,6 @@ func isInstructionsEmpty(reqBody map[string]any) bool {
 		return true
 	}
 	return strings.TrimSpace(str) == ""
-}
-
-// ReplaceWithCodexInstructions 将请求 instructions 替换为内置 Codex 指令（必要时）。
-func ReplaceWithCodexInstructions(reqBody map[string]any) bool {
-	codexInstructions := strings.TrimSpace(getCodexCLIInstructions())
-	if codexInstructions == "" {
-		return false
-	}
-
-	existingInstructions, _ := reqBody["instructions"].(string)
-	if strings.TrimSpace(existingInstructions) != codexInstructions {
-		reqBody["instructions"] = codexInstructions
-		return true
-	}
-
-	return false
-}
-
-// IsInstructionError 判断错误信息是否与指令格式/系统提示相关。
-func IsInstructionError(errorMessage string) bool {
-	if errorMessage == "" {
-		return false
-	}
-
-	lowerMsg := strings.ToLower(errorMessage)
-	instructionKeywords := []string{
-		"instruction",
-		"instructions",
-		"system prompt",
-		"system message",
-		"invalid prompt",
-		"prompt format",
-	}
-
-	for _, keyword := range instructionKeywords {
-		if strings.Contains(lowerMsg, keyword) {
-			return true
-		}
-	}
-
-	return false
 }
 
 // filterCodexInput 按需过滤 item_reference 与 id。

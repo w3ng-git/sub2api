@@ -28,11 +28,6 @@ func (o *OptionalFloat64) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type ScopeRateLimitInfo struct {
-	ResetAt      time.Time `json:"reset_at"`
-	RemainingSec int64     `json:"remaining_sec"`
-}
-
 type User struct {
 	ID            int64     `json:"id"`
 	Email         string    `json:"email"`
@@ -59,6 +54,9 @@ type AdminUser struct {
 	// 用户级缓存 token 转移配置（nil 表示使用分组配置）
 	CacheReadTransferRatio       *float64 `json:"cache_read_transfer_ratio,omitempty"`
 	CacheReadTransferProbability *float64 `json:"cache_read_transfer_probability,omitempty"`
+	// GroupRates 用户专属分组倍率配置
+	// map[groupID]rateMultiplier
+	GroupRates map[int64]float64 `json:"group_rates,omitempty"`
 }
 
 type APIKey struct {
@@ -151,6 +149,9 @@ type AdminGroup struct {
 	SupportedModelScopes []string       `json:"supported_model_scopes"`
 	AccountGroups        []AccountGroup `json:"account_groups,omitempty"`
 	AccountCount         int64          `json:"account_count,omitempty"`
+
+	// 分组排序
+	SortOrder int `json:"sort_order"`
 }
 
 type Account struct {
@@ -178,9 +179,6 @@ type Account struct {
 	RateLimitedAt    *time.Time `json:"rate_limited_at"`
 	RateLimitResetAt *time.Time `json:"rate_limit_reset_at"`
 	OverloadUntil    *time.Time `json:"overload_until"`
-
-	// Antigravity scope 级限流状态（从 extra 提取）
-	ScopeRateLimits map[string]ScopeRateLimitInfo `json:"scope_rate_limits,omitempty"`
 
 	TempUnschedulableUntil  *time.Time `json:"temp_unschedulable_until"`
 	TempUnschedulableReason string     `json:"temp_unschedulable_reason"`
