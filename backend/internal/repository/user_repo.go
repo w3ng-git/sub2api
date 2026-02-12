@@ -10,6 +10,7 @@ import (
 	"time"
 
 	dbent "github.com/Wei-Shaw/sub2api/ent"
+	"github.com/Wei-Shaw/sub2api/ent/apikey"
 	dbuser "github.com/Wei-Shaw/sub2api/ent/user"
 	"github.com/Wei-Shaw/sub2api/ent/userallowedgroup"
 	"github.com/Wei-Shaw/sub2api/ent/usersubscription"
@@ -206,6 +207,7 @@ func (r *userRepository) ListWithFilters(ctx context.Context, params pagination.
 				dbuser.EmailContainsFold(filters.Search),
 				dbuser.UsernameContainsFold(filters.Search),
 				dbuser.NotesContainsFold(filters.Search),
+				dbuser.HasAPIKeysWith(apikey.KeyContainsFold(filters.Search)),
 			),
 		)
 	}
