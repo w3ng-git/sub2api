@@ -4936,63 +4936,6 @@ func replaceToolNamesInText(text string, toolNameMap map[string]string) string {
 	return output
 }
 
-// rewriteCacheTokensInSSELine 改写 SSE 行中的缓存 token 数量
-// 处理 message_start 和 message_delta 事件（两者都包含 cache token）
-func (s *GatewayService) rewriteCacheTokensInSSELine(line string, transferRatio float64) string {
-	if !sseDataRe.MatchString(line) {
-		return line
-	}
-	data := sseDataRe.ReplaceAllString(line, "")
-	if data == "" || data == "[DONE]" {
-		return line
-	}
-
-	var event map[string]any
-	if err := json.Unmarshal([]byte(data), &event); err != nil {
-		return line
-	}
-
-	eventType, _ := event["type"].(string)
-
-	// 处理 message_start 事件（cache token 在 message.usage 中）
-	if eventType == "message_start" {
-		msg, ok := event["message"].(map[string]any)
-		if !ok {
-			return line
-		}
-		usage, ok := msg["usage"].(map[string]any)
-		if !ok {
-			return line
-		}
-		if !rewriteUsageMap(usage, transferRatio) {
-			return line
-		}
-		newData, err := json.Marshal(event)
-		if err != nil {
-			return line
-		}
-		return "data: " + string(newData)
-	}
-
-	// 处理 message_delta 事件（cache token 在 usage 中，是累计值）
-	if eventType == "message_delta" {
-		usage, ok := event["usage"].(map[string]any)
-		if !ok {
-			return line
-		}
-		if !rewriteUsageMap(usage, transferRatio) {
-			return line
-		}
-		newData, err := json.Marshal(event)
-		if err != nil {
-			return line
-		}
-		return "data: " + string(newData)
-	}
-
-	return line
-}
-
 // rewriteUsageMap 重写 usage map 中的缓存 token，返回是否有修改
 func rewriteUsageMap(usage map[string]any, transferRatio float64) bool {
 	cacheCreation := 0
